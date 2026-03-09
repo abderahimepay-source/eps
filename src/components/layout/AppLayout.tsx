@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from "@/components/ui/button";
-import { GraduationCap, LayoutDashboard, BookOpen, User, CreditCard, LogOut, Plus, Menu } from "lucide-react";
+import { GraduationCap, LayoutDashboard, BookOpen, User, LogOut, Plus, Menu } from "lucide-react";
 import { useState } from 'react';
+import { useFirebase, useDoc, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
@@ -16,6 +18,13 @@ const NAV_ITEMS = [
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const { user, firestore } = useFirebase();
+
+  const profileRef = useMemoFirebase(() => {
+    if (!user || !firestore) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [user, firestore]);
+  const { data: profile } = useDoc(profileRef);
 
   return (
     <div className="min-h-screen flex bg-background">
@@ -60,8 +69,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="px-3 py-2 mb-2 bg-primary/5 rounded-xl border border-primary/10">
               <div className="text-xs text-muted-foreground mb-1">الرصيد المتبقي</div>
               <div className="flex items-center justify-between">
-                <span className="font-bold text-primary text-lg font-rajdhani">24</span>
-                <Link href="/credits">
+                <span className="font-bold text-primary text-lg font-rajdhani">{profile?.creditBalance || 0}</span>
+                <Link href="/profile">
                   <Button variant="ghost" size="sm" className="h-7 text-xs px-2 text-accent">شحن</Button>
                 </Link>
               </div>
@@ -85,11 +94,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           
           <div className="flex items-center gap-4">
             <div className="flex flex-col text-start">
-              <span className="text-sm font-bold font-tajawal">الأستاذ أحمد علي</span>
-              <span className="text-xs text-muted-foreground font-tajawal">متوسطة الفاتح، البليدة</span>
+              <span className="text-sm font-bold font-tajawal">{profile?.displayName || 'جاري التحميل...'}</span>
+              <span className="text-xs text-muted-foreground font-tajawal truncate max-w-[150px]">{profile?.school || '...'}</span>
             </div>
             <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
-              أع
+              {profile?.displayName?.substring(0, 2) || 'أع'}
             </div>
           </div>
         </header>

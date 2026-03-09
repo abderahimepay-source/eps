@@ -3,10 +3,6 @@
  * @fileOverview This file implements a Genkit flow for drafting a comprehensive
  * Physical Education lesson plan in Arabic, structured according to Algerian
  * pedagogical stages.
- *
- * - draftLessonPlan - A function that handles the lesson plan drafting process.
- * - DraftLessonPlanInput - The input type for the draftLessonPlan function.
- * - DraftLessonPlanOutput - The return type for the draftLessonPlan function.
  */
 
 import {ai} from '@/ai/genkit';
@@ -34,13 +30,29 @@ const DraftLessonPlanOutputSchema = z.object({
   finalStage: z
     .string()
     .describe('Detailed content for the final stage of the lesson plan.'),
+  usage: z.object({
+    inputTokens: z.number().optional(),
+    outputTokens: z.number().optional(),
+    totalTokens: z.number().optional(),
+  }).optional(),
 });
 export type DraftLessonPlanOutput = z.infer<typeof DraftLessonPlanOutputSchema>;
 
 export async function draftLessonPlan(
   input: DraftLessonPlanInput
 ): Promise<DraftLessonPlanOutput> {
-  return draftLessonPlanFlow(input);
+  const response = await draftLessonPlanPrompt(input);
+  const output = response.output();
+  if (!output) throw new Error('Failed to draft lesson plan.');
+
+  return {
+    ...output,
+    usage: {
+      inputTokens: response.usage?.inputTokens,
+      outputTokens: response.usage?.outputTokens,
+      totalTokens: response.usage?.totalTokens,
+    }
+  };
 }
 
 const draftLessonPlanPrompt = ai.definePrompt({
@@ -65,18 +77,5 @@ const draftLessonPlanPrompt = ai.definePrompt({
 3.  المرحلة الختامية (5-10 د): تشمل لعبة هادئة أو تمرين استرخاء، وجمع الأدوات.
 
 تأكد من أن المحتوى يستخدم المصطلحات البيداغوجية الجزائرية الرسمية والهيكل التربوي المناسب لدرس التربية البدنية في الجزائر.
-ركز على تصميم محتوى المرحلة التعلمية الرئيسة بشكل سليم ويخدم الأهداف المحددة.
-`
+ركز على تصميم محتوى المرحلة التعلمية الرئيسة بشكل سليم ويخدم الأهداف المحددة.`
 });
-
-const draftLessonPlanFlow = ai.defineFlow(
-  {
-    name: 'draftLessonPlanFlow',
-    inputSchema: DraftLessonPlanInputSchema,
-    outputSchema: DraftLessonPlanOutputSchema,
-  },
-  async (input) => {
-    const {output} = await draftLessonPlanPrompt(input);
-    return output!;
-  }
-);

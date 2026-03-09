@@ -10,13 +10,18 @@ import { Label } from "@/components/ui/label";
 import { ALGERIAN_CURRICULUM } from '@/lib/curriculum';
 import { generateObjectives } from '@/ai/flows/generate-lesson-objectives';
 import { draftLessonPlan } from '@/ai/flows/draft-lesson-plan';
-import { Sparkles, ChevronLeft, ChevronRight, CheckCircle2, Loader2, AlertCircle } from 'lucide-react';
+import { Sparkles, ChevronLeft, ChevronRight, CheckCircle2, Loader2, AlertCircle, BookOpen } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useFirebase } from '@/firebase';
+import { trackAiUsage, incrementLessonPlanCount } from '@/firebase/usage';
+import { collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { cn } from "@/lib/utils";
 
 type Step = 'curriculum' | 'objectives' | 'review';
 
 export default function CreateLessonPlan() {
   const { toast } = useToast();
+  const { firestore, user } = useFirebase();
   const [step, setStep] = useState<Step>('curriculum');
   const [loading, setLoading] = useState(false);
   
@@ -39,6 +44,7 @@ export default function CreateLessonPlan() {
   const resourceCategories = currentFieldData?.Knowledge_resources || {};
 
   const handleGenerateObjectives = async () => {
+    if (!user || !firestore) return;
     if (!studyYear || !learningField || !knowledgeResource || !specificResource) {
       toast({ title: "خطأ", description: "يرجى ملء جميع الحقول المطلوبة", variant: "destructive" });
       return;
@@ -52,17 +58,31 @@ export default function CreateLessonPlan() {
         knowledgeResource,
         specificResource
       });
+
+      // Track usage
+      if (result.usage?.totalTokens) {
+        await trackAiUsage(firestore, user.uid, {
+          totalTokens: result.usage.totalTokens,
+          feature: 'Objective Generation'
+        });
+      }
+
       setAiObjectives(result.objectives);
       setTerminalCompetence(result.terminalCompetence);
       setStep('objectives');
-    } catch (error) {
-      toast({ title: "فشل إنشاء الأهداف", description: "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي", variant: "destructive" });
+    } catch (error: any) {
+      toast({ 
+        title: "فشل إنشاء الأهداف", 
+        description: error.message || "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي", 
+        variant: "destructive" 
+      });
     } finally {
       setLoading(false);
     }
   };
 
   const handleDraftPlan = async () => {
+    if (!user || !firestore) return;
     if (selectedObjectives.length === 0) {
       toast({ title: "تنبيه", description: "يرجى اختيار هدف واحد على الأقل", variant: "destructive" });
       return;
@@ -74,10 +94,55 @@ export default function CreateLessonPlan() {
         selectedObjective: selectedObjectives,
         terminalCompetence
       });
+
+      // Track usage
+      if (result.usage?.totalTokens) {
+        await trackAiUsage(firestore, user.uid, {
+          totalTokens: result.usage.totalTokens,
+          feature: 'Lesson Plan Drafting'
+        });
+      }
+
       setLessonPlan(result);
       setStep('review');
-    } catch (error) {
-      toast({ title: "فشل إنشاء المذكرة", description: "حدث خطأ أثناء صياغة المذكرة", variant: "destructive" });
+    } catch (error: any) {
+      toast({ 
+        title: "فشل إنشاء المذكرة", 
+        description: error.message || "حدث خطأ أثناء صياغة المذكرة", 
+        variant: "destructive" 
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveLessonPlan = async () => {
+    if (!user || !firestore || !lessonPlan) return;
+    
+    setLoading(true);
+    try {
+      const planRef = doc(collection(firestore, 'users', user.uid, 'lessonPlans'));
+      await setDoc(planRef, {
+        id: planRef.id,
+        userId: user.uid,
+        title: `${specificResource} - ${studyYear.replace('_', ' ')}`,
+        studyYear,
+        learningField,
+        knowledgeResource,
+        specificResource,
+        objectives: selectedObjectives,
+        introductoryStage: lessonPlan.introductoryStage,
+        buildingStage: lessonPlan.buildingStage,
+        finalStage: lessonPlan.finalStage,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
+      await incrementLessonPlanCount(firestore, user.uid);
+      
+      toast({ title: "نجاح", description: "تم حفظ المذكرة في ملفك الشخصي" });
+    } catch (error: any) {
+      toast({ title: "خطأ", description: "لم يتم حفظ المذكرة", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -256,7 +321,14 @@ export default function CreateLessonPlan() {
               </CardContent>
               <CardFooter className="bg-muted/30 flex justify-end gap-3 p-6">
                 <Button variant="outline" className="h-11">تعديل</Button>
-                <Button className="bg-primary hover:bg-primary/90 h-11 px-8">حفظ المذكرة</Button>
+                <Button 
+                  onClick={handleSaveLessonPlan}
+                  className="bg-primary hover:bg-primary/90 h-11 px-8"
+                  disabled={loading}
+                >
+                  {loading ? <Loader2 className="animate-spin h-4 w-4 me-2" /> : null}
+                  حفظ المذكرة
+                </Button>
               </CardFooter>
             </Card>
           </div>
@@ -265,6 +337,3 @@ export default function CreateLessonPlan() {
     </AppLayout>
   );
 }
-
-import { BookOpen } from 'lucide-react';
-import { cn } from "@/lib/utils";
