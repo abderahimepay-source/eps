@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -22,12 +23,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   const profileRef = useMemoFirebase(() => {
     if (!user || !firestore) return null;
-    return doc(firestore, 'users', user.uid);
+    return doc(firestore, 'profiles', user.uid);
   }, [user, firestore]);
   const { data: profile } = useDoc(profileRef);
 
   return (
-    <div className="min-h-screen flex bg-background">
+    <div className="min-h-screen flex bg-background" dir="rtl">
       {/* Sidebar */}
       <aside className={cn(
         "bg-white border-e fixed inset-y-0 right-0 z-50 transition-all duration-300 w-64 lg:relative lg:translate-x-0",
@@ -69,18 +70,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="px-3 py-2 mb-2 bg-primary/5 rounded-xl border border-primary/10">
               <div className="text-xs text-muted-foreground mb-1">الرصيد المتبقي</div>
               <div className="flex items-center justify-between">
-                <span className="font-bold text-primary text-lg font-rajdhani">{profile?.creditBalance || 0}</span>
+                <span className="font-bold text-primary text-lg font-rajdhani">{profile?.credit_balance || 0}</span>
                 <Link href="/profile">
                   <Button variant="ghost" size="sm" className="h-7 text-xs px-2 text-accent">شحن</Button>
                 </Link>
               </div>
             </div>
-            <Link href="/auth/sign-in">
-              <Button variant="ghost" className="w-full justify-start gap-3 text-destructive hover:text-destructive hover:bg-destructive/10">
-                <LogOut className="h-5 w-5" />
-                تسجيل الخروج
-              </Button>
-            </Link>
+            <Button variant="ghost" className="w-full justify-start gap-3 text-destructive hover:text-destructive hover:bg-destructive/10">
+              <LogOut className="h-5 w-5" />
+              تسجيل الخروج
+            </Button>
           </div>
         </div>
       </aside>

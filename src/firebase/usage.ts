@@ -1,3 +1,4 @@
+
 'use client';
 
 import { 
@@ -20,7 +21,7 @@ export interface TokenUsage {
 
 /**
  * Tracks AI usage by logging it and deducting credits from the user's profile.
- * Uses a transaction to ensure atomic updates to the credit balance.
+ * Uses a transaction to ensure atomic updates to the credit_balance.
  */
 export async function trackAiUsage(
   db: Firestore, 
@@ -28,9 +29,9 @@ export async function trackAiUsage(
   usage: TokenUsage,
   lessonPlanId?: string
 ) {
-  const userRef = doc(db, 'users', userId);
-  const usageLogRef = doc(collection(userRef, 'usageLogs'));
-  const transactionRef = doc(collection(userRef, 'creditTransactions'));
+  const userRef = doc(db, 'profiles', userId);
+  const usageLogRef = doc(collection(userRef, 'usage_logs'));
+  const transactionRef = doc(collection(userRef, 'credit_transactions'));
 
   const creditsToBurn = Math.ceil(usage.totalTokens / TOKENS_PER_CREDIT);
 
@@ -39,14 +40,14 @@ export async function trackAiUsage(
       const userDoc = await transaction.get(userRef);
       if (!userDoc.exists()) throw new Error("User profile not found");
 
-      const currentBalance = userDoc.data().creditBalance || 0;
+      const currentBalance = userDoc.data().credit_balance || 0;
       if (currentBalance < creditsToBurn) {
         throw new Error("Insufficient credits");
       }
 
       // 1. Deduct from UserProfile
       transaction.update(userRef, {
-        creditBalance: increment(-creditsToBurn),
+        credit_balance: increment(-creditsToBurn),
         updatedAt: serverTimestamp(),
       });
 
@@ -77,7 +78,7 @@ export async function trackAiUsage(
     errorEmitter.emit('permission-error', new FirestorePermissionError({
       path: userRef.path,
       operation: 'update',
-      requestResourceData: { creditBalance: 'decrement' }
+      requestResourceData: { credit_balance: 'decrement' }
     }));
     throw error;
   }
@@ -87,7 +88,7 @@ export async function trackAiUsage(
  * Increments the total lesson plans created count for a user.
  */
 export async function incrementLessonPlanCount(db: Firestore, userId: string) {
-  const userRef = doc(db, 'users', userId);
+  const userRef = doc(db, 'profiles', userId);
   try {
     await runTransaction(db, async (transaction) => {
       transaction.update(userRef, {

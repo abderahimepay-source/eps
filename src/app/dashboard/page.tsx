@@ -1,3 +1,4 @@
+
 "use client";
 
 import AppLayout from '@/components/layout/AppLayout';
@@ -14,7 +15,7 @@ export default function Dashboard() {
   // 1. Fetch User Profile for stats
   const profileRef = useMemoFirebase(() => {
     if (!user || !firestore) return null;
-    return doc(firestore, 'users', user.uid);
+    return doc(firestore, 'profiles', user.uid);
   }, [user, firestore]);
   const { data: profile } = useDoc(profileRef);
 
@@ -22,7 +23,7 @@ export default function Dashboard() {
   const plansQuery = useMemoFirebase(() => {
     if (!user || !firestore) return null;
     return query(
-      collection(firestore, 'users', user.uid, 'lessonPlans'),
+      collection(firestore, 'profiles', user.uid, 'lessonPlans'),
       orderBy('createdAt', 'desc'),
       limit(4)
     );
@@ -33,7 +34,7 @@ export default function Dashboard() {
   const logsQuery = useMemoFirebase(() => {
     if (!user || !firestore) return null;
     return query(
-      collection(firestore, 'users', user.uid, 'usageLogs'),
+      collection(firestore, 'profiles', user.uid, 'usage_logs'),
       orderBy('createdAt', 'desc'),
       limit(20)
     );
@@ -44,7 +45,7 @@ export default function Dashboard() {
 
   const stats = [
     { label: 'إجمالي المذكرات', value: profile?.totalLessonPlansCreated || 0, icon: BookOpen, color: 'text-primary', bg: 'bg-primary/10' },
-    { label: 'رصيد الاعتمادات', value: profile?.creditBalance || 0, icon: CreditCard, color: 'text-accent', bg: 'bg-accent/10' },
+    { label: 'رصيد الاعتمادات', value: profile?.credit_balance || 0, icon: CreditCard, color: 'text-accent', bg: 'bg-accent/10' },
     { label: 'إجمالي التوكنز', value: totalTokens.toLocaleString(), icon: Sparkles, color: 'text-purple-500', bg: 'bg-purple-100' },
     { label: 'الاسم', value: profile?.displayName || '---', icon: Star, color: 'text-yellow-600', bg: 'bg-yellow-100' },
   ];
@@ -93,10 +94,9 @@ export default function Dashboard() {
             <CardContent className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
-                  <Tooltip cursor={{ fill: '#f5f5f5' }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
                   <Bar dataKey="count" radius={[8, 8, 0, 0]} barSize={40}>
                     {chartData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={index === 3 ? '#FF8033' : '#47CFD6'} />
@@ -124,9 +124,6 @@ export default function Dashboard() {
                         {plan.createdAt?.toDate().toLocaleDateString('ar-DZ')}
                       </span>
                     </div>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-100 text-green-700">
-                      مكتمل
-                    </span>
                   </div>
                 )) : (
                   <p className="text-center py-8 text-muted-foreground text-sm font-tajawal">لا توجد مذكرات حالياً.</p>
