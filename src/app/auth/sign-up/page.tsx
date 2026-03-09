@@ -5,21 +5,69 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import { GraduationCap, ArrowRight } from "lucide-react";
+import { GraduationCap, ArrowRight, Loader2 } from "lucide-react";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useFirebase } from '@/firebase';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { useToast } from '@/hooks/use-toast';
 
 export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [school, setSchool] = useState('');
+  
+  const { auth, firestore } = useFirebase();
   const router = useRouter();
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Firebase Auth logic
-    setTimeout(() => {
+
+    try {
+      // 1. Create User in Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const displayName = `${firstName} ${lastName}`;
+
+      // 2. Update Auth Profile
+      await updateProfile(user, { displayName });
+
+      // 3. Create UserProfile Document in Firestore
+      const profileRef = doc(firestore, 'profiles', user.uid);
+      await setDoc(profileRef, {
+        uid: user.uid,
+        email: user.email,
+        displayName: displayName,
+        school: school,
+        directorate: '', // Can be updated later in profile settings
+        isPro: false,
+        credit_balance: 10, // Starting credits for new users
+        totalLessonPlansCreated: 0,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
+      toast({
+        title: "تم إنشاء الحساب بنجاح",
+        description: "مرحباً بك في RiyadiPlan AI!",
+      });
+
       router.push('/dashboard');
-    }, 1000);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "خطأ في التسجيل",
+        description: error.message || "فشل إنشاء الحساب. حاول مرة أخرى.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -46,27 +94,61 @@ export default function SignUpPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">الاسم</Label>
-                  <Input id="firstName" required className="h-12" />
+                  <Input 
+                    id="firstName" 
+                    required 
+                    className="h-12" 
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName">اللقب</Label>
-                  <Input id="lastName" required className="h-12" />
+                  <Input 
+                    id="lastName" 
+                    required 
+                    className="h-12" 
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                  />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="school">المؤسسة التعليمية</Label>
-                <Input id="school" placeholder="مثلاً: مدرسة العربي بن مهيدي" required className="h-12" />
+                <Input 
+                  id="school" 
+                  placeholder="مثلاً: مدرسة العربي بن مهيدي" 
+                  required 
+                  className="h-12" 
+                  value={school}
+                  onChange={(e) => setSchool(e.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">البريد الإلكتروني</Label>
-                <Input id="email" type="email" placeholder="example@email.com" required className="h-12" />
+                <Input 
+                  id="email" 
+                  type="email" 
+                  placeholder="example@email.com" 
+                  required 
+                  className="h-12" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">كلمة المرور</Label>
-                <Input id="password" type="password" required className="h-12" />
+                <Input 
+                  id="password" 
+                  type="password" 
+                  required 
+                  className="h-12" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
               <Button type="submit" className="w-full h-12 text-lg bg-accent hover:bg-accent/90" disabled={loading}>
-                {loading ? "جاري إنشاء الحساب..." : "إنشاء حساب"}
+                {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "إنشاء حساب"}
               </Button>
             </form>
           </CardContent>

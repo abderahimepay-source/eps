@@ -5,21 +5,42 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import { GraduationCap, ArrowRight } from "lucide-react";
+import { GraduationCap, ArrowRight, Loader2 } from "lucide-react";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useFirebase } from '@/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useToast } from '@/hooks/use-toast';
 
 export default function SignInPage() {
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  
+  const { auth } = useFirebase();
   const router = useRouter();
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // In a real app, Firebase Auth would go here
-    setTimeout(() => {
+    
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      toast({
+        title: "تم تسجيل الدخول",
+        description: "مرحباً بك مجدداً!",
+      });
       router.push('/dashboard');
-    }, 1000);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "خطأ في الدخول",
+        description: "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -45,17 +66,32 @@ export default function SignInPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">البريد الإلكتروني</Label>
-                <Input id="email" type="email" placeholder="example@email.com" required className="h-12" />
+                <Input 
+                  id="email" 
+                  type="email" 
+                  placeholder="example@email.com" 
+                  required 
+                  className="h-12" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password">كلمة المرور</Label>
                   <Link href="#" className="text-xs text-primary hover:underline">نسيت كلمة المرور؟</Link>
                 </div>
-                <Input id="password" type="password" required className="h-12" />
+                <Input 
+                  id="password" 
+                  type="password" 
+                  required 
+                  className="h-12" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
               <Button type="submit" className="w-full h-12 text-lg bg-primary hover:bg-primary/90" disabled={loading}>
-                {loading ? "جاري الدخول..." : "دخول"}
+                {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "دخول"}
               </Button>
             </form>
           </CardContent>

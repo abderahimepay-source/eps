@@ -1,13 +1,13 @@
-
 "use client";
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { GraduationCap, LayoutDashboard, BookOpen, User, LogOut, Plus, Menu } from "lucide-react";
 import { useState } from 'react';
 import { useFirebase, useDoc, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
+import { signOut } from 'firebase/auth';
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
@@ -18,14 +18,20 @@ const NAV_ITEMS = [
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const { user, firestore } = useFirebase();
+  const { user, firestore, auth } = useFirebase();
 
   const profileRef = useMemoFirebase(() => {
     if (!user || !firestore) return null;
     return doc(firestore, 'profiles', user.uid);
   }, [user, firestore]);
   const { data: profile } = useDoc(profileRef);
+
+  const handleSignOut = async () => {
+    await signOut(auth);
+    router.push('/');
+  };
 
   return (
     <div className="min-h-screen flex bg-background" dir="rtl">
@@ -76,7 +82,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 </Link>
               </div>
             </div>
-            <Button variant="ghost" className="w-full justify-start gap-3 text-destructive hover:text-destructive hover:bg-destructive/10">
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start gap-3 text-destructive hover:text-destructive hover:bg-destructive/10"
+              onClick={handleSignOut}
+            >
               <LogOut className="h-5 w-5" />
               تسجيل الخروج
             </Button>
