@@ -1,0 +1,106 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * Core Philosophy:
+     * This ruleset implements a strict multi-tenant, user-centric security model where access is
+     * partitioned by Firebase Authentication UIDs. The system is designed for "Authorization 
+     * Independence," meaning documents contain denormalized ownership fields (userId) to 
+     * allow for efficient, single-document security checks without requiring additional lookups.
+     *
+     * Data Structure:
+     * All data is organized hierarchically under the `/users/{userId}` path. Each user's 
+     * root document contains profile and aggregated stats, while subcollections house 
+     * lesson plans, usage logs, and credit transactions.
+     *
+     * Key Security Decisions:
+     * 1. Path-Auth Symmetry: The `{userId}` in the path must strictly match the `request.auth.uid`.
+     * 2. Denormalization for Performance: Every document in a subcollection includes a `userId` 
+     *    field that must match the path and the authenticated user.
+     * 3. Immutability of Ownership: Relational fields (like `userId` or `id`) are enforced as 
+     *    immutable during updates to prevent users from transferring data ownership.
+     * 4. Prototyping Flexibility: While ownership is strictly enforced, the specific data 
+     *    types and fields within the objects are not validated to allow for rapid iteration.
+     *
+     * Denormalization for Authorization:
+     * To avoid costly `get()` calls, the `userId` is stored directly on every LessonPlan, 
+     * UsageLog, and CreditTransaction. This allows for fast, O(1) authorization checks.
+     */
+
+    // --- Global Helper Functions ---
+
+    /** Checks if the request is from an authenticated user. */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /** Checks if the authenticated user's UID matches the provided userId. */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /** Combines ownership check with document existence for updates and deletes. */
+    function isExistingOwner(userId) {
+      return resource != null && isOwner(userId);
+    }
+
+    // --- Collection Rules ---
+
+    /**
+     * @description Rules for the UserProfile entity, allowing users to manage their own profile.
+     * @path /users/{userId}
+     * @allow (create) User 'abc' creates a profile with ID 'abc'.
+     * @deny (create) User 'abc' tries to create a profile with ID 'xyz'.
+     * @principle Path-based ownership and relational integrity validation.
+     */
+    match /users/{userId} {
+      allow get, list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+
+      /**
+       * @description Rules for LessonPlan documents owned by the user.
+       * @path /users/{userId}/lessonPlans/{lessonPlanId}
+       * @allow (list) User 'abc' queries their own lesson plans.
+       * @deny (get) User 'abc' tries to read a lesson plan belonging to user 'def'.
+       * @principle Authorization independence via denormalized userId field.
+       */
+      match /lessonPlans/{lessonPlanId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+        allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+        allow delete: if isExistingOwner(userId);
+      }
+
+      /**
+       * @description Records of AI feature usage and token consumption.
+       * @path /users/{userId}/usageLogs/{usageLogId}
+       * @allow (create) User 'abc' logs an AI usage event for themselves.
+       * @deny (update) Any attempt to modify an existing usage log.
+       * @principle Append-only security for audit-trail integrity in prototyping.
+       */
+      match /usageLogs/{usageLogId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+        // Usage logs are typically immutable for audit purposes.
+        allow update, delete: if false;
+      }
+
+      /**
+       * @description Records of additions or deductions to the user's credit balance.
+       * @path /users/{userId}/creditTransactions/{transactionId}
+       * @allow (get) User 'abc' views their own transaction history.
+       * @deny (create) User 'abc' tries to create a transaction for user 'def'.
+       * @principle Strict ownership for financial/credit data.
+       */
+      match /creditTransactions/{transactionId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+        // Credit transactions must be immutable to ensure financial audit integrity.
+        allow update, delete: if false;
+      }
+    }
+  }
+}
