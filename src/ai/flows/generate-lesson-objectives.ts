@@ -50,20 +50,27 @@ export async function generateObjectives(
     finalCompetencyForField: fieldData.Final_Competency 
   };
   
-  const response = await generateObjectivesPrompt(promptInput);
-  const output = response.output;
+  try {
+    const response = await generateObjectivesPrompt(promptInput);
+    const output = response.output;
 
-  if (!output) throw new Error('Failed to generate objectives.');
-
-  return {
-    objectives: output.objectives,
-    terminalCompetence: fieldData.Final_Competency,
-    usage: {
-      inputTokens: response.usage?.inputTokens,
-      outputTokens: response.usage?.outputTokens,
-      totalTokens: response.usage?.totalTokens,
+    if (!output) {
+      throw new Error('لم يتمكن الذكاء الاصطناعي من توليد الأهداف. يرجى المحاولة مرة أخرى.');
     }
-  };
+
+    return {
+      objectives: output.objectives,
+      terminalCompetence: fieldData.Final_Competency,
+      usage: {
+        inputTokens: response.usage?.inputTokens,
+        outputTokens: response.usage?.outputTokens,
+        totalTokens: response.usage?.totalTokens,
+      }
+    };
+  } catch (error: any) {
+    console.error("Genkit generateObjectives Error:", error);
+    throw new Error(error.message || 'فشل الاتصال بخدمة الذكاء الاصطناعي');
+  }
 }
 
 const generateObjectivesPrompt = ai.definePrompt({

@@ -41,18 +41,23 @@ export type DraftLessonPlanOutput = z.infer<typeof DraftLessonPlanOutputSchema>;
 export async function draftLessonPlan(
   input: DraftLessonPlanInput
 ): Promise<DraftLessonPlanOutput> {
-  const response = await draftLessonPlanPrompt(input);
-  const output = response.output;
-  if (!output) throw new Error('Failed to draft lesson plan.');
+  try {
+    const response = await draftLessonPlanPrompt(input);
+    const output = response.output;
+    if (!output) throw new Error('فشل الذكاء الاصطناعي في صياغة المذكرة.');
 
-  return {
-    ...output,
-    usage: {
-      inputTokens: response.usage?.inputTokens,
-      outputTokens: response.usage?.outputTokens,
-      totalTokens: response.usage?.totalTokens,
-    }
-  };
+    return {
+      ...output,
+      usage: {
+        inputTokens: response.usage?.inputTokens,
+        outputTokens: response.usage?.outputTokens,
+        totalTokens: response.usage?.totalTokens,
+      }
+    };
+  } catch (error: any) {
+    console.error("Genkit draftLessonPlan Error:", error);
+    throw new Error(error.message || 'فشل الاتصال بخدمة الذكاء الاصطناعي');
+  }
 }
 
 const draftLessonPlanPrompt = ai.definePrompt({
