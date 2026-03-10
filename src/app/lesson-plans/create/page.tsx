@@ -73,7 +73,6 @@ export default function CreateLessonPlan() {
       setTerminalCompetence(result.terminalCompetence);
       setStep('objectives');
     } catch (error: any) {
-      console.error("Generation Error:", error);
       if (error.message === "Insufficient credits") {
         setShowInsufficientCredits(true);
       } else {
@@ -107,7 +106,6 @@ export default function CreateLessonPlan() {
       setLessonPlan(result);
       setStep('review');
     } catch (error: any) {
-      console.error("Drafting Error:", error);
       if (error.message === "Insufficient credits") {
         setShowInsufficientCredits(true);
       } else {

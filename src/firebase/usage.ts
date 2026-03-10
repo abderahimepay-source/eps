@@ -1,4 +1,3 @@
-
 'use client';
 
 import { 
@@ -75,11 +74,15 @@ export async function trackAiUsage(
       });
     });
   } catch (error: any) {
-    errorEmitter.emit('permission-error', new FirestorePermissionError({
-      path: userRef.path,
-      operation: 'update',
-      requestResourceData: { credit_balance: 'decrement' }
-    }));
+    // Only emit permission error for actual database security failures
+    if (error.message !== "Insufficient credits") {
+      errorEmitter.emit('permission-error', new FirestorePermissionError({
+        path: userRef.path,
+        operation: 'update',
+        requestResourceData: { credit_balance: 'decrement' }
+      }));
+    }
+    // Re-throw so the UI can catch "Insufficient credits" specifically
     throw error;
   }
 }
