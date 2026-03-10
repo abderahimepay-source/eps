@@ -7,10 +7,11 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter }
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { ALGERIAN_CURRICULUM } from '@/lib/curriculum';
 import { generateObjectives } from '@/ai/flows/generate-lesson-objectives';
 import { draftLessonPlan } from '@/ai/flows/draft-lesson-plan';
-import { Sparkles, ChevronLeft, ChevronRight, CheckCircle2, Loader2, AlertCircle, BookOpen } from 'lucide-react';
+import { Sparkles, CheckCircle2, Loader2, BookOpen, CreditCard } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useFirebase } from '@/firebase';
 import { trackAiUsage, incrementLessonPlanCount } from '@/firebase/usage';
@@ -26,6 +27,7 @@ export default function CreateLessonPlan() {
   const { firestore, user } = useFirebase();
   const [step, setStep] = useState<Step>('curriculum');
   const [loading, setLoading] = useState(false);
+  const [showInsufficientCredits, setShowInsufficientCredits] = useState(false);
   
   // Selection State
   const [studyYear, setStudyYear] = useState('');
@@ -72,11 +74,15 @@ export default function CreateLessonPlan() {
       setStep('objectives');
     } catch (error: any) {
       console.error("Generation Error:", error);
-      toast({ 
-        title: "فشل إنشاء الأهداف", 
-        description: error.message || "حدث خطأ غير متوقع", 
-        variant: "destructive" 
-      });
+      if (error.message === "Insufficient credits") {
+        setShowInsufficientCredits(true);
+      } else {
+        toast({ 
+          title: "فشل إنشاء الأهداف", 
+          description: error.message || "حدث خطأ غير متوقع", 
+          variant: "destructive" 
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -102,11 +108,15 @@ export default function CreateLessonPlan() {
       setStep('review');
     } catch (error: any) {
       console.error("Drafting Error:", error);
-      toast({ 
-        title: "فشل إنشاء المذكرة", 
-        description: error.message || "حدث خطأ أثناء صياغة المذكرة", 
-        variant: "destructive" 
-      });
+      if (error.message === "Insufficient credits") {
+        setShowInsufficientCredits(true);
+      } else {
+        toast({ 
+          title: "فشل إنشاء المذكرة", 
+          description: error.message || "حدث خطأ أثناء صياغة المذكرة", 
+          variant: "destructive" 
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -300,6 +310,30 @@ export default function CreateLessonPlan() {
           </Card>
         )}
       </div>
+
+      {/* Guidance Dialog for Insufficient Credits */}
+      <AlertDialog open={showInsufficientCredits} onOpenChange={setShowInsufficientCredits}>
+        <AlertDialogContent dir="rtl">
+          <AlertDialogHeader>
+            <div className="mx-auto bg-accent/10 p-4 rounded-full w-fit mb-4">
+              <CreditCard className="h-8 w-8 text-accent" />
+            </div>
+            <AlertDialogTitle className="text-center font-headline text-2xl">عذراً، رصيدك غير كافٍ</AlertDialogTitle>
+            <AlertDialogDescription className="text-center font-tajawal text-base leading-relaxed">
+              لقد استهلكت جميع اعتماداتك المتاحة في الباقة الحالية. لإنشاء المزيد من المذكرات الذكية، يرجى ترقية حسابك إلى باقة المحترفين.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-col sm:flex-row gap-3">
+            <AlertDialogAction 
+              onClick={() => router.push('/pricing')}
+              className="bg-primary hover:bg-primary/90 h-12 flex-1"
+            >
+              استعرض باقات الاشتراك
+            </AlertDialogAction>
+            <AlertDialogCancel className="h-12 flex-1">إغلاق</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </AppLayout>
   );
 }

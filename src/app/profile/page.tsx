@@ -5,9 +5,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Shield, CreditCard, Bell, Sparkles, Check } from "lucide-react";
+import { User, Shield, CreditCard, Sparkles, Check } from "lucide-react";
+import { useFirebase, useDoc, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
+import Link from 'next/link';
 
 export default function ProfilePage() {
+  const { user, firestore } = useFirebase();
+
+  const profileRef = useMemoFirebase(() => {
+    if (!user || !firestore) return null;
+    return doc(firestore, 'profiles', user.uid);
+  }, [user, firestore]);
+  const { data: profile } = useDoc(profileRef);
+
   return (
     <AppLayout>
       <div className="max-w-4xl mx-auto space-y-8">
@@ -23,14 +34,16 @@ export default function ProfilePage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 font-headline text-primary">
                 <Sparkles className="h-5 w-5" />
-                باقة PRO
+                {profile?.isPro ? 'باقة PRO' : 'الباقة المجانية'}
               </CardTitle>
-              <CardDescription className="text-primary/70">مفعلة حتى 2025/01/01</CardDescription>
+              <CardDescription className="text-primary/70 font-rajdhani">
+                رصيدك الحالي: {profile?.credit_balance || 0} اعتماد
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-2 text-sm font-tajawal">
                 <Check className="h-4 w-4 text-green-500" />
-                <span>مذكرات غير محدودة</span>
+                <span>{profile?.isPro ? 'مذكرات غير محدودة' : 'مذكرات محدودة (3/شهر)'}</span>
               </div>
               <div className="flex items-center gap-2 text-sm font-tajawal">
                 <Check className="h-4 w-4 text-green-500" />
@@ -42,7 +55,11 @@ export default function ProfilePage() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full bg-primary text-white">إدارة الاشتراك</Button>
+              <Link href="/pricing" className="w-full">
+                <Button className="w-full bg-primary text-white">
+                  {profile?.isPro ? 'إدارة الاشتراك' : 'ترقية الحساب'}
+                </Button>
+              </Link>
             </CardFooter>
           </Card>
 
@@ -58,23 +75,23 @@ export default function ProfilePage() {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">الاسم</Label>
-                    <Input id="firstName" defaultValue="أحمد" className="h-11" />
+                    <Label htmlFor="firstName">الاسم الكامل</Label>
+                    <Input id="firstName" defaultValue={profile?.displayName || ''} className="h-11" readOnly />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName">اللقب</Label>
-                    <Input id="lastName" defaultValue="علي" className="h-11" />
+                    <Label htmlFor="lastName">الرصيد</Label>
+                    <Input id="lastName" defaultValue={`${profile?.credit_balance || 0} اعتماد`} className="h-11 font-rajdhani" readOnly />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">البريد الإلكتروني</Label>
-                  <Input id="email" type="email" defaultValue="ahmed.ali@education.dz" className="h-11" />
+                  <Input id="email" type="email" defaultValue={profile?.email || ''} className="h-11" readOnly />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="school">المؤسسة التعليمية</Label>
-                  <Input id="school" defaultValue="متوسطة الفاتح، البليدة" className="h-11" />
+                  <Input id="school" defaultValue={profile?.school || ''} className="h-11" readOnly />
                 </div>
-                <Button className="bg-primary hover:bg-primary/90 mt-2">حفظ التغييرات</Button>
+                <p className="text-xs text-muted-foreground font-tajawal">تحرير البيانات الشخصية متاح للمشتركين في باقة PRO.</p>
               </CardContent>
             </Card>
 
@@ -89,10 +106,6 @@ export default function ProfilePage() {
                 <div className="space-y-2">
                   <Label htmlFor="currentPass">كلمة المرور الحالية</Label>
                   <Input id="currentPass" type="password" placeholder="••••••••" className="h-11" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="newPass">كلمة المرور الجديدة</Label>
-                  <Input id="newPass" type="password" className="h-11" />
                 </div>
                 <Button variant="outline">تغيير كلمة المرور</Button>
               </CardContent>

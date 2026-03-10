@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
-import { GraduationCap, LayoutDashboard, BookOpen, User, LogOut, Plus, Menu } from "lucide-react";
+import { GraduationCap, LayoutDashboard, BookOpen, User, LogOut, Plus, Menu, CreditCard } from "lucide-react";
 import { useState } from 'react';
 import { useFirebase, useDoc, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'لوحة التحكم', icon: LayoutDashboard },
   { href: '/lesson-plans', label: 'مذكراتي', icon: BookOpen },
+  { href: '/pricing', label: 'الأسعار والاشتراك', icon: CreditCard },
   { href: '/profile', label: 'الملف الشخصي', icon: User },
 ];
 
@@ -77,8 +78,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <div className="text-xs text-muted-foreground mb-1">الرصيد المتبقي</div>
               <div className="flex items-center justify-between">
                 <span className="font-bold text-primary text-lg font-rajdhani">{profile?.credit_balance || 0}</span>
-                <Link href="/profile">
-                  <Button variant="ghost" size="sm" className="h-7 text-xs px-2 text-accent">شحن</Button>
+                <Link href="/pricing">
+                  <Button variant="ghost" size="sm" className="h-7 text-xs px-2 text-accent">ترقية</Button>
                 </Link>
               </div>
             </div>
