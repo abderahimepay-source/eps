@@ -16,6 +16,7 @@ import { useFirebase } from '@/firebase';
 import { trackAiUsage, incrementLessonPlanCount } from '@/firebase/usage';
 import { collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
+import { cn } from "@/lib/utils";
 
 type Step = 'curriculum' | 'objectives' | 'review';
 
