@@ -20,6 +20,10 @@ const GenerateObjectivesInputSchema = z.object({
 
 export type GenerateObjectivesInput = z.infer<typeof GenerateObjectivesInputSchema>;
 
+const InternalPromptInputSchema = GenerateObjectivesInputSchema.extend({
+  finalCompetencyForField: z.string(),
+});
+
 const GenerateObjectivesOutputSchema = z.object({
   objectives: z.array(z.string()).min(5).max(5).describe('An array of 5 SMART lesson objectives in Arabic.'),
   terminalCompetence: z.string().describe('The final competency related to the selected study year and learning field.'),
@@ -41,9 +45,13 @@ export async function generateObjectives(
   const fieldData = yearData.Learning_Field.find((f: any) => f.Field_Title === input.learningField);
   if (!fieldData) throw new Error(`Learning field "${input.learningField}" not found.`);
 
-  const promptInput = { ...input, finalCompetencyForField: fieldData.Final_Competency };
+  const promptInput = { 
+    ...input, 
+    finalCompetencyForField: fieldData.Final_Competency 
+  };
+  
   const response = await generateObjectivesPrompt(promptInput);
-  const output = response.output();
+  const output = response.output;
 
   if (!output) throw new Error('Failed to generate objectives.');
 
@@ -60,7 +68,7 @@ export async function generateObjectives(
 
 const generateObjectivesPrompt = ai.definePrompt({
   name: 'generateObjectivesPrompt',
-  input: { schema: GenerateObjectivesInputSchema },
+  input: { schema: InternalPromptInputSchema },
   output: { schema: GenerateObjectivesOutputSchema },
   prompt: `أنت خبير في المناهج التربوية الجزائرية (2023). مهمتك هي استقبال [المستوى]، [الكفاءة الختامية]، و[المورد المعرفي]. يجب عليك توليد 5 هدفاً تعلمياً تتبع قاعدة (SMART) وتصاغ وفق الهيكل التالي: (أن + فعل إجرائي قابل للقياس + المتعلم + المورد + معيار الأداء أو شرطه). تجنب الأفعال الغامضة مثل (يفهم، يعرف، يدرك). ركز على الأفعال الحركية مثل (يؤدي، ينجز، يرمي، يربط، يحافظ)
 مع التركيز على مادة التربية البدنية و الرياضية للطور الابتدائي اي على المنهاج التربوي الجزائري الخاص بمادة التربية البدنية و الرياضية للطور الابتدائي

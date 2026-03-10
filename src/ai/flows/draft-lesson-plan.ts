@@ -42,7 +42,7 @@ export async function draftLessonPlan(
   input: DraftLessonPlanInput
 ): Promise<DraftLessonPlanOutput> {
   const response = await draftLessonPlanPrompt(input);
-  const output = response.output();
+  const output = response.output;
   if (!output) throw new Error('Failed to draft lesson plan.');
 
   return {
