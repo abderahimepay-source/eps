@@ -359,6 +359,6 @@ export default function CreateLessonPlan() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </AppLayout>
   );
 }
