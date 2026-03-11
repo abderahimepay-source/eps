@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { ALGERIAN_CURRICULUM } from '@/lib/curriculum';
+import { CURRICULUM_DATA } from '@/lib/curriculum';
 import { generateObjectives } from '@/ai/flows/generate-lesson-objectives';
 import { draftLessonPlan } from '@/ai/flows/draft-lesson-plan';
 import { Sparkles, CheckCircle2, Loader2, BookOpen, CreditCard, ChevronRight, ChevronLeft } from 'lucide-react';
@@ -30,7 +30,7 @@ export default function CreateLessonPlan() {
   const [showInsufficientCredits, setShowInsufficientCredits] = useState(false);
   
   // Selection State
-  const [studyYear, setStudyYear] = useState('');
+  const [gradeId, setGradeId] = useState<string>('');
   const [learningField, setLearningField] = useState('');
   const [knowledgeResource, setKnowledgeResource] = useState('');
   const [specificResource, setSpecificResource] = useState('');
@@ -41,10 +41,10 @@ export default function CreateLessonPlan() {
   const [terminalCompetence, setTerminalCompetence] = useState('');
   const [lessonPlan, setLessonPlan] = useState<{ introductoryStage: string; buildingStage: string; finalStage: string } | null>(null);
 
-  const programs = ALGERIAN_CURRICULUM.Curriculum_subject.Annual_Programs as any;
-  const currentYearData = studyYear ? programs[studyYear] : null;
-  const fields = currentYearData?.Learning_Field || [];
-  const currentFieldData = learningField ? fields.find((f: any) => f.Field_Title === learningField) : null;
+  const curriculum = CURRICULUM_DATA.curriculum_data;
+  const currentYearData = gradeId ? curriculum.find(g => g.grade.toString() === gradeId) : null;
+  const fields = currentYearData?.fields || [];
+  const currentFieldData = learningField ? fields.find((f: any) => f.field_name === learningField) : null;
   const resourceCategories = currentFieldData?.Knowledge_resources || {};
 
   const handleGenerateObjectives = async () => {
@@ -53,10 +53,12 @@ export default function CreateLessonPlan() {
       return;
     }
     
+    if (!currentYearData) return;
+
     setLoading(true);
     try {
       const result = await generateObjectives({
-        studyYear,
+        studyYear: currentYearData.grade_name,
         learningField,
         knowledgeResource,
         specificResource
@@ -121,15 +123,15 @@ export default function CreateLessonPlan() {
   };
 
   const handleSaveLessonPlan = async () => {
-    if (!user || !firestore || !lessonPlan) return;
+    if (!user || !firestore || !lessonPlan || !currentYearData) return;
     setLoading(true);
     try {
       const planRef = doc(collection(firestore, 'profiles', user.uid, 'lessonPlans'));
       await setDoc(planRef, {
         id: planRef.id,
         userId: user.uid,
-        title: `${specificResource} - ${studyYear.replaceAll('_', ' ')}`,
-        year: studyYear,
+        title: `${specificResource} - ${currentYearData.grade_name}`,
+        year: currentYearData.grade_name,
         field: learningField,
         objectives: selectedObjectives,
         stages: {
@@ -191,26 +193,26 @@ export default function CreateLessonPlan() {
               <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label className="text-sm">المستوى الدراسي</Label>
-                  <Select onValueChange={(val) => { setStudyYear(val); setLearningField(''); setKnowledgeResource(''); setSpecificResource(''); }} value={studyYear}>
+                  <Select onValueChange={(val) => { setGradeId(val); setLearningField(''); setKnowledgeResource(''); setSpecificResource(''); }} value={gradeId}>
                     <SelectTrigger className="h-11 sm:h-12 bg-gray-50/50">
                       <SelectValue placeholder="اختر السنة" />
                     </SelectTrigger>
                     <SelectContent>
-                      {Object.keys(programs).map(year => (
-                        <SelectItem key={year} value={year}>{year.replaceAll('_', ' ')}</SelectItem>
+                      {curriculum.map(item => (
+                        <SelectItem key={item.grade} value={item.grade.toString()}>{item.grade_name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm">ميدان التعلم</Label>
-                  <Select onValueChange={(val) => { setLearningField(val); setKnowledgeResource(''); setSpecificResource(''); }} value={learningField} disabled={!studyYear}>
+                  <Select onValueChange={(val) => { setLearningField(val); setKnowledgeResource(''); setSpecificResource(''); }} value={learningField} disabled={!gradeId}>
                     <SelectTrigger className="h-11 sm:h-12 bg-gray-50/50">
                       <SelectValue placeholder="اختر الميدان" />
                     </SelectTrigger>
                     <SelectContent>
                       {fields.map((f: any) => (
-                        <SelectItem key={f.Field_Title} value={f.Field_Title}>{f.Field_Title}</SelectItem>
+                        <SelectItem key={f.field_name} value={f.field_name}>{f.field_name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>

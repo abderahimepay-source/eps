@@ -2,17 +2,13 @@
 /**
  * @fileOverview A Genkit flow for generating 5 SMART lesson objectives in Arabic based on
  * curriculum details provided by the user.
- *
- * - generateObjectives - A function that handles the generation of lesson objectives.
- * - GenerateObjectivesInput - The input type for the generateObjectives function.
- * - GenerateObjectivesOutput - The return type for the generateObjectives function.
  */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
 const GenerateObjectivesInputSchema = z.object({
-  studyYear: z.string().describe('The study year (e.g., "السنة_الأولى").'),
+  studyYear: z.string().describe('The study year (e.g., "السنة الأولى ابتدائي").'),
   learningField: z.string().describe('The learning field title (e.g., "الوضعيّات والتنقلات").'),
   knowledgeResource: z.string().describe('The specific knowledge resource category (e.g., "وضعيات_الوقوف").'),
   specificResource: z.string().describe('A specific item within the knowledge resource (e.g., "الوقوف العادي").'),
@@ -39,15 +35,16 @@ export type GenerateObjectivesOutput = z.infer<typeof GenerateObjectivesOutputSc
 export async function generateObjectives(
   input: GenerateObjectivesInput
 ): Promise<GenerateObjectivesOutput> {
-  const annualPrograms = (await import('@/lib/curriculum')).ALGERIAN_CURRICULUM.Curriculum_subject.Annual_Programs as any;
-  const yearData = annualPrograms[input.studyYear];
-  if (!yearData) throw new Error(`Study year "${input.studyYear}" not found.`);
-  const fieldData = yearData.Learning_Field.find((f: any) => f.Field_Title === input.learningField);
+  const { CURRICULUM_DATA } = await import('@/lib/curriculum');
+  const gradeData = CURRICULUM_DATA.curriculum_data.find(g => g.grade_name === input.studyYear);
+  
+  if (!gradeData) throw new Error(`Study year "${input.studyYear}" not found.`);
+  const fieldData = gradeData.fields.find(f => f.field_name === input.learningField);
   if (!fieldData) throw new Error(`Learning field "${input.learningField}" not found.`);
 
   const promptInput = { 
     ...input, 
-    finalCompetencyForField: fieldData.Final_Competency 
+    finalCompetencyForField: fieldData.final_competence 
   };
   
   try {
@@ -60,7 +57,7 @@ export async function generateObjectives(
 
     return {
       objectives: output.objectives,
-      terminalCompetence: fieldData.Final_Competency,
+      terminalCompetence: fieldData.final_competence,
       usage: {
         inputTokens: response.usage?.inputTokens,
         outputTokens: response.usage?.outputTokens,
