@@ -128,7 +128,7 @@ export default function CreateLessonPlan() {
       await setDoc(planRef, {
         id: planRef.id,
         userId: user.uid,
-        title: `${specificResource} - ${studyYear}`,
+        title: `${specificResource} - ${studyYear.replaceAll('_', ' ')}`,
         year: studyYear,
         field: learningField,
         objectives: selectedObjectives,
@@ -191,37 +191,53 @@ export default function CreateLessonPlan() {
               <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label className="text-sm">المستوى الدراسي</Label>
-                  <Select onValueChange={(val) => { setStudyYear(val); setLearningField(''); }} value={studyYear}>
-                    <SelectTrigger className="h-11 sm:h-12 bg-gray-50/50"><SelectValue placeholder="اختر السنة" /></SelectTrigger>
+                  <Select onValueChange={(val) => { setStudyYear(val); setLearningField(''); setKnowledgeResource(''); setSpecificResource(''); }} value={studyYear}>
+                    <SelectTrigger className="h-11 sm:h-12 bg-gray-50/50">
+                      <SelectValue placeholder="اختر السنة" />
+                    </SelectTrigger>
                     <SelectContent>
-                      {Object.keys(programs).map(year => <SelectItem key={year} value={year}>{year.replace('_', ' ')}</SelectItem>)}
+                      {Object.keys(programs).map(year => (
+                        <SelectItem key={year} value={year}>{year.replaceAll('_', ' ')}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm">ميدان التعلم</Label>
-                  <Select onValueChange={(val) => { setLearningField(val); setKnowledgeResource(''); }} value={learningField} disabled={!studyYear}>
-                    <SelectTrigger className="h-11 sm:h-12 bg-gray-50/50"><SelectValue placeholder="اختر الميدان" /></SelectTrigger>
+                  <Select onValueChange={(val) => { setLearningField(val); setKnowledgeResource(''); setSpecificResource(''); }} value={learningField} disabled={!studyYear}>
+                    <SelectTrigger className="h-11 sm:h-12 bg-gray-50/50">
+                      <SelectValue placeholder="اختر الميدان" />
+                    </SelectTrigger>
                     <SelectContent>
-                      {fields.map((f: any) => <SelectItem key={f.Field_Title} value={f.Field_Title}>{f.Field_Title}</SelectItem>)}
+                      {fields.map((f: any) => (
+                        <SelectItem key={f.Field_Title} value={f.Field_Title}>{f.Field_Title}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm">المورد المعرفي</Label>
                   <Select onValueChange={(val) => { setKnowledgeResource(val); setSpecificResource(''); }} value={knowledgeResource} disabled={!learningField}>
-                    <SelectTrigger className="h-11 sm:h-12 bg-gray-50/50"><SelectValue placeholder="اختر المورد" /></SelectTrigger>
+                    <SelectTrigger className="h-11 sm:h-12 bg-gray-50/50">
+                      <SelectValue placeholder="اختر المورد" />
+                    </SelectTrigger>
                     <SelectContent>
-                      {Object.keys(resourceCategories).map(cat => <SelectItem key={cat} value={cat}>{cat.replace('_', ' ')}</SelectItem>)}
+                      {Object.keys(resourceCategories).map(cat => (
+                        <SelectItem key={cat} value={cat}>{cat.replaceAll('_', ' ')}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm">العنصر المحدد</Label>
                   <Select onValueChange={setSpecificResource} value={specificResource} disabled={!knowledgeResource}>
-                    <SelectTrigger className="h-11 sm:h-12 bg-gray-50/50"><SelectValue placeholder="اختر العنصر" /></SelectTrigger>
+                    <SelectTrigger className="h-11 sm:h-12 bg-gray-50/50">
+                      <SelectValue placeholder="اختر العنصر" />
+                    </SelectTrigger>
                     <SelectContent>
-                      {(resourceCategories[knowledgeResource] || []).map((res: string) => <SelectItem key={res} value={res}>{res}</SelectItem>)}
+                      {(resourceCategories[knowledgeResource] || []).map((res: string) => (
+                        <SelectItem key={res} value={res}>{res}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -343,6 +359,6 @@ export default function CreateLessonPlan() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </AppLayout>
+    </div>
   );
 }
