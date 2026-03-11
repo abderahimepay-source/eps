@@ -11,7 +11,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { ALGERIAN_CURRICULUM } from '@/lib/curriculum';
 import { generateObjectives } from '@/ai/flows/generate-lesson-objectives';
 import { draftLessonPlan } from '@/ai/flows/draft-lesson-plan';
-import { Sparkles, CheckCircle2, Loader2, BookOpen, CreditCard } from 'lucide-react';
+import { Sparkles, CheckCircle2, Loader2, BookOpen, CreditCard, ChevronRight, ChevronLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useFirebase } from '@/firebase';
 import { trackAiUsage, incrementLessonPlanCount } from '@/firebase/usage';
@@ -153,53 +153,73 @@ export default function CreateLessonPlan() {
 
   return (
     <AppLayout>
-      <div className="max-w-4xl mx-auto space-y-8">
-        <div className="flex items-center gap-4">
-          <div className="bg-primary p-3 rounded-2xl shadow-sm">
-            <Sparkles className="h-6 w-6 text-primary-foreground" />
+      <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="bg-primary p-2.5 sm:p-3 rounded-2xl shadow-sm shrink-0">
+            <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-primary-foreground" />
           </div>
-          <h1 className="text-3xl font-bold font-headline">إنشاء مذكرة بيداغوجية ذكية</h1>
+          <h1 className="text-xl sm:text-3xl font-bold font-headline">إنشاء مذكرة بيداغوجية</h1>
+        </div>
+
+        {/* Stepper Indicators */}
+        <div className="flex items-center justify-between max-w-xs mx-auto mb-8 px-4">
+          {[
+            { id: 'curriculum', label: 'المورد' },
+            { id: 'objectives', label: 'الأهداف' },
+            { id: 'review', label: 'المراجعة' }
+          ].map((s, idx) => (
+            <div key={s.id} className="flex flex-col items-center gap-2">
+              <div className={cn(
+                "h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold transition-all border-2",
+                step === s.id ? "bg-primary border-primary text-white scale-110 shadow-md" : 
+                (idx === 0 && step !== 'curriculum') || (idx === 1 && step === 'review') ? "bg-primary/20 border-primary text-primary" : "bg-muted border-muted text-muted-foreground"
+              )}>
+                {idx + 1}
+              </div>
+              <span className={cn("text-[10px] sm:text-xs font-tajawal", step === s.id ? "text-primary font-bold" : "text-muted-foreground")}>{s.label}</span>
+            </div>
+          ))}
         </div>
         
         {step === 'curriculum' && (
-          <Card className="border-none shadow-xl">
+          <Card className="border-none shadow-xl bg-white">
             <CardHeader>
-              <CardTitle className="font-headline text-xl">1. تحديد المورد المعرفي</CardTitle>
-              <CardDescription className="font-tajawal">اختر السنة والميدان لتوليد أهداف دقيقة</CardDescription>
+              <CardTitle className="font-headline text-lg sm:text-xl">1. تحديد المورد المعرفي</CardTitle>
+              <CardDescription className="font-tajawal text-sm">اختر السنة والميدان لتوليد أهداف دقيقة</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid gap-6 md:grid-cols-2">
+            <CardContent className="space-y-4 sm:space-y-6">
+              <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label>المستوى الدراسي</Label>
+                  <Label className="text-sm">المستوى الدراسي</Label>
                   <Select onValueChange={(val) => { setStudyYear(val); setLearningField(''); }} value={studyYear}>
-                    <SelectTrigger className="h-12"><SelectValue placeholder="اختر السنة" /></SelectTrigger>
+                    <SelectTrigger className="h-11 sm:h-12 bg-gray-50/50"><SelectValue placeholder="اختر السنة" /></SelectTrigger>
                     <SelectContent>
                       {Object.keys(programs).map(year => <SelectItem key={year} value={year}>{year.replace('_', ' ')}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label>ميدان التعلم</Label>
+                  <Label className="text-sm">ميدان التعلم</Label>
                   <Select onValueChange={(val) => { setLearningField(val); setKnowledgeResource(''); }} value={learningField} disabled={!studyYear}>
-                    <SelectTrigger className="h-12"><SelectValue placeholder="اختر الميدان" /></SelectTrigger>
+                    <SelectTrigger className="h-11 sm:h-12 bg-gray-50/50"><SelectValue placeholder="اختر الميدان" /></SelectTrigger>
                     <SelectContent>
                       {fields.map((f: any) => <SelectItem key={f.Field_Title} value={f.Field_Title}>{f.Field_Title}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label>المورد المعرفي</Label>
+                  <Label className="text-sm">المورد المعرفي</Label>
                   <Select onValueChange={(val) => { setKnowledgeResource(val); setSpecificResource(''); }} value={knowledgeResource} disabled={!learningField}>
-                    <SelectTrigger className="h-12"><SelectValue placeholder="اختر المورد" /></SelectTrigger>
+                    <SelectTrigger className="h-11 sm:h-12 bg-gray-50/50"><SelectValue placeholder="اختر المورد" /></SelectTrigger>
                     <SelectContent>
                       {Object.keys(resourceCategories).map(cat => <SelectItem key={cat} value={cat}>{cat.replace('_', ' ')}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label>العنصر المحدد</Label>
+                  <Label className="text-sm">العنصر المحدد</Label>
                   <Select onValueChange={setSpecificResource} value={specificResource} disabled={!knowledgeResource}>
-                    <SelectTrigger className="h-12"><SelectValue placeholder="اختر العنصر" /></SelectTrigger>
+                    <SelectTrigger className="h-11 sm:h-12 bg-gray-50/50"><SelectValue placeholder="اختر العنصر" /></SelectTrigger>
                     <SelectContent>
                       {(resourceCategories[knowledgeResource] || []).map((res: string) => <SelectItem key={res} value={res}>{res}</SelectItem>)}
                     </SelectContent>
@@ -207,11 +227,11 @@ export default function CreateLessonPlan() {
                 </div>
               </div>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="pt-2">
               <Button 
                 onClick={handleGenerateObjectives} 
                 disabled={loading || !specificResource} 
-                className="bg-accent hover:bg-accent/90 w-full h-12 text-lg shadow-lg"
+                className="bg-accent hover:bg-accent/90 w-full h-12 text-base sm:text-lg shadow-lg"
               >
                 {loading ? <Loader2 className="animate-spin h-5 w-5 me-2" /> : <Sparkles className="h-5 w-5 me-2" />}
                 {loading ? "جاري المعالجة..." : "توليد الأهداف الإجرائية"}
@@ -221,34 +241,37 @@ export default function CreateLessonPlan() {
         )}
         
         {step === 'objectives' && (
-          <Card className="border-none shadow-xl">
+          <Card className="border-none shadow-xl bg-white">
             <CardHeader>
-              <CardTitle className="font-headline text-xl">2. اختيار الأهداف (SMART)</CardTitle>
-              <CardDescription className="font-tajawal">اختر الأهداف التي تريد تضمينها في المذكرة</CardDescription>
+              <CardTitle className="font-headline text-lg sm:text-xl">2. اختيار الأهداف (SMART)</CardTitle>
+              <CardDescription className="font-tajawal text-sm">اختر الأهداف التي تريد تضمينها في المذكرة</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {aiObjectives.map((obj, i) => (
                 <div 
                   key={i} 
                   className={cn(
-                    "flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all",
-                    selectedObjectives.includes(obj) ? "border-primary bg-primary/5 shadow-sm" : "hover:border-primary/50"
+                    "flex items-start gap-3 p-4 border rounded-xl cursor-pointer transition-all",
+                    selectedObjectives.includes(obj) ? "border-primary bg-primary/5 shadow-sm ring-1 ring-primary/20" : "hover:border-primary/50 bg-gray-50/30"
                   )} 
                   onClick={() => {
                     setSelectedObjectives(prev => prev.includes(obj) ? prev.filter(o => o !== obj) : [...prev, obj]);
                   }}
                 >
-                  <Checkbox checked={selectedObjectives.includes(obj)} className="h-5 w-5" />
-                  <Label className="text-base cursor-pointer leading-relaxed">{obj}</Label>
+                  <Checkbox checked={selectedObjectives.includes(obj)} className="h-5 w-5 mt-0.5" />
+                  <Label className="text-sm sm:text-base cursor-pointer leading-relaxed font-tajawal">{obj}</Label>
                 </div>
               ))}
             </CardContent>
-            <CardFooter className="flex justify-between gap-4">
-              <Button variant="outline" onClick={() => setStep('curriculum')} className="h-12 px-8">السابق</Button>
+            <CardFooter className="flex flex-col sm:flex-row justify-between gap-3 pt-4">
+              <Button variant="outline" onClick={() => setStep('curriculum')} className="h-11 sm:h-12 w-full sm:px-8 bg-white">
+                <ChevronRight className="h-4 w-4 ms-2" />
+                السابق
+              </Button>
               <Button 
                 onClick={handleDraftPlan} 
                 disabled={loading || selectedObjectives.length === 0} 
-                className="bg-accent hover:bg-accent/90 flex-1 h-12 text-lg"
+                className="bg-accent hover:bg-accent/90 w-full sm:flex-1 h-11 sm:h-12 text-base sm:text-lg"
               >
                 {loading ? <Loader2 className="animate-spin h-5 w-5 me-2" /> : <BookOpen className="h-5 w-5 me-2" />}
                 صياغة المذكرة الكاملة
@@ -258,48 +281,36 @@ export default function CreateLessonPlan() {
         )}
         
         {step === 'review' && lessonPlan && (
-          <Card className="border-none shadow-xl overflow-hidden">
-            <CardHeader className="bg-primary/10 border-b">
-              <CardTitle className="font-headline text-2xl text-primary">مراجعة المذكرة النهائية</CardTitle>
-              <CardDescription className="text-primary/70">تأكد من المحتوى قبل الحفظ النهائي</CardDescription>
+          <Card className="border-none shadow-xl overflow-hidden bg-white">
+            <CardHeader className="bg-primary/5 border-b py-6">
+              <CardTitle className="font-headline text-xl sm:text-2xl text-primary text-center">مراجعة المذكرة النهائية</CardTitle>
+              <CardDescription className="text-primary/70 text-center font-tajawal">تأكد من المحتوى قبل الحفظ النهائي</CardDescription>
             </CardHeader>
-            <CardContent className="p-8 space-y-8 text-start">
-              <section className="space-y-4">
-                <div className="flex items-center gap-2 text-accent">
-                  <div className="w-1 h-6 bg-accent rounded-full" />
-                  <h3 className="text-xl font-bold font-headline">المرحلة التحضيرية (10-15 د)</h3>
-                </div>
-                <div className="p-4 bg-muted/30 rounded-xl whitespace-pre-wrap leading-relaxed font-tajawal border border-dashed">
-                  {lessonPlan.introductoryStage}
-                </div>
-              </section>
-              
-              <section className="space-y-4">
-                <div className="flex items-center gap-2 text-primary">
-                  <div className="w-1 h-6 bg-primary rounded-full" />
-                  <h3 className="text-xl font-bold font-headline">المرحلة التعلمية الرئيسية (25-30 د)</h3>
-                </div>
-                <div className="p-4 bg-muted/30 rounded-xl whitespace-pre-wrap leading-relaxed font-tajawal border border-dashed">
-                  {lessonPlan.buildingStage}
-                </div>
-              </section>
-              
-              <section className="space-y-4">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <div className="w-1 h-6 bg-muted-foreground rounded-full" />
-                  <h3 className="text-xl font-bold font-headline">المرحلة الختامية (5-10 د)</h3>
-                </div>
-                <div className="p-4 bg-muted/30 rounded-xl whitespace-pre-wrap leading-relaxed font-tajawal border border-dashed">
-                  {lessonPlan.finalStage}
-                </div>
-              </section>
+            <CardContent className="p-4 sm:p-8 space-y-8 text-start">
+              {[
+                { title: 'المرحلة التحضيرية (10-15 د)', color: 'text-accent', bar: 'bg-accent', content: lessonPlan.introductoryStage },
+                { title: 'المرحلة التعلمية الرئيسية (25-30 د)', color: 'text-primary', bar: 'bg-primary', content: lessonPlan.buildingStage },
+                { title: 'المرحلة الختامية (5-10 د)', color: 'text-muted-foreground', bar: 'bg-muted-foreground', content: lessonPlan.finalStage }
+              ].map((section, idx) => (
+                <section key={idx} className="space-y-3">
+                  <div className={cn("flex items-center gap-2", section.color)}>
+                    <div className={cn("w-1 h-5 sm:h-6 rounded-full", section.bar)} />
+                    <h3 className="text-lg sm:text-xl font-bold font-headline">{section.title}</h3>
+                  </div>
+                  <div className="p-4 sm:p-5 bg-gray-50/50 rounded-xl whitespace-pre-wrap leading-relaxed font-tajawal border border-dashed text-sm sm:text-base">
+                    {section.content}
+                  </div>
+                </section>
+              ))}
             </CardContent>
-            <CardFooter className="bg-muted/10 p-6 flex justify-end gap-3 border-t">
-              <Button variant="outline" onClick={() => setStep('objectives')} className="h-12 px-6">تعديل الأهداف</Button>
+            <CardFooter className="bg-gray-50/50 p-4 sm:p-6 flex flex-col sm:flex-row justify-end gap-3 border-t">
+              <Button variant="outline" onClick={() => setStep('objectives')} className="h-11 sm:h-12 w-full sm:px-6 bg-white">
+                تعديل الأهداف
+              </Button>
               <Button 
                 onClick={handleSaveLessonPlan} 
                 disabled={loading} 
-                className="bg-primary hover:bg-primary/90 h-12 px-10 text-lg shadow-lg"
+                className="bg-primary hover:bg-primary/90 w-full sm:h-12 sm:px-10 text-base sm:text-lg shadow-lg"
               >
                 {loading ? <Loader2 className="animate-spin h-5 w-5 me-2" /> : <CheckCircle2 className="h-5 w-5 me-2" />}
                 حفظ المذكرة في المكتبة
@@ -311,24 +322,24 @@ export default function CreateLessonPlan() {
 
       {/* Guidance Dialog for Insufficient Credits */}
       <AlertDialog open={showInsufficientCredits} onOpenChange={setShowInsufficientCredits}>
-        <AlertDialogContent dir="rtl">
+        <AlertDialogContent dir="rtl" className="max-w-[90vw] sm:max-w-lg rounded-2xl">
           <AlertDialogHeader>
             <div className="mx-auto bg-accent/10 p-4 rounded-full w-fit mb-4">
               <CreditCard className="h-8 w-8 text-accent" />
             </div>
-            <AlertDialogTitle className="text-center font-headline text-2xl">عذراً، رصيدك غير كافٍ</AlertDialogTitle>
-            <AlertDialogDescription className="text-center font-tajawal text-base leading-relaxed">
-              لقد استهلكت جميع اعتماداتك المتاحة في الباقة الحالية. لإنشاء المزيد من المذكرات الذكية، يرجى ترقية حسابك إلى باقة المحترفين.
+            <AlertDialogTitle className="text-center font-headline text-xl sm:text-2xl">عذراً، رصيدك غير كافٍ</AlertDialogTitle>
+            <AlertDialogDescription className="text-center font-tajawal text-sm sm:text-base leading-relaxed">
+              لقد استهلكت جميع اعتماداتك المتاحة. لإنشاء المزيد من المذكرات الذكية، يرجى ترقية حسابك إلى باقة المحترفين.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex-col sm:flex-row gap-3">
+          <AlertDialogFooter className="flex-col sm:flex-row gap-2 sm:gap-3 mt-4">
             <AlertDialogAction 
               onClick={() => router.push('/pricing')}
-              className="bg-primary hover:bg-primary/90 h-12 flex-1"
+              className="bg-primary hover:bg-primary/90 h-11 sm:h-12 flex-1"
             >
               استعرض باقات الاشتراك
             </AlertDialogAction>
-            <AlertDialogCancel className="h-12 flex-1">إغلاق</AlertDialogCancel>
+            <AlertDialogCancel className="h-11 sm:h-12 flex-1">إغلاق</AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

@@ -45,11 +45,11 @@ export default function LessonPlansPage() {
     <AppLayout>
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold font-headline mb-2">مذكراتي</h1>
-            <p className="text-muted-foreground font-tajawal">استعرض وعدل جميع مذكراتك المحفوظة.</p>
+          <div className="text-center sm:text-start">
+            <h1 className="text-2xl sm:text-3xl font-bold font-headline mb-1">مذكراتي</h1>
+            <p className="text-sm sm:text-base text-muted-foreground font-tajawal">استعرض وعدل جميع مذكراتك المحفوظة.</p>
           </div>
-          <Link href="/lesson-plans/create">
+          <Link href="/lesson-plans/create" className="hidden sm:block">
             <Button className="bg-accent hover:bg-accent/90 gap-2 h-12 px-6 shadow-lg">
               <Plus className="h-5 w-5" />
               مذكرة جديدة
@@ -57,17 +57,17 @@ export default function LessonPlansPage() {
           </Link>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input 
-              className="ps-10 h-11" 
+              className="ps-10 h-11 bg-white" 
               placeholder="بحث في المذكرات..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Button variant="outline" className="h-11 gap-2">
+          <Button variant="outline" className="h-11 gap-2 bg-white">
             <Filter className="h-4 w-4" />
             تصفية
           </Button>
@@ -81,52 +81,49 @@ export default function LessonPlansPage() {
             </div>
           ) : filteredPlans.length > 0 ? (
             filteredPlans.map((plan) => (
-              <Card key={plan.id} className="border-none shadow-sm hover:shadow-md transition-all group overflow-hidden">
-                <CardContent className="p-4 flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="bg-primary/10 p-3 rounded-xl group-hover:bg-primary group-hover:text-white transition-colors">
-                      <FileText className="h-6 w-6" />
-                    </div>
-                    <div className="min-w-0">
-                      <h3 className="font-bold font-tajawal text-lg truncate">{plan.title}</h3>
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-sm text-muted-foreground font-tajawal">
-                        <span className="flex items-center gap-1">
-                          <GraduationCap className="h-3 w-3" /> 
-                          {plan.year?.replace('_', ' ')}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <BookOpen className="h-3 w-3" /> 
-                          {plan.field}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Calendar className="h-3 w-3" /> 
-                          {plan.createdAt?.toDate().toLocaleDateString('ar-DZ')}
-                        </span>
+              <Link key={plan.id} href={`/lesson-plans/${plan.id}`}>
+                <Card className="border-none shadow-sm hover:shadow-md transition-all group overflow-hidden bg-white">
+                  <CardContent className="p-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3 sm:gap-4 overflow-hidden">
+                      <div className="bg-primary/10 p-2.5 sm:p-3 rounded-xl group-hover:bg-primary group-hover:text-white transition-colors shrink-0">
+                        <FileText className="h-5 w-5 sm:h-6 sm:w-6" />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="font-bold font-tajawal text-sm sm:text-lg truncate group-hover:text-primary transition-colors">{plan.title}</h3>
+                        <div className="flex flex-wrap gap-x-3 sm:gap-x-4 gap-y-1 mt-1 text-[10px] sm:text-sm text-muted-foreground font-tajawal">
+                          <span className="flex items-center gap-1 shrink-0">
+                            <GraduationCap className="h-3 w-3" /> 
+                            {plan.year?.replace('_', ' ')}
+                          </span>
+                          <span className="flex items-center gap-1 shrink-0">
+                            <BookOpen className="h-3 w-3" /> 
+                            {plan.field}
+                          </span>
+                          <span className="flex items-center gap-1 shrink-0">
+                            <Calendar className="h-3 w-3" /> 
+                            {plan.createdAt?.toDate().toLocaleDateString('ar-DZ')}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Link href={`/lesson-plans/${plan.id}`}>
-                      <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary">
+                    <div className="flex items-center gap-1">
+                      <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary shrink-0">
                         <ChevronLeft className="h-5 w-5" />
                       </Button>
-                    </Link>
-                    <Button variant="ghost" size="icon" className="text-muted-foreground">
-                      <MoreVertical className="h-5 w-5" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             ))
           ) : (
-            <div className="text-center py-20 border-2 border-dashed rounded-2xl bg-muted/20">
+            <div className="text-center py-16 sm:py-20 border-2 border-dashed rounded-2xl bg-muted/20">
               <div className="bg-muted p-4 rounded-full w-fit mx-auto mb-4">
                 <BookOpen className="h-8 w-8 text-muted-foreground" />
               </div>
               <h3 className="text-xl font-bold font-headline mb-2">لا توجد مذكرات</h3>
-              <p className="text-muted-foreground font-tajawal mb-6">ابدأ بإنشاء مذكرتك الأولى الآن باستخدام الذكاء الاصطناعي.</p>
+              <p className="text-sm sm:text-base text-muted-foreground font-tajawal mb-6 px-4">ابدأ بإنشاء مذكرتك الأولى الآن باستخدام الذكاء الاصطناعي.</p>
               <Link href="/lesson-plans/create">
-                <Button variant="outline" className="gap-2">
+                <Button variant="outline" className="gap-2 bg-white">
                   <Plus className="h-4 w-4" />
                   إنشاء مذكرة
                 </Button>
