@@ -27,7 +27,7 @@ const PLANS = [
   },
   {
     name: "باقة المحترفين PRO",
-    price: "1500",
+    price: "500",
     description: "للأداء الأقصى والإنتاجية العالية",
     credits: 150,
     tokens: "150,000",
