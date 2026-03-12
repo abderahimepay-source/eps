@@ -1,10 +1,14 @@
+
 "use client";
 
 import AppLayout from '@/components/layout/AppLayout';
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
-import { Check, Sparkles, Zap, Shield } from "lucide-react";
-import Link from 'next/link';
+import { Check, Sparkles, Zap, Shield, Loader2 } from "lucide-react";
+import { useFirebase } from '@/firebase';
+import { useState } from 'react';
+import { initiateProSubscription } from '@/app/actions/chargily';
+import { useToast } from '@/hooks/use-toast';
 
 const PLANS = [
   {
@@ -23,7 +27,8 @@ const PLANS = [
     ],
     buttonText: "مفعلة حالياً",
     buttonVariant: "outline" as const,
-    highlight: false
+    highlight: false,
+    actionType: "current"
   },
   {
     name: "باقة المحترفين PRO",
@@ -42,11 +47,38 @@ const PLANS = [
     ],
     buttonText: "اشترك الآن",
     buttonVariant: "default" as const,
-    highlight: true
+    highlight: true,
+    actionType: "buy"
   }
 ];
 
 export default function PricingPage() {
+  const { user } = useFirebase();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+
+  const handleSubscribe = async (plan: typeof PLANS[0]) => {
+    if (plan.actionType !== "buy") return;
+    if (!user) {
+      toast({ title: "عذراً", description: "يجب تسجيل الدخول أولاً للتمكن من الاشتراك", variant: "destructive" });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { checkoutUrl } = await initiateProSubscription(user.uid);
+      window.location.href = checkoutUrl;
+    } catch (error: any) {
+      toast({
+        title: "خطأ في الاتصال",
+        description: error.message || "تعذر بدء عملية الدفع حالياً، حاول مرة أخرى.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AppLayout>
       <div className="max-w-5xl mx-auto space-y-12 py-8">
@@ -98,7 +130,12 @@ export default function PricingPage() {
                 <Button 
                   className={`w-full h-12 text-lg ${plan.highlight ? 'bg-primary hover:bg-primary/90' : ''}`}
                   variant={plan.buttonVariant}
+                  onClick={() => handleSubscribe(plan)}
+                  disabled={loading && plan.actionType === "buy"}
                 >
+                  {loading && plan.actionType === "buy" ? (
+                    <Loader2 className="h-5 w-5 animate-spin me-2" />
+                  ) : null}
                   {plan.buttonText}
                 </Button>
               </CardFooter>
