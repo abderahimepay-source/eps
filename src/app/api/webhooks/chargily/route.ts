@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { firestore } from "@/firebase/admin"; // Updated import
-import { FieldValue } from "firebase-admin/firestore"; // Updated import
+import { getAdminFirestore } from "@/firebase/admin"; // Updated import
+import { FieldValue } from "firebase-admin/firestore"; // Correct import for server-side
 
 /**
  * @fileOverview Webhook handler to receive payment notifications from Chargily Pay.
@@ -27,13 +27,13 @@ export async function POST(req: NextRequest) {
   }
 
   const event = JSON.parse(bodyText);
+  const firestore = getAdminFirestore(); // Get Firestore instance safely
 
   if (event.type === "checkout.paid") {
     const checkout = event.data;
     
-    // Extract userId and plan from metadata array
-    const userId = checkout.metadata?.find((m: any) => m.key === "userId")?.value;
-    const plan = checkout.metadata?.find((m: any) => m.key === "plan")?.value;
+    const userId = checkout.metadata?.user_id;
+    const plan = checkout.metadata?.plan;
 
     if (userId && plan) {
       try {
@@ -44,14 +44,12 @@ export async function POST(req: NextRequest) {
           creditAmount = 500;
         }
 
-        // Update user status and credits
         await userRef.update({
           isPro: true,
           credit_balance: FieldValue.increment(creditAmount),
           updatedAt: FieldValue.serverTimestamp(),
         });
 
-        // Log transaction
         const txRef = userRef.collection("credit_transactions");
         await txRef.add({
           amount: creditAmount,
