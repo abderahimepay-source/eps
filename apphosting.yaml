@@ -2,6 +2,14 @@
 # https://firebase.google.com/docs/app-hosting/configure
 
 runConfig:
-  # Increase this value if you'd like to automatically spin up
-  # more instances in response to increased traffic.
-  maxInstances: 1
+  minInstances: 0
+  maxInstances: 2
+  memory: 512Mi
+
+env:
+  - variable: NEXT_PUBLIC_APP_URL
+    value: https://studio-delta-tan.vercel.app
+  - variable: CHARGILY_SECRET_KEY
+    secret: CHARGILY_SECRET_KEY
+  - variable: GEMINI_API_KEY
+    secret: GEMINI_API_KEY
