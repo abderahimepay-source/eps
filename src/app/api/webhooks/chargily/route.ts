@@ -32,26 +32,32 @@ export async function POST(req: NextRequest) {
   if (event.type === "checkout.paid") {
     const checkout = event.data;
     
-    // Extract userId from metadata array
+    // Extract userId and plan from metadata array
     const userId = checkout.metadata?.find((m: any) => m.key === "userId")?.value;
+    const plan = checkout.metadata?.find((m: any) => m.key === "plan")?.value;
 
-    if (userId) {
+    if (userId && plan) {
       try {
         const userRef = doc(firestore, "profiles", userId);
         
+        let creditAmount = 0;
+        if (plan === "PRO") {
+          creditAmount = 500;
+        }
+
         // Update user status and credits
         await updateDoc(userRef, {
           isPro: true,
-          credit_balance: increment(150),
+          credit_balance: increment(creditAmount),
           updatedAt: serverTimestamp(),
         });
 
         // Log transaction
         const txRef = collection(userRef, "credit_transactions");
         await addDoc(txRef, {
-          amount: 150,
+          amount: creditAmount,
           transactionType: "Subscription_Purchase",
-          description: "شراء باقة المحترفين (PRO) عبر Chargily",
+          description: `شراء باقة ${plan} عبر Chargily`,
           paymentId: checkout.id,
           createdAt: serverTimestamp(),
         });
