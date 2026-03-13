@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { initializeFirebase } from "@/firebase";
-import { doc, updateDoc, increment, serverTimestamp, collection, addDoc } from "firebase/firestore";
+import { firestore } from "@/firebase/admin"; // Updated import
+import { FieldValue } from "firebase-admin/firestore"; // Updated import
 
 /**
  * @fileOverview Webhook handler to receive payment notifications from Chargily Pay.
@@ -27,41 +27,39 @@ export async function POST(req: NextRequest) {
   }
 
   const event = JSON.parse(bodyText);
-  const { firestore } = initializeFirebase();
 
   if (event.type === "checkout.paid") {
     const checkout = event.data;
     
-    // Extract userId and plan directly from metadata object
-    const { userId, plan } = checkout.metadata;
+    // Extract userId and plan from metadata array
+    const userId = checkout.metadata?.find((m: any) => m.key === "userId")?.value;
+    const plan = checkout.metadata?.find((m: any) => m.key === "plan")?.value;
 
     if (userId && plan) {
       try {
-        const userRef = doc(firestore, "profiles", userId);
+        const userRef = firestore.collection("profiles").doc(userId);
         
         let creditAmount = 0;
         if (plan === "PRO") {
           creditAmount = 500;
         }
 
-        if (creditAmount > 0) {
-          // Update user status and credits
-          await updateDoc(userRef, {
-            isPro: true,
-            credit_balance: increment(creditAmount),
-            updatedAt: serverTimestamp(),
-          });
+        // Update user status and credits
+        await userRef.update({
+          isPro: true,
+          credit_balance: FieldValue.increment(creditAmount),
+          updatedAt: FieldValue.serverTimestamp(),
+        });
 
-          // Log transaction
-          const txRef = collection(userRef, "credit_transactions");
-          await addDoc(txRef, {
-            amount: creditAmount,
-            transactionType: "Subscription_Purchase",
-            description: `شراء باقة ${plan} عبر Chargily`,
-            paymentId: checkout.id,
-            createdAt: serverTimestamp(),
-          });
-        }
+        // Log transaction
+        const txRef = userRef.collection("credit_transactions");
+        await txRef.add({
+          amount: creditAmount,
+          transactionType: "Subscription_Purchase",
+          description: `شراء باقة ${plan} عبر Chargily`,
+          paymentId: checkout.id,
+          createdAt: FieldValue.serverTimestamp(),
+        });
       } catch (error) {
         console.error("Firestore Update Error in Webhook:", error);
         return NextResponse.json({ error: "Failed to update user profile" }, { status: 500 });
