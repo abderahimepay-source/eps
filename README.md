@@ -10,13 +10,12 @@
 - **Chargily Pay V2** (للمدفوعات)
 
 ## كيفية نقل المشروع إلى مستودع GitHub جديد
-إذا كنت ترغب في رفع هذا المشروع إلى حساب GitHub آخر، اتبع الخطوات التالية في سطر الأوامر (Terminal):
+إذا كنت ترغب في رفع هذا المشروع إلى حسابك الجديد، اتبع الخطوات التالية في سطر الأوامر (Terminal):
 
 1. **تغيير عنوان المستودع البعيد (Remote URL):**
    ```bash
-   git remote set-url origin https://github.com/USERNAME/REPOSITORY_NAME.git
+   git remote set-url origin https://github.com/abderahimepay-source/epsaiagent.git
    ```
-   *(استبدل USERNAME و REPOSITORY_NAME ببياناتك الجديدة)*
 
 2. **رفع الملفات:**
    ```bash
@@ -27,7 +26,7 @@
 
 ## الإعدادات المطلوبة (.env)
 تأكد من إعداد المتغيرات التالية في بيئة العمل الخاصة بك:
-- `NEXT_PUBLIC_APP_URL`: رابط تطبيقك (مثلاً https://studio-delta-tan.vercel.app)
+- `NEXT_PUBLIC_APP_URL`: رابط تطبيقك (حالياً https://studio-delta-tan.vercel.app)
 - `CHARGILY_SECRET_KEY`: مفتاحك السري من لوحة تحكم Chargily
 - `GEMINI_API_KEY`: مفتاح Google AI Studio لتشغيل Genkit
 
