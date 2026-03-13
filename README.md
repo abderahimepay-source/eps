@@ -10,24 +10,31 @@
 - **Chargily Pay V2** (للمدفوعات)
 
 ## كيفية نقل المشروع إلى مستودع GitHub الجديد
-إذا كنت ترغب في رفع هذا المشروع إلى حسابك الجديد، اتبع الخطوات التالية في سطر الأوامر (Terminal) داخل مجلد المشروع:
 
-1. **إعداد المستودع البعيد الجديد (Remote URL):**
-   ```bash
-   git remote set-url origin https://github.com/abderahimepay-source/epsaiagent.git
-   ```
+إذا واجهت خطأ `Repository not found` عند تنفيذ الأوامر، اتبع هذه الخطوات بالترتيب:
 
-2. **التأكد من التغيير:**
-   ```bash
-   git remote -v
-   ```
+### 1. إنشاء المستودع على GitHub
+- اذهب إلى حسابك في [GitHub](https://github.com/new).
+- قم بتسمية المستودع بنفس الاسم: `epsaiagent`.
+- **هام:** لا تقم بتحديد خيار "Initialize this repository with a README" (اتركه فارغاً).
+- اضغط على **Create repository**.
 
-3. **رفع الملفات لأول مرة:**
-   ```bash
-   git add .
-   git commit -m "Initial commit to new repository"
-   git push -u origin main
-   ```
+### 2. إعداد المستودع محلياً (Terminal)
+بعد إنشاء المستودع على الموقع، نفذ هذه الأوامر في مجلد المشروع:
+
+```bash
+# التأكد من الرابط الصحيح
+git remote set-url origin https://github.com/abderahimepay-source/epsaiagent.git
+
+# إضافة جميع الملفات
+git add .
+
+# إنشاء أول نسخة
+git commit -m "Initial commit"
+
+# الرفع إلى الفرع الرئيسي
+git push -u origin main
+```
 
 ## الإعدادات المطلوبة (.env)
 تأكد من إعداد المتغيرات التالية في بيئة العمل الخاصة بك (مثلاً في Vercel أو Firebase App Hosting):
