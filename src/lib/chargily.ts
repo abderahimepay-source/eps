@@ -8,7 +8,7 @@ export interface CreateCheckoutParams {
   amount: number;
   currency: "dzd";
   successUrl: string;
-  metadata: any[]; // تم التغيير من Record إلى any[] ليتوافق مع تنسيق المصفوفة المستخدم في Chargily V2
+  metadata: Record<string, any>; // Use a simple object for metadata
 }
 
 export async function createChargilyCheckout(params: CreateCheckoutParams) {
@@ -30,10 +30,10 @@ export async function createChargilyCheckout(params: CreateCheckoutParams) {
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    console.error("Chargily Error:", error);
-    throw new Error(error.message || "Failed to create checkout");
+    const errorBody = await response.text();
+    console.error("Chargily API Error:", errorBody);
+    throw new Error(`Chargily API responded with status ${response.status}`);
   }
 
-  return await response.json();
+  return response.json();
 }

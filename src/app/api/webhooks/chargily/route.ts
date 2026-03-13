@@ -32,9 +32,8 @@ export async function POST(req: NextRequest) {
   if (event.type === "checkout.paid") {
     const checkout = event.data;
     
-    // Extract userId and plan from metadata array
-    const userId = checkout.metadata?.find((m: any) => m.key === "userId")?.value;
-    const plan = checkout.metadata?.find((m: any) => m.key === "plan")?.value;
+    // Extract userId and plan directly from metadata object
+    const { userId, plan } = checkout.metadata;
 
     if (userId && plan) {
       try {
@@ -45,22 +44,24 @@ export async function POST(req: NextRequest) {
           creditAmount = 500;
         }
 
-        // Update user status and credits
-        await updateDoc(userRef, {
-          isPro: true,
-          credit_balance: increment(creditAmount),
-          updatedAt: serverTimestamp(),
-        });
+        if (creditAmount > 0) {
+          // Update user status and credits
+          await updateDoc(userRef, {
+            isPro: true,
+            credit_balance: increment(creditAmount),
+            updatedAt: serverTimestamp(),
+          });
 
-        // Log transaction
-        const txRef = collection(userRef, "credit_transactions");
-        await addDoc(txRef, {
-          amount: creditAmount,
-          transactionType: "Subscription_Purchase",
-          description: `شراء باقة ${plan} عبر Chargily`,
-          paymentId: checkout.id,
-          createdAt: serverTimestamp(),
-        });
+          // Log transaction
+          const txRef = collection(userRef, "credit_transactions");
+          await addDoc(txRef, {
+            amount: creditAmount,
+            transactionType: "Subscription_Purchase",
+            description: `شراء باقة ${plan} عبر Chargily`,
+            paymentId: checkout.id,
+            createdAt: serverTimestamp(),
+          });
+        }
       } catch (error) {
         console.error("Firestore Update Error in Webhook:", error);
         return NextResponse.json({ error: "Failed to update user profile" }, { status: 500 });

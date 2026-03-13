@@ -15,10 +15,10 @@ export async function initiateProSubscription(userId: string) {
       amount: 500,
       currency: "dzd",
       successUrl: `${appUrl}/profile?payment=success`,
-      metadata: [
-        { key: "userId", value: userId },
-        { key: "plan", value: "PRO" }
-      ]
+      metadata: {
+        userId: userId,
+        plan: "PRO"
+      }
     });
 
     return { checkoutUrl: checkout.checkout_url };
