@@ -16,7 +16,7 @@ export async function initiateProSubscription(userId: string) {
       currency: "dzd",
       successUrl: `${appUrl}/profile?payment=success`,
       metadata: {
-        userId: userId,
+        userId: userId, 
         plan: "PRO"
       }
     });

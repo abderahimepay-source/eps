@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   if (event.type === "checkout.paid") {
     const checkout = event.data;
     
-    const userId = checkout.metadata?.user_id;
+    const userId = checkout.metadata?.userId;
     const plan = checkout.metadata?.plan;
 
     if (userId && plan) {
