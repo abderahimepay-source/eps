@@ -1,4 +1,3 @@
-
 /**
  * @fileOverview Utility for interacting with Chargily Pay V2 API.
  */
@@ -9,7 +8,7 @@ export interface CreateCheckoutParams {
   amount: number;
   currency: "dzd";
   successUrl: string;
-  metadata: Record<string, string>;
+  metadata: any[]; // تم التغيير من Record إلى any[] ليتوافق مع تنسيق المصفوفة المستخدم في Chargily V2
 }
 
 export async function createChargilyCheckout(params: CreateCheckoutParams) {

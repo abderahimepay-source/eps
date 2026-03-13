@@ -8,7 +8,7 @@ import { createChargilyCheckout } from "@/lib/chargily";
 export async function initiateProSubscription(userId: string) {
   if (!userId) throw new Error("User ID is required");
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:9002";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://studio-delta-tan.vercel.app";
 
   try {
     const checkout = await createChargilyCheckout({
