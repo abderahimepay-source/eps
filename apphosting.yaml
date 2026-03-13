@@ -13,3 +13,5 @@ env:
     secret: CHARGILY_SECRET_KEY
   - variable: GEMINI_API_KEY
     secret: GEMINI_API_KEY
+  - variable: FIREBASE_SERVICE_ACCOUNT_KEY
+    secret: FIREBASE_SERVICE_ACCOUNT_KEY
