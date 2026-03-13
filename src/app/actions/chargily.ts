@@ -17,7 +17,8 @@ export async function initiateProSubscription(userId: string) {
       successUrl: `${appUrl}/profile?payment=success`,
       metadata: {
         userId: userId, 
-        plan: "PRO"
+        plan: "PRO",
+        timestamp: Date.now().toString() // Added to ensure unique checkout ID
       }
     });
 
