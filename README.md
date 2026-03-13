@@ -9,15 +9,20 @@
 - **Shadcn UI & Tailwind CSS**
 - **Chargily Pay V2** (للمدفوعات)
 
-## كيفية نقل المشروع إلى مستودع GitHub جديد
-إذا كنت ترغب في رفع هذا المشروع إلى حسابك الجديد، اتبع الخطوات التالية في سطر الأوامر (Terminal):
+## كيفية نقل المشروع إلى مستودع GitHub الجديد
+إذا كنت ترغب في رفع هذا المشروع إلى حسابك الجديد، اتبع الخطوات التالية في سطر الأوامر (Terminal) داخل مجلد المشروع:
 
-1. **تغيير عنوان المستودع البعيد (Remote URL):**
+1. **إعداد المستودع البعيد الجديد (Remote URL):**
    ```bash
    git remote set-url origin https://github.com/abderahimepay-source/epsaiagent.git
    ```
 
-2. **رفع الملفات:**
+2. **التأكد من التغيير:**
+   ```bash
+   git remote -v
+   ```
+
+3. **رفع الملفات لأول مرة:**
    ```bash
    git add .
    git commit -m "Initial commit to new repository"
@@ -25,8 +30,8 @@
    ```
 
 ## الإعدادات المطلوبة (.env)
-تأكد من إعداد المتغيرات التالية في بيئة العمل الخاصة بك:
-- `NEXT_PUBLIC_APP_URL`: رابط تطبيقك (حالياً https://studio-delta-tan.vercel.app)
+تأكد من إعداد المتغيرات التالية في بيئة العمل الخاصة بك (مثلاً في Vercel أو Firebase App Hosting):
+- `NEXT_PUBLIC_APP_URL`: رابط تطبيقك (مثلاً https://studio-delta-tan.vercel.app)
 - `CHARGILY_SECRET_KEY`: مفتاحك السري من لوحة تحكم Chargily
 - `GEMINI_API_KEY`: مفتاح Google AI Studio لتشغيل Genkit
 
