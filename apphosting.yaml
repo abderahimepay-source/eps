@@ -8,7 +8,7 @@ runConfig:
 
 env:
   - variable: NEXT_PUBLIC_APP_URL
-    value: https://studio-delta-tan.vercel.app
+    value: https://eps-alpha.vercel.app
   - variable: CHARGILY_SECRET_KEY
     secret: CHARGILY_SECRET_KEY
   - variable: GEMINI_API_KEY
