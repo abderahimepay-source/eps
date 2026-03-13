@@ -8,7 +8,6 @@ import { createChargilyCheckout } from "@/lib/chargily";
 export async function initiateProSubscription(userId: string) {
   if (!userId) throw new Error("User ID is required");
 
-  // استخدام الرابط المقدم من المستخدم أو الافتراضي للتطوير
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:9002";
 
   try {
@@ -16,10 +15,10 @@ export async function initiateProSubscription(userId: string) {
       amount: 500,
       currency: "dzd",
       successUrl: `${appUrl}/profile?payment=success`,
-      metadata: {
-        userId: userId,
-        plan: "PRO"
-      }
+      metadata: [
+        { key: "userId", value: userId },
+        { key: "plan", value: "PRO" }
+      ]
     });
 
     return { checkoutUrl: checkout.checkout_url };
