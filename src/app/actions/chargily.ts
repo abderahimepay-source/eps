@@ -4,6 +4,8 @@
  */
 
 import { createChargilyCheckout } from "@/lib/chargily";
+import { getAdminFirestore } from "@/firebase/admin";
+import { FieldValue } from "firebase-admin/firestore";
 
 export async function initiateProSubscription(userId: string) {
   if (!userId) throw new Error("User ID is required");
@@ -21,6 +23,17 @@ export async function initiateProSubscription(userId: string) {
         timestamp: Date.now().toString() // Added to ensure unique checkout ID
       }
     });
+
+    // modify user subscription plan to PRO
+    const db = getAdminFirestore();
+    await db.collection("profiles").doc(userId).update({
+      isPro: true,
+      credit_balance: FieldValue.increment(500),
+      plan: "PRO",
+      updatedAt: FieldValue.serverTimestamp(),
+    });
+
+
 
     return { checkoutUrl: checkout.checkout_url };
   } catch (error: any) {
