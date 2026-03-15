@@ -8,6 +8,7 @@ export interface CreateCheckoutParams {
   amount: number;
   currency: "dzd";
   successUrl: string;
+  failureUrl?: string; // Added failureUrl as an optional property
   metadata: Record<string, any>; // Use a simple object for metadata
 }
 
@@ -25,6 +26,7 @@ export async function createChargilyCheckout(params: CreateCheckoutParams) {
       amount: params.amount,
       currency: params.currency,
       success_url: params.successUrl,
+      failure_url: params.failureUrl, // Pass failureUrl to Chargily API
       metadata: params.metadata,
     }),
   });
