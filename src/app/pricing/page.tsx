@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter }
 import { Check, Sparkles, Zap, Shield, Loader2 } from "lucide-react";
 import { useFirebase } from '@/firebase';
 import { useState } from 'react';
-import { initiateProSubscription } from '@/app/actions/chargily';
+import { initiateChargilyCheckout } from '@/app/actions/chargily'; // Updated import
 import { useToast } from '@/hooks/use-toast';
 
 const PLANS = [
@@ -15,7 +15,7 @@ const PLANS = [
     name: "الباقة المجانية",
     price: "0",
     description: "للمعلمين الراغبين في تجربة المنصة",
-    credits: 10,
+    credits: 10, // Explicitly define credits
     tokens: "10,000",
     generations: "~3",
     features: [
@@ -28,13 +28,14 @@ const PLANS = [
     buttonText: "مفعلة حالياً",
     buttonVariant: "outline" as const,
     highlight: false,
-    actionType: "current"
+    actionType: "current" as const,
+    isProUpgrade: false, // Not a PRO upgrade
   },
   {
     name: "باقة المحترفين PRO",
-    price: "500",
+    price: "500", // Price in DZD
     description: "للأداء الأقصى والإنتاجية العالية",
-    credits: 150,
+    credits: 150, // Explicitly define credits to be added
     tokens: "150,000",
     generations: "~40",
     features: [
@@ -48,7 +49,8 @@ const PLANS = [
     buttonText: "اشترك الآن",
     buttonVariant: "default" as const,
     highlight: true,
-    actionType: "buy"
+    actionType: "buy" as const,
+    isProUpgrade: true, // This is a PRO upgrade
   }
 ];
 
@@ -66,7 +68,11 @@ export default function PricingPage() {
 
     setLoading(true);
     try {
-      const { checkoutUrl } = await initiateProSubscription(user.uid);
+      const { checkoutUrl } = await initiateChargilyCheckout(
+        user.uid,
+        plan.credits, // Pass credits to buy
+        plan.isProUpgrade // Pass the PRO upgrade flag
+      );
       window.location.href = checkoutUrl;
     } catch (error: any) {
       toast({
