@@ -7,35 +7,35 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter }
 import { Check, Sparkles, Zap, Shield, Loader2 } from "lucide-react";
 import { useFirebase } from '@/firebase';
 import { useState } from 'react';
-import { initiateChargilyCheckout } from '@/app/actions/chargily'; // Updated import
+import { initiateChargilyCheckout } from '@/app/actions/chargily';
 import { useToast } from '@/hooks/use-toast';
 
 const PLANS = [
   {
-    name: "الباقة المجانية",
-    price: "0",
-    description: "للمعلمين الراغبين في تجربة المنصة",
-    credits: 10, // Explicitly define credits
-    tokens: "10,000",
-    generations: "~3",
+    name: "باقة البداية",
+    price: "100", // Price in DZD
+    description: "لتجربة موسعة وإنشاء مذكرات أولية",
+    credits: 15,
+    tokens: "15,000",
+    generations: "~4",
     features: [
-      "10 اعتمادات (Credits)",
-      "حوالي 3 مذكرات كاملة شهرياً",
+      "15 اعتماد (Credits)",
+      "حوالي 4 مذكرات كاملة شهرياً",
       "الوصول للمنهاج الرسمي 2023",
       "توليد الأهداف الذكية SMART",
       "حفظ المذكرات سحابياً"
     ],
-    buttonText: "مفعلة حالياً",
+    buttonText: "اشترك الآن",
     buttonVariant: "outline" as const,
     highlight: false,
-    actionType: "current" as const,
-    isProUpgrade: false, // Not a PRO upgrade
+    actionType: "buy" as const,
+    isProUpgrade: false,
   },
   {
     name: "باقة المحترفين PRO",
     price: "500", // Price in DZD
     description: "للأداء الأقصى والإنتاجية العالية",
-    credits: 150, // Explicitly define credits to be added
+    credits: 150,
     tokens: "150,000",
     generations: "~40",
     features: [
@@ -50,14 +50,35 @@ const PLANS = [
     buttonVariant: "default" as const,
     highlight: true,
     actionType: "buy" as const,
-    isProUpgrade: true, // This is a PRO upgrade
+    isProUpgrade: true,
+  },
+  {
+    name: "الباقة الأساسية",
+    price: "300", // Price in DZD
+    description: "للاستخدام المنتظم وإنتاجية مستمرة",
+    credits: 50,
+    tokens: "50,000",
+    generations: "~12",
+    features: [
+      "50 اعتماد (Credits)",
+      "حوالي 12 مذكرة كاملة شهرياً",
+      "الوصول للمنهاج الرسمي 2023",
+      "توليد الأهداف الذكية SMART",
+      "حفظ المذكرات سحابياً"
+    ],
+    buttonText: "اشترك الآن",
+    buttonVariant: "outline" as const,
+    highlight: false,
+    actionType: "buy" as const,
+    isProUpgrade: false,
   }
 ];
 
 export default function PricingPage() {
   const { user } = useFirebase();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+
 
   const handleSubscribe = async (plan: typeof PLANS[0]) => {
     if (plan.actionType !== "buy") return;
@@ -66,13 +87,13 @@ export default function PricingPage() {
       return;
     }
 
-    setLoading(true);
+    setLoadingPlan(plan.name);
     try {
-      const { checkoutUrl } = await initiateChargilyCheckout(
-        user.uid,
-        plan.credits, // Pass credits to buy
-        plan.isProUpgrade // Pass the PRO upgrade flag
-      );
+      const { checkoutUrl } = await initiateChargilyCheckout({
+        userId: user.uid,
+        creditsToBuy: plan.credits, // Pass credits to buy
+        isProUpgrade: plan.isProUpgrade // Pass the PRO upgrade flag
+      });
       window.location.href = checkoutUrl;
     } catch (error: any) {
       toast({
@@ -81,7 +102,7 @@ export default function PricingPage() {
         variant: "destructive"
       });
     } finally {
-      setLoading(false);
+      setLoadingPlan(null);
     }
   };
 
@@ -95,7 +116,7 @@ export default function PricingPage() {
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:max-w-4xl lg:mx-auto">
+        <div className="grid gap-8 md:grid-cols-3 lg:max-w-6xl lg:mx-auto">
           {PLANS.map((plan) => (
             <Card 
               key={plan.name} 
@@ -110,7 +131,7 @@ export default function PricingPage() {
                 <CardTitle className="font-headline text-2xl">{plan.name}</CardTitle>
                 <div className="mt-4 flex items-baseline justify-center gap-1">
                   <span className="text-4xl font-bold font-rajdhani">{plan.price}</span>
-                  <span className="text-muted-foreground font-tajawal">د.ج / شهرياً</span>
+                  <span className="text-muted-foreground font-tajawal">د.ج</span>
                 </div>
                 <CardDescription className="font-tajawal mt-2">{plan.description}</CardDescription>
               </CardHeader>
@@ -137,9 +158,9 @@ export default function PricingPage() {
                   className={`w-full h-12 text-lg ${plan.highlight ? 'bg-primary hover:bg-primary/90' : ''}`}
                   variant={plan.buttonVariant}
                   onClick={() => handleSubscribe(plan)}
-                  disabled={loading && plan.actionType === "buy"}
+                  disabled={loadingPlan === plan.name}
                 >
-                  {loading && plan.actionType === "buy" ? (
+                  {loadingPlan === plan.name ? (
                     <Loader2 className="h-5 w-5 animate-spin me-2" />
                   ) : null}
                   {plan.buttonText}
