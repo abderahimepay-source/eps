@@ -1,1 +1,89 @@
-\"use client\";\n\nimport { useSearchParams } from \'next/navigation\';\nimport AppLayout from \'@/components/layout/AppLayout\';\nimport { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from \'@/components/ui/card\';\nimport { CheckCircle, XCircle, Loader2 } from \'lucide-react\';\nimport Link from \'next/link\';\nimport { Button } from \'@/components/ui/button\';\nimport { useEffect, useState } from \'react\';\n\nexport default function PaymentStatusPage() {\n  const searchParams = useSearchParams();\n  const paymentStatus = searchParams.get(\'payment\');\n  const credits = searchParams.get(\'credits\');\n  const checkoutId = searchParams.get(\'checkout_id\');\n\n  const [loading, setLoading] = useState(true);\n  const [message, setMessage] = useState({\n    title: \"\",\n    description: \"\",\n    icon: null,\n    iconColor: \"\",\n  });\n\n  useEffect(() => {\n    // Simulate a small delay for better UX, or if you were fetching something else\n    const timer = setTimeout(() => {\n      setLoading(false);\n      if (paymentStatus === \'success\') {\n        setMessage({\n          title: \"تم الدفع بنجاح!\",\n          description: \`تم شحن حسابك بـ \${credits || 0} اعتماد. رقم المعاملة: \${checkoutId || \'غير متوفر\'}.\`,\n          icon: <CheckCircle className=\"h-16 w-16 text-green-500\" />,\n          iconColor: \"text-green-500\",\n        });\n      } else if (paymentStatus === \'cancel\') {\n        setMessage({\n          title: \"تم إلغاء الدفع\",\n          description: \"تم إلغاء عملية الدفع. يمكنك المحاولة مرة أخرى.\",\n          icon: <XCircle className=\"h-16 w-16 text-red-500\" />,\n          iconColor: \"text-red-500\",\n        });\n      } else {\n        setMessage({\n          title: \"حالة دفع غير معروفة\",\n          description: \"لم نتمكن من تحديد حالة الدفع الخاصة بك.\",\n          icon: <XCircle className=\"h-16 w-16 text-gray-400\" />,\n          iconColor: \"text-gray-400\",\n        });\n      }\n    }, 1500); // 1.5 second delay\n\n    return () => clearTimeout(timer);\n  }, [paymentStatus, credits, checkoutId]);\n\n  return (\n    <AppLayout>\n      <div className=\"flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] py-12 px-4\">\n        <Card className=\"w-full max-w-md text-center shadow-lg\">\n          <CardHeader className=\"flex flex-col items-center pt-8\">\n            {loading ? (\n              <Loader2 className=\"h-16 w-16 animate-spin text-primary\" />\n            ) : (\n              message.icon\n            )}\n            <CardTitle className={`mt-4 text-3xl font-bold font-headline ${message.iconColor}`}>\n              {loading ? \"جاري التحقق من حالة الدفع...\" : message.title}\n            </CardTitle>\n          </CardHeader>\n          <CardContent>\n            <CardDescription className=\"text-muted-foreground font-tajawal text-lg\">\n              {!loading && message.description}\n            </CardDescription>\n          </CardContent>\n          <CardFooter className=\"flex justify-center pb-8\">\n            <Link href=\"/profile\" passHref>\n              <Button className=\"font-tajawal text-lg h-12 px-8\">العودة إلى الملف الشخصي</Button>\n            </Link>\n          </CardFooter>\n        </Card>\n      </div>\n    </AppLayout>\n  );\n}\n
+"use client";
+
+import { useSearchParams } from 'next/navigation';
+import AppLayout from '@/components/layout/AppLayout';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
+
+export default function PaymentStatusPage() {
+  const searchParams = useSearchParams();
+  const paymentStatus = searchParams.get('payment');
+  const credits = searchParams.get('credits');
+  const checkoutId = searchParams.get('checkout_id');
+
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState<{
+    title: string;
+    description: string;
+    icon: React.ReactNode | null;
+    iconColor: string;
+  }>({
+    title: "",
+    description: "",
+    icon: null,
+    iconColor: "",
+  });
+
+  useEffect(() => {
+    // Simulate a small delay for better UX
+    const timer = setTimeout(() => {
+      setLoading(false);
+      if (paymentStatus === 'success') {
+        setMessage({
+          title: "تم الدفع بنجاح!",
+          description: `تم شحن حسابك بـ ${credits || 0} اعتماد. رقم المعاملة: ${checkoutId || 'غير متوفر'}.`,
+          icon: <CheckCircle className="h-16 w-16 text-green-500" />,
+          iconColor: "text-green-500",
+        });
+      } else if (paymentStatus === 'cancel') {
+        setMessage({
+          title: "تم إلغاء الدفع",
+          description: "تم إلغاء عملية الدفع. يمكنك المحاولة مرة أخرى.",
+          icon: <XCircle className="h-16 w-16 text-red-500" />,
+          iconColor: "text-red-500",
+        });
+      } else {
+        setMessage({
+          title: "حالة دفع غير معروفة",
+          description: "لم نتمكن من تحديد حالة الدفع الخاصة بك.",
+          icon: <XCircle className="h-16 w-16 text-gray-400" />,
+          iconColor: "text-gray-400",
+        });
+      }
+    }, 1500); // 1.5 second delay
+
+    return () => clearTimeout(timer);
+  }, [paymentStatus, credits, checkoutId]);
+
+  return (
+    <AppLayout>
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] py-12 px-4">
+        <Card className="w-full max-w-md text-center shadow-lg">
+          <CardHeader className="flex flex-col items-center pt-8">
+            {loading ? (
+              <Loader2 className="h-16 w-16 animate-spin text-primary" />
+            ) : (
+              message.icon
+            )}
+            <CardTitle className={`mt-4 text-3xl font-bold font-headline ${message.iconColor}`}>
+              {loading ? "جاري التحقق من حالة الدفع..." : message.title}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CardDescription className="text-muted-foreground font-tajawal text-lg">
+              {!loading && message.description}
+            </CardDescription>
+          </CardContent>
+          <CardFooter className="flex justify-center pb-8">
+            <Link href="/profile" passHref>
+              <Button className="font-tajawal text-lg h-12 px-8">العودة إلى الملف الشخصي</Button>
+            </Link>
+          </CardFooter>
+        </Card>
+      </div>
+    </AppLayout>
+  );
+}
