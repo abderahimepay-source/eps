@@ -9,7 +9,7 @@ import { FieldValue } from "firebase-admin/firestore";
 
 export async function POST(req: NextRequest) {
   console.log("Chargily Webhook received a request.");
-  const signature = req.headers.get("chargily-signature");
+  const signature = req.headers.get("signature"); // FIX: Changed header name to 'signature'
   const secretKey = process.env.CHARGILY_SECRET_KEY;
 
   console.log("Incoming Signature:", signature);
