@@ -32,7 +32,7 @@ export async function initiateChargilyCheckout(options: {
       currency: "dzd",
       successUrl: `${baseUrl}/payment-status?payment=success&credits=${creditsToBuy}`,
       failureUrl: `${baseUrl}/payment-status?payment=cancel`,
-      webhookEndpointUrl: `${baseUrl}/api/webhooks/chargily`, // Explicitly provide the webhook URL
+      // Removed webhookEndpointUrl as it's not supported by the API
       metadata: {
         userId,
         credits: creditsToBuy,

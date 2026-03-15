@@ -9,7 +9,7 @@ export interface CreateCheckoutParams {
   currency: "dzd";
   successUrl: string;
   failureUrl?: string;
-  webhookEndpointUrl?: string; // Explicitly define the webhook URL for this checkout
+  // Removed webhookEndpointUrl as it's not supported by the API
   metadata: Record<string, any>;
 }
 
@@ -30,7 +30,7 @@ export async function createChargilyCheckout(params: CreateCheckoutParams) {
       currency: params.currency,
       success_url: params.successUrl,
       failure_url: params.failureUrl,
-      webhook_endpoint_url: params.webhookEndpointUrl, // Pass the webhook URL to Chargily API
+      // Removed webhook_endpoint_url from the request body
       metadata: params.metadata,
     }),
   });
