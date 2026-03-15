@@ -1,51 +1,53 @@
-'use server';
-/**
- * @fileOverview Server actions for handling payment initiation.
- */
+"use server";
 
 import { createChargilyCheckout } from "@/lib/chargily";
 
-// Define a mapping for credit packs to DZD prices
-// You can expand this with more credit tiers as needed
+// Define a mapping from credits to DZD price
 const CREDIT_PACK_PRICES: { [key: number]: number } = {
-  150: 500, // PRO package: 150 credits for 500 DZD
-  // Example for other credit packs:
-  // 50: 200, // 50 credits for 200 DZD
-  // 300: 900, // 300 credits for 900 DZD
+  15: 100, // 15 credits for 100 DZD
+  50: 300, // 50 credits for 300 DZD
+  150: 500, // 150 credits for 500 DZD
 };
 
-export async function initiateChargilyCheckout(
-  userId: string,
-  creditsToBuy: number,
-  isProUpgrade: boolean = false // New parameter to indicate if this is a PRO upgrade
-) {
-  if (!userId) throw new Error("User ID is required");
-
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://studio-delta-tan.vercel.app";
-
-  // Calculate amount in DZD based on creditsToBuy
+export async function initiateChargilyCheckout(options: {
+  userId: string;
+  creditsToBuy: number;
+  isProUpgrade: boolean;
+}) {
+  const { userId, creditsToBuy, isProUpgrade } = options;
   const amountDZD = CREDIT_PACK_PRICES[creditsToBuy];
 
-  if (amountDZD === undefined) {
-    throw new Error(`Invalid credit amount: ${creditsToBuy}. No defined price.`);
+  if (!amountDZD) {
+    throw new Error("Invalid credit pack selected.");
   }
 
+  // Determine the base URL dynamically from environment variables
+  const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
+    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+    : "http://localhost:3000";
+
   try {
-    const checkout = await createChargilyCheckout({
+    const response = await createChargilyCheckout({
       amount: amountDZD,
       currency: "dzd",
-      successUrl: `${appUrl}/profile?payment=success&credits=${creditsToBuy}`, // Indicate credits bought
-      failureUrl: `${appUrl}/profile?payment=cancel`, // Optional: add a failure URL
+      successUrl: `${baseUrl}/payment-status?payment=success&credits=${creditsToBuy}`,
+      failureUrl: `${baseUrl}/payment-status?payment=cancel`,
+      webhookEndpointUrl: `${baseUrl}/api/webhooks/chargily`, // Explicitly provide the webhook URL
       metadata: {
-        userId: userId,
+        userId,
         credits: creditsToBuy,
-        isProUpgrade: isProUpgrade, // Pass whether this is a PRO upgrade
+        isProUpgrade,
+        timestamp: Date.now().toString(),
       },
     });
 
-    return { checkoutUrl: checkout.checkout_url };
-  } catch (error: any) {
-    console.error("Action Error (initiateChargilyCheckout):", error);
-    throw new Error(error.message || "فشل إنشاء طلب الدفع");
+    if (response && response.checkout_url) {
+      return { checkoutUrl: response.checkout_url };
+    }
+
+    throw new Error("Failed to create Chargily checkout URL.");
+  } catch (error) {
+    console.error("Error creating Chargily checkout:", error);
+    throw new Error("Could not initiate payment process.");
   }
 }
