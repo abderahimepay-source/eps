@@ -15,7 +15,9 @@ export interface CreateCheckoutParams {
 
 export async function createChargilyCheckout(params: CreateCheckoutParams) {
   const secretKey = process.env.CHARGILY_SECRET_KEY;
-  if (!secretKey) throw new Error("Missing CHARGILY_SECRET_KEY");
+  if (!secretKey) {
+    throw new Error("The CHARGILY_SECRET_KEY environment variable is not set. Please add it to your .env.local file and your Vercel project settings.");
+  }
 
   const response = await fetch(`${CHARGILY_URL}/checkouts`, {
     method: "POST",
