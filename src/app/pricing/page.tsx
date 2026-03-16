@@ -12,26 +12,6 @@ import { useToast } from '@/hooks/use-toast';
 
 const PLANS = [
   {
-    name: "باقة البداية",
-    price: "100", // Price in DZD
-    description: "لتجربة موسعة وإنشاء مذكرات أولية",
-    credits: 15,
-    tokens: "15,000",
-    generations: "~4",
-    features: [
-      "15 اعتماد (Credits)",
-      "حوالي 4 مذكرات كاملة شهرياً",
-      "الوصول للمنهاج الرسمي 2023",
-      "توليد الأهداف الذكية SMART",
-      "حفظ المذكرات سحابياً"
-    ],
-    buttonText: "اشترك الآن",
-    buttonVariant: "outline" as const,
-    highlight: false,
-    actionType: "buy" as const,
-    isProUpgrade: false,
-  },
-  {
     name: "باقة المحترفين PRO",
     price: "500", // Price in DZD
     description: "للأداء الأقصى والإنتاجية العالية",
@@ -116,7 +96,7 @@ export default function PricingPage() {
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-3 lg:max-w-6xl lg:mx-auto">
+        <div className="grid gap-8 md:grid-cols-2 lg:max-w-4xl lg:mx-auto">
           {PLANS.map((plan) => (
             <Card 
               key={plan.name} 
