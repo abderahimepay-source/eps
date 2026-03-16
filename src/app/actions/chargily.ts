@@ -1,12 +1,13 @@
+
 "use server";
 
 import { createChargilyCheckout } from "@/lib/chargily";
 
 // Define a mapping from credits to DZD price
 const CREDIT_PACK_PRICES: { [key: number]: number } = {
-  15: 100, // 15 credits for 100 DZD
-  50: 300, // 50 credits for 300 DZD
-  150: 500, // 150 credits for 500 DZD
+  15: 100,  // 15 credits for 100 DZD
+  150: 500, // 150 credits for 500 DZD (PRO)
+  300: 1000, // 300 credits for 1000 DZD (Updated Basic)
 };
 
 export async function initiateChargilyCheckout(options: {

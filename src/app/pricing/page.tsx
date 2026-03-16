@@ -54,14 +54,14 @@ const PLANS = [
   },
   {
     name: "الباقة الأساسية",
-    price: "300", // Price in DZD
+    price: "1000", // Updated Price
     description: "للاستخدام المنتظم وإنتاجية مستمرة",
-    credits: 50,
-    tokens: "50,000",
-    generations: "~12",
+    credits: 300, // Updated Credits
+    tokens: "300,000", // Updated Tokens
+    generations: "~80", // Approximate generations
     features: [
-      "50 اعتماد (Credits)",
-      "حوالي 12 مذكرة كاملة شهرياً",
+      "300 اعتماد (Credits)",
+      "حوالي 80 مذكرة كاملة شهرياً",
       "الوصول للمنهاج الرسمي 2023",
       "توليد الأهداف الذكية SMART",
       "حفظ المذكرات سحابياً"
