@@ -48,7 +48,6 @@ export default function Dashboard() {
     { label: 'إجمالي المذكرات', value: profile?.totalLessonPlansCreated || 0, icon: BookOpen, color: 'text-primary', bg: 'bg-primary/10' },
     { label: 'رصيد الاعتمادات', value: profile?.credit_balance || 0, icon: CreditCard, color: 'text-accent', bg: 'bg-accent/10' },
     { label: 'إجمالي التوكنز', value: totalTokens.toLocaleString(), icon: Sparkles, color: 'text-purple-500', bg: 'bg-purple-100' },
-    { label: 'الاسم', value: profile?.displayName || '---', icon: Star, color: 'text-yellow-600', bg: 'bg-yellow-100' },
   ];
 
   const chartData = [
@@ -75,7 +74,7 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {stats.map((stat) => (
             <Card key={stat.label} className="border-none shadow-sm hover:shadow-md transition-shadow">
               <CardContent className="p-4 sm:p-6 flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-start gap-3 sm:gap-4">
