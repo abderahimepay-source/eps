@@ -18,6 +18,10 @@
         "displayName": {
           "type": "string"
         },
+        "phoneNumber": {
+          "type": "string",
+          "description": "User's contact phone number."
+        },
         "school": {
           "type": "string"
         },

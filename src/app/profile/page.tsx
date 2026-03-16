@@ -1,3 +1,4 @@
+
 "use client";
 
 import AppLayout from '@/components/layout/AppLayout';
@@ -5,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Shield, CreditCard, Sparkles, Check } from "lucide-react";
+import { User, Shield, Sparkles, Check, Phone, MapPin, School } from "lucide-react";
 import { useFirebase, useDoc, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import Link from 'next/link';
@@ -72,17 +73,40 @@ export default function ProfilePage() {
                   المعلومات الشخصية
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName">الاسم الكامل</Label>
-                  <Input id="firstName" defaultValue={profile?.displayName || ''} className="h-11" readOnly />
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="firstName">الاسم الكامل</Label>
+                    <Input id="firstName" defaultValue={profile?.displayName || ''} className="h-11" readOnly />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">البريد الإلكتروني</Label>
+                    <Input id="email" type="email" defaultValue={profile?.email || ''} className="h-11" readOnly />
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">البريد الإلكتروني</Label>
-                  <Input id="email" type="email" defaultValue={profile?.email || ''} className="h-11" readOnly />
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="phoneNumber" className="flex items-center gap-2">
+                      <Phone className="h-4 w-4 text-primary" />
+                      رقم الهاتف
+                    </Label>
+                    <Input id="phoneNumber" defaultValue={profile?.phoneNumber || ''} className="h-11" readOnly />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="directorate" className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-primary" />
+                      مديرية التربية
+                    </Label>
+                    <Input id="directorate" defaultValue={profile?.directorate || ''} className="h-11" readOnly />
+                  </div>
                 </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="school">المؤسسة التعليمية</Label>
+                  <Label htmlFor="school" className="flex items-center gap-2">
+                    <School className="h-4 w-4 text-primary" />
+                    المؤسسة التعليمية
+                  </Label>
                   <Input id="school" defaultValue={profile?.school || ''} className="h-11" readOnly />
                 </div>
                 <p className="text-xs text-muted-foreground font-tajawal">تحرير البيانات الشخصية متاح للمشتركين في باقة PRO.</p>
