@@ -2,13 +2,16 @@
 
 import AppLayout from '@/components/layout/AppLayout';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { BookOpen, CreditCard, Sparkles, TrendingUp, History, Star, ArrowLeft } from "lucide-react";
+import { BookOpen, CreditCard, Sparkles, TrendingUp, History, ArrowLeft } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { useFirebase, useDoc, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, limit, doc } from 'firebase/firestore';
+import { collection, query, orderBy, limit, doc, where } from 'firebase/firestore';
 import { cn } from "@/lib/utils";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { useMemo } from 'react';
+
+const ARABIC_DAYS = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
 
 export default function Dashboard() {
   const { user, firestore } = useFirebase();
@@ -31,31 +34,53 @@ export default function Dashboard() {
   }, [user, firestore]);
   const { data: recentPlans } = useCollection(plansQuery);
 
-  // 3. Fetch Usage Logs for token stats
+  // 3. Fetch Usage Logs for the last 7 days
   const logsQuery = useMemoFirebase(() => {
     if (!user || !firestore) return null;
+    // Calculate timestamp for 7 days ago
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    
     return query(
       collection(firestore, 'profiles', user.uid, 'usage_logs'),
-      orderBy('createdAt', 'desc'),
-      limit(20)
+      where('createdAt', '>=', sevenDaysAgo),
+      orderBy('createdAt', 'desc')
     );
   }, [user, firestore]);
   const { data: logs } = useCollection(logsQuery);
 
   const totalTokens = logs?.reduce((acc, log) => acc + (log.tokensConsumed || 0), 0) || 0;
 
+  // 4. Process logs for the chart (last 7 days)
+  const chartData = useMemo(() => {
+    const data = [];
+    const now = new Date();
+    
+    // Create entries for the last 7 days
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(now.getDate() - i);
+      const dayName = ARABIC_DAYS[date.getDay()];
+      
+      // Filter logs for this specific day
+      const dayTokens = logs?.filter(log => {
+        const logDate = log.createdAt?.toDate();
+        return logDate && logDate.toDateString() === date.toDateString();
+      }).reduce((sum, log) => sum + (log.tokensConsumed || 0), 0) || 0;
+
+      data.push({
+        name: dayName,
+        count: dayTokens,
+        fullDate: date.toDateString()
+      });
+    }
+    return data;
+  }, [logs]);
+
   const stats = [
     { label: 'اجمالي المذكرات المولدة بالذكاء الاصطناعي', value: profile?.totalLessonPlansCreated || 0, icon: BookOpen, color: 'text-primary', bg: 'bg-primary/10' },
     { label: 'رصيد الاعتمادات المتبقية', value: profile?.credit_balance || 0, icon: CreditCard, color: 'text-accent', bg: 'bg-accent/10' },
     { label: 'اجمالي التوكنز المستهلك', value: totalTokens.toLocaleString(), icon: Sparkles, color: 'text-purple-500', bg: 'bg-purple-100' },
-  ];
-
-  const chartData = [
-    { name: 'أحد', count: 4 },
-    { name: 'اثنين', count: 7 },
-    { name: 'ثلاثاء', count: 5 },
-    { name: 'أربعاء', count: 12 },
-    { name: 'خميس', count: 8 },
   ];
 
   return (
@@ -97,17 +122,30 @@ export default function Dashboard() {
                 <TrendingUp className="h-5 w-5 text-primary" />
                 نشاط الأسبوع الحالي
               </CardTitle>
-              <CardDescription className="font-tajawal text-xs sm:text-sm">عدد المذكرات المنشأة خلال الأيام الماضية</CardDescription>
+              <CardDescription className="font-tajawal text-xs sm:text-sm">استهلاك التوكنز خلال آخر 7 أيام</CardDescription>
             </CardHeader>
             <CardContent className="h-[250px] sm:h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData}>
                   <XAxis dataKey="name" fontSize={12} />
                   <YAxis fontSize={12} />
-                  <Tooltip cursor={{fill: 'transparent'}} />
+                  <Tooltip 
+                    cursor={{fill: 'transparent'}} 
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <div className="bg-white p-2 border rounded-lg shadow-sm font-tajawal text-xs">
+                            <p className="font-bold">{payload[0].payload.name}</p>
+                            <p className="text-primary">التوكنز: {payload[0].value.toLocaleString()}</p>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
                   <Bar dataKey="count" radius={[8, 8, 0, 0]} barSize={24}>
                     {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={index === 3 ? '#FF8033' : '#47CFD6'} />
+                      <Cell key={`cell-${index}`} fill={index === 6 ? '#FF8033' : '#47CFD6'} />
                     ))}
                   </Bar>
                 </BarChart>
