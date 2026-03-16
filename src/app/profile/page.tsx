@@ -73,15 +73,9 @@ export default function ProfilePage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName">الاسم الكامل</Label>
-                    <Input id="firstName" defaultValue={profile?.displayName || ''} className="h-11" readOnly />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName">الرصيد</Label>
-                    <Input id="lastName" defaultValue={`${profile?.credit_balance || 0} اعتماد`} className="h-11 font-rajdhani" readOnly />
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="firstName">الاسم الكامل</Label>
+                  <Input id="firstName" defaultValue={profile?.displayName || ''} className="h-11" readOnly />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">البريد الإلكتروني</Label>
