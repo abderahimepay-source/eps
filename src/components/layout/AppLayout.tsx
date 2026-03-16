@@ -149,14 +149,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <span className="font-headline font-bold text-lg text-primary">RiyadiPlan</span>
           </div>
           
-          <div className="flex items-center gap-4 ms-auto">
-            <div className="flex flex-col text-start hidden sm:flex">
-              <span className="text-sm font-bold font-tajawal">{profile?.displayName || 'جاري التحميل...'}</span>
-              <span className="text-xs text-muted-foreground font-tajawal truncate max-w-[150px]">{profile?.school || '...'}</span>
-            </div>
-            <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold shadow-sm">
-              {profile?.displayName?.substring(0, 2) || 'أع'}
-            </div>
+          <div className="ms-auto flex items-center gap-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-destructive hover:text-destructive hover:bg-destructive/10 gap-2 h-10 px-4"
+              onClick={handleSignOut}
+            >
+              <LogOut className="h-5 w-5" />
+              <span className="font-tajawal font-bold">تسجيل الخروج</span>
+            </Button>
           </div>
         </header>
 
