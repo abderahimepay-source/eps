@@ -45,7 +45,7 @@ export default function Dashboard() {
   const totalTokens = logs?.reduce((acc, log) => acc + (log.tokensConsumed || 0), 0) || 0;
 
   const stats = [
-    { label: 'إجمالي المذكرات', value: profile?.totalLessonPlansCreated || 0, icon: BookOpen, color: 'text-primary', bg: 'bg-primary/10' },
+    { label: 'اجمالي المذكرات المولدة بالذكاء الاصطناعي', value: profile?.totalLessonPlansCreated || 0, icon: BookOpen, color: 'text-primary', bg: 'bg-primary/10' },
     { label: 'رصيد الاعتمادات', value: profile?.credit_balance || 0, icon: CreditCard, color: 'text-accent', bg: 'bg-accent/10' },
     { label: 'إجمالي التوكنز', value: totalTokens.toLocaleString(), icon: Sparkles, color: 'text-purple-500', bg: 'bg-purple-100' },
   ];
