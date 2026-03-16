@@ -17,13 +17,9 @@ const PLANS = [
     description: "للاستخدام المنتظم والبدء في الرقمنة",
     credits: 150,
     tokens: "150,000",
-    generations: "~40",
+    generations: "40",
     features: [
-      "150 اعتماد (Credits)",
-      "حوالي 40 مذكرة كاملة شهرياً",
-      "الوصول للمنهاج الرسمي 2023",
-      "توليد الأهداف الذكية SMART",
-      "حفظ المذكرات سحابياً"
+      "توليد حوالي 40 مذكرة كاملة"
     ],
     buttonText: "اشترك الآن",
     buttonVariant: "outline" as const,
@@ -37,14 +33,9 @@ const PLANS = [
     description: "للأداء الأقصى والإنتاجية العالية",
     credits: 300, // Updated Credits
     tokens: "300,000", // Updated Tokens
-    generations: "~80", // Approximate generations
+    generations: "80", // Approximate generations
     features: [
-      "300 اعتماد (Credits)",
-      "حوالي 80 مذكرة كاملة شهرياً",
-      "أولوية في معالجة الذكاء الاصطناعي",
-      "دعم فني مخصص",
-      "إمكانية التصدير بصيغ متعددة",
-      "بدون إعلانات"
+      "توليد حوالي 80 مذكرة كاملة"
     ],
     buttonText: "اشترك الآن",
     buttonVariant: "default" as const,
@@ -128,7 +119,7 @@ export default function PricingPage() {
                       <div className="bg-primary/10 p-1 rounded-full">
                         <Check className="h-3 w-3 text-primary" />
                       </div>
-                      <span>{feature}</span>
+                      <span className="font-bold">{feature}</span>
                     </li>
                   ))}
                 </ul>
