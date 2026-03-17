@@ -106,14 +106,20 @@ export default function LandingPage() {
               <div className="relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-3xl blur opacity-20 group-hover:opacity-30 transition duration-1000"></div>
                 <div className="relative bg-white border rounded-3xl overflow-hidden shadow-2xl">
-                  <Image 
-                    src={mockupImage?.imageUrl || ""} 
-                    alt={mockupImage?.description || "App Preview"}
-                    width={800}
-                    height={600}
-                    className="w-full h-auto"
-                    data-ai-hint={mockupImage?.imageHint}
-                  />
+                  {mockupImage?.imageUrl ? (
+                    <Image 
+                      src={mockupImage.imageUrl} 
+                      alt={mockupImage.description || "App Preview"}
+                      width={800}
+                      height={600}
+                      className="w-full h-auto"
+                      data-ai-hint={mockupImage.imageHint}
+                    />
+                  ) : (
+                    <div className="w-[800px] h-[600px] bg-muted animate-pulse flex items-center justify-center">
+                      <Sparkles className="h-12 w-12 text-muted-foreground" />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -218,13 +224,19 @@ export default function LandingPage() {
               </div>
               <div className="shrink-0">
                 <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-white shadow-2xl">
-                  <Image 
-                    src={teacherImage?.imageUrl || ""} 
-                    alt="Teacher" 
-                    fill 
-                    className="object-cover"
-                    data-ai-hint={teacherImage?.imageHint}
-                  />
+                  {teacherImage?.imageUrl ? (
+                    <Image 
+                      src={teacherImage.imageUrl} 
+                      alt="Teacher" 
+                      fill 
+                      className="object-cover"
+                      data-ai-hint={teacherImage.imageHint}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                      <GraduationCap className="h-10 w-10 text-muted-foreground" />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
