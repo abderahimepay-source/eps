@@ -114,6 +114,8 @@ export default function LandingPage() {
                       height={600}
                       className="w-full h-auto"
                       data-ai-hint={mockupImage.imageHint}
+                      unoptimized={true}
+                      priority={true}
                     />
                   ) : (
                     <div className="w-[800px] h-[600px] bg-muted animate-pulse flex items-center justify-center">
@@ -290,7 +292,7 @@ export default function LandingPage() {
                     <Facebook className="h-5 w-5" />
                   </Link>
                   <Link href="#" className="h-10 w-10 bg-muted rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
-                    <Twitter className="h-5 w-5" />
+                    <Facebook className="h-5 w-5" />
                   </Link>
                   <Link href="#" className="h-10 w-10 bg-muted rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
                     <Instagram className="h-5 w-5" />
