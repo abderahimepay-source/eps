@@ -176,7 +176,7 @@ export default function LandingPage() {
                   <span className="text-4xl font-bold font-rajdhani">500</span>
                   <span className="text-muted-foreground font-tajawal">د.ج</span>
                 </div>
-                <ul className="space-y-4 mb-8 flex-1">
+                <ul className="space-y-4 mb-8 flex-1 text-start">
                   <li className="flex items-center gap-3 text-sm font-tajawal">
                     <CheckCircle2 className="h-5 w-5 text-green-500" />
                     <span>توليد حوالي 40 مذكرة كاملة</span>
@@ -184,10 +184,6 @@ export default function LandingPage() {
                   <li className="flex items-center gap-3 text-sm font-tajawal">
                     <CheckCircle2 className="h-5 w-5 text-green-500" />
                     <span>الوصول للمنهاج الرسمي 2023</span>
-                  </li>
-                  <li className="flex items-center gap-3 text-sm font-tajawal opacity-50">
-                    <CheckCircle2 className="h-5 w-5 text-gray-300" />
-                    <span>دعم فني ذو أولوية</span>
                   </li>
                 </ul>
                 <Link href="/pricing">
@@ -205,7 +201,7 @@ export default function LandingPage() {
                   <span className="text-4xl font-bold font-rajdhani">1000</span>
                   <span className="text-muted-foreground font-tajawal">د.ج</span>
                 </div>
-                <ul className="space-y-4 mb-8 flex-1">
+                <ul className="space-y-4 mb-8 flex-1 text-start">
                   <li className="flex items-center gap-3 text-sm font-tajawal">
                     <CheckCircle2 className="h-5 w-5 text-primary" />
                     <span className="font-bold">توليد حوالي 80 مذكرة كاملة</span>
@@ -213,10 +209,6 @@ export default function LandingPage() {
                   <li className="flex items-center gap-3 text-sm font-tajawal">
                     <CheckCircle2 className="h-5 w-5 text-primary" />
                     <span>دعم كامل لجميع المستويات</span>
-                  </li>
-                  <li className="flex items-center gap-3 text-sm font-tajawal">
-                    <CheckCircle2 className="h-5 w-5 text-primary" />
-                    <span>تحديثات حصرية للمنهاج</span>
                   </li>
                 </ul>
                 <Link href="/pricing">
@@ -228,7 +220,7 @@ export default function LandingPage() {
         </section>
 
         {/* 4. Final Call to Action */}
-        <section className="w-full py-20 relative overflow-hidden">
+        <section className="w-full py-20 relative overflow-hidden text-center">
           <div className="absolute inset-0 bg-primary opacity-90 -z-10"></div>
           <div className="container px-4 md:px-6 mx-auto text-center space-y-8">
             <h2 className="text-3xl md:text-5xl font-bold font-headline text-white leading-tight">
@@ -249,12 +241,11 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Existing problem/solution logic truncated for brevity but maintained in core structure */}
         <section id="problem" className="w-full py-20 bg-muted/30">
           <div className="container px-4 md:px-6 mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-              <h2 className="text-3xl md:text-4xl font-bold font-headline">هل تعبت من العمل الورقي التقليدي؟</h2>
-              <p className="text-lg text-muted-foreground font-tajawal">
+              <h2 className="text-3xl md:text-4xl font-bold font-headline text-center">هل تعبت من العمل الورقي التقليدي؟</h2>
+              <p className="text-lg text-muted-foreground font-tajawal text-center">
                 نعلم المعاناة اليومية للأستاذ الجزائري في صياغة الأهداف وتنسيق المذكرات يدوياً.
               </p>
             </div>
@@ -299,8 +290,8 @@ export default function LandingPage() {
               © 2024 RiyadiPlan AI. جميع الحقوق محفوظة للأستاذ الجزائري.
             </p>
             <div className="flex gap-6 text-sm font-medium">
-              <Link className="hover:text-primary transition-colors" href="#">سياسة الخصوصية</Link>
-              <Link className="hover:text-primary transition-colors" href="#">شروط الاستخدام</Link>
+              <Link className="hover:text-primary transition-colors" href="/privacy-policy">سياسة الخصوصية</Link>
+              <Link className="hover:text-primary transition-colors" href="/terms-of-service">شروط الاستخدام</Link>
               <Link className="hover:text-primary transition-colors font-bold text-primary" href="https://wa.me/213555000000">الدعم عبر واتساب</Link>
             </div>
           </div>
