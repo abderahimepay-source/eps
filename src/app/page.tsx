@@ -2,8 +2,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { 
   ChevronLeft, 
   Zap, 
@@ -43,8 +41,8 @@ export default function LandingPage() {
           <Link className="text-sm font-medium hover:text-primary transition-colors" href="/about">
             عن المنصة
           </Link>
-          <Link className="text-sm font-medium hover:text-primary transition-colors" href="#features">
-            الميزات
+          <Link className="text-sm font-medium hover:text-primary transition-colors" href="#process">
+            كيف يعمل؟
           </Link>
           <Link className="text-sm font-medium hover:text-primary transition-colors" href="#pricing">
             الأسعار
@@ -72,7 +70,7 @@ export default function LandingPage() {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-8 text-center lg:text-start">
                 <div className="inline-flex items-center rounded-full border px-3 py-1 text-sm font-semibold bg-primary/10 text-primary mb-4 border-primary/20">
-                  <Sparkles className="h-4 w-4 me-2 animate-spin-slow" />
+                  <Sparkles className="h-4 w-4 me-2" />
                   مستقبل التحضير البيداغوجي في الجزائر
                 </div>
                 <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl font-headline leading-tight">
@@ -89,7 +87,7 @@ export default function LandingPage() {
                       <ChevronLeft className="ms-2 h-6 w-6" />
                     </Button>
                   </Link>
-                  <Link href="#problem">
+                  <Link href="#process">
                     <Button size="lg" variant="outline" className="h-14 px-10 text-xl">
                       اكتشف المزيد
                     </Button>
@@ -106,7 +104,7 @@ export default function LandingPage() {
                       alt={mockupImage.description || "App Preview"}
                       width={800}
                       height={600}
-                      className="w-full h-auto"
+                      className="w-full h-auto object-cover"
                       data-ai-hint={mockupImage.imageHint}
                       unoptimized={true}
                       priority={true}
@@ -119,7 +117,7 @@ export default function LandingPage() {
         </section>
 
         {/* 2. How it Works (Process) */}
-        <section className="w-full py-20 bg-primary/5">
+        <section id="process" className="w-full py-20 bg-primary/5">
           <div className="container px-4 md:px-6 mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
               <h2 className="text-3xl md:text-4xl font-bold font-headline text-primary">كيف يعمل RiyadiPlan؟</h2>
@@ -181,10 +179,6 @@ export default function LandingPage() {
                     <CheckCircle2 className="h-5 w-5 text-green-500" />
                     <span>توليد حوالي 40 مذكرة كاملة</span>
                   </li>
-                  <li className="flex items-center gap-3 text-sm font-tajawal">
-                    <CheckCircle2 className="h-5 w-5 text-green-500" />
-                    <span>الوصول للمنهاج الرسمي 2023</span>
-                  </li>
                 </ul>
                 <Link href="/pricing">
                   <Button className="w-full h-12" variant="outline">اختر الباقة</Button>
@@ -206,10 +200,6 @@ export default function LandingPage() {
                     <CheckCircle2 className="h-5 w-5 text-primary" />
                     <span className="font-bold">توليد حوالي 80 مذكرة كاملة</span>
                   </li>
-                  <li className="flex items-center gap-3 text-sm font-tajawal">
-                    <CheckCircle2 className="h-5 w-5 text-primary" />
-                    <span>دعم كامل لجميع المستويات</span>
-                  </li>
                 </ul>
                 <Link href="/pricing">
                   <Button className="w-full h-12 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20">ابدأ الآن</Button>
@@ -219,7 +209,42 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* 4. Final Call to Action */}
+        {/* 4. Problem & Solution (Detailed Comparison) */}
+        <section id="comparison" className="w-full py-20 bg-muted/30">
+          <div className="container px-4 md:px-6 mx-auto">
+            <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+              <h2 className="text-3xl md:text-4xl font-bold font-headline text-center">هل تعبت من العمل الورقي التقليدي؟</h2>
+              <p className="text-lg text-muted-foreground font-tajawal text-center">
+                نعلم المعاناة اليومية للأستاذ الجزائري في صياغة الأهداف وتنسيق المذكرات يدوياً.
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-8 items-stretch">
+              <ComparisonCard 
+                title="الطريقة التقليدية المتعبة" 
+                items={[
+                  "ساعات من البحث في ملفات PDF القديمة",
+                  "صعوبة صياغة الأهداف الإجرائية (SMART)",
+                  "تكرار الكتابة اليدوية المملة",
+                  "عدم تناسق التنسيق والخطوط"
+                ]}
+                isBad
+              />
+              <ComparisonCard 
+                title="طريقة RiyadiPlan AI الذكية" 
+                items={[
+                  "إنشاء مذكرة كاملة بـ 3 نقرات فقط",
+                  "أهداف ذكية مصاغة بأفعال حركية دقيقة",
+                  "تنسيق احترافي جاهز للطباعة فوراً",
+                  "أرشيف سحابي متاح من هاتفك في أي وقت"
+                ]}
+                isBad={false}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* 5. Final Call to Action */}
         <section className="w-full py-20 relative overflow-hidden text-center">
           <div className="absolute inset-0 bg-primary opacity-90 -z-10"></div>
           <div className="container px-4 md:px-6 mx-auto text-center space-y-8">
@@ -237,40 +262,6 @@ export default function LandingPage() {
                   <ChevronLeft className="ms-2 h-6 w-6" />
                 </Button>
               </Link>
-            </div>
-          </div>
-        </section>
-
-        <section id="problem" className="w-full py-20 bg-muted/30">
-          <div className="container px-4 md:px-6 mx-auto">
-            <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-              <h2 className="text-3xl md:text-4xl font-bold font-headline text-center">هل تعبت من العمل الورقي التقليدي؟</h2>
-              <p className="text-lg text-muted-foreground font-tajawal text-center">
-                نعلم المعاناة اليومية للأستاذ الجزائري في صياغة الأهداف وتنسيق المذكرات يدوياً.
-              </p>
-            </div>
-            
-            <div className="grid md:grid-cols-2 gap-8 items-stretch">
-              <Card 
-                title="الطريقة التقليدية المتعبة" 
-                items={[
-                  "ساعات من البحث في ملفات PDF القديمة",
-                  "صعوبة صياغة الأهداف الإجرائية (SMART)",
-                  "تكرار الكتابة اليدوية المملة",
-                  "عدم تناسق التنسيق والخطوط"
-                ]}
-                isBad
-              />
-              <Card 
-                title="طريقة RiyadiPlan AI الذكية" 
-                items={[
-                  "إنشاء مذكرة كاملة بـ 3 نقرات فقط",
-                  "أهداف ذكية مصاغة بأفعال حركية دقيقة",
-                  "تنسيق احترافي جاهز للطباعة فوراً",
-                  "أرشيف سحابي متاح من هاتفك في أي وقت"
-                ]}
-                isBad={false}
-              />
             </div>
           </div>
         </section>
@@ -301,7 +292,7 @@ export default function LandingPage() {
   );
 }
 
-function Card({ title, items, isBad }: { title: string, items: string[], isBad: boolean }) {
+function ComparisonCard({ title, items, isBad }: { title: string, items: string[], isBad: boolean }) {
   return (
     <div className={`p-8 rounded-3xl border shadow-sm flex flex-col h-full ${isBad ? 'bg-white opacity-80' : 'bg-white border-primary shadow-primary/10'}`}>
       <h3 className={`text-xl font-bold font-headline mb-6 text-center ${isBad ? 'text-muted-foreground' : 'text-primary'}`}>{title}</h3>
