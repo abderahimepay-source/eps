@@ -33,7 +33,6 @@ export default function LandingPage() {
           <span className="font-headline text-2xl font-bold tracking-tight text-primary">RiyadiPlan AI</span>
         </Link>
         <nav className="hidden md:flex gap-6 items-center">
-          <Link className="text-sm font-medium hover:text-primary transition-colors" href="/about">عن المنصة</Link>
           <Link className="text-sm font-medium hover:text-primary transition-colors" href="#features">المميزات</Link>
           <Link className="text-sm font-medium hover:text-primary transition-colors" href="#process">كيف يعمل؟</Link>
           <Link className="text-sm font-medium hover:text-primary transition-colors" href="#pricing">الأسعار</Link>
@@ -140,8 +139,8 @@ export default function LandingPage() {
               {/* Basic Plan */}
               <div className="p-8 rounded-3xl border bg-white shadow-sm flex flex-col relative hover:border-primary/50 transition-colors">
                 <h3 className="text-2xl font-bold font-headline mb-4">الباقة الأساسية</h3>
-                <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-4xl font-bold font-rajdhani">500</span>
+                <div className="flex items-baseline justify-center gap-1 mb-6">
+                  <span className="text-4xl font-bold font-rajdhani text-primary">500</span>
                   <span className="text-muted-foreground font-tajawal">د.ج</span>
                 </div>
                 <ul className="space-y-4 mb-8 flex-1 text-start">
@@ -161,8 +160,8 @@ export default function LandingPage() {
                   الأكثر طلباً
                 </div>
                 <h3 className="text-2xl font-bold font-headline mb-4 text-primary">باقة المحترفين PRO</h3>
-                <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-4xl font-bold font-rajdhani">1000</span>
+                <div className="flex items-baseline justify-center gap-1 mb-6">
+                  <span className="text-4xl font-bold font-rajdhani text-primary">1000</span>
                   <span className="text-muted-foreground font-tajawal">د.ج</span>
                 </div>
                 <ul className="space-y-4 mb-8 flex-1 text-start">
@@ -372,15 +371,7 @@ export default function LandingPage() {
               </p>
             </div>
             
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
-              <div className="space-y-3">
-                <h4 className="font-bold text-sm">المنصة</h4>
-                <ul className="text-sm space-y-2 text-muted-foreground">
-                  <li><Link href="#features" className="hover:text-primary transition-colors">المميزات</Link></li>
-                  <li><Link href="#pricing" className="hover:text-primary transition-colors">الأسعار</Link></li>
-                  <li><Link href="/about" className="hover:text-primary transition-colors">عن المنصة</Link></li>
-                </ul>
-              </div>
+            <div className="grid grid-cols-2 sm:grid-cols-2 gap-8">
               <div className="space-y-3">
                 <h4 className="font-bold text-sm">قانوني</h4>
                 <ul className="text-sm space-y-2 text-muted-foreground">
@@ -388,7 +379,7 @@ export default function LandingPage() {
                   <li><Link href="/terms-of-service" className="hover:text-primary transition-colors">شروط الخدمة</Link></li>
                 </ul>
               </div>
-              <div className="space-y-3 col-span-2 sm:col-span-1">
+              <div className="space-y-3">
                 <h4 className="font-bold text-sm">الدعم</h4>
                 <ul className="text-sm space-y-2 text-muted-foreground">
                   <li><Link href="https://wa.me/213555000000" className="text-primary font-bold hover:underline">واتساب</Link></li>
