@@ -19,63 +19,96 @@ import {
   Newspaper,
   Lightbulb,
   FileText,
-  User
+  User,
+  Star
 } from "lucide-react";
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const BLOG_POSTS = [
   {
     id: 1,
     title: "شرح شامل لمنهاج التربية البدنية 2023 للطور الابتدائي",
-    excerpt: "تعرف على أهم التغييرات في المنهاج الجديد وكيفية تكييف حصصك مع المقاربة بالكفاءات...",
+    excerpt: "تعرف على أهم التغييرات في المنهاج الجديد وكيفية تكييف حصصك مع المقاربة بالكفاءات الجديدة التي تركز على الطفل...",
     category: "أخبار المنهاج",
     date: "15 مارس 2024",
     readTime: "8 دقائق",
-    image: "https://picsum.photos/seed/curriculum/600/400",
-    author: "أ. محمد علي"
+    imageId: "blog-curriculum",
+    author: "أ. محمد علي",
+    featured: true
   },
   {
     id: 2,
     title: "5 ألعاب شبه رياضية لتطوير التنسيق الحركي لدى تلاميذ السنة الأولى",
-    excerpt: "مجموعة من الألعاب المختارة بعناية لتناسب الخصائص النمائية لتلاميذ الطور الأول...",
+    excerpt: "مجموعة من الألعاب المختارة بعناية لتناسب الخصائص النمائية لتلاميذ الطور الأول وتضمن المتعة والتعلم في آن واحد...",
     category: "نصائح بيداغوجية",
     date: "12 مارس 2024",
     readTime: "5 دقائق",
-    image: "https://picsum.photos/seed/games/600/400",
-    author: "أ. سارة ب."
+    imageId: "blog-games",
+    author: "أ. سارة ب.",
+    featured: false
   },
   {
     id: 3,
     title: "كيفية صياغة أهداف SMART في التربية البدنية والرياضية",
-    excerpt: "دليل عملي للأستاذ لتعلم فن صياغة الأهداف الإجرائية القابلة للقياس والملاحظة...",
+    excerpt: "دليل عملي للأستاذ لتعلم فن صياغة الأهداف الإجرائية القابلة للقياس والملاحظة وتجنب الأخطاء الشائعة في التحضير...",
     category: "تطوير مهني",
     date: "10 مارس 2024",
     readTime: "10 دقائق",
-    image: "https://picsum.photos/seed/smart/600/400",
-    author: "فريق RiyadiPlan"
+    imageId: "blog-smart",
+    author: "فريق RiyadiPlan",
+    featured: false
   },
   {
     id: 4,
     title: "أهمية التقويم البنائي في حصة التربية البدنية",
-    excerpt: "لماذا يجب علينا التركيز على عملية التعلم بدلاً من النتائج فقط؟ وكيف نطبق ذلك في الساحة؟",
-    category: "بيداغوجيا",
+    excerpt: "لماذا يجب علينا التركيز على عملية التعلم بدلاً من النتائج فقط؟ وكيف نطبق شبكات التقويم في الساحة بفعالية؟",
+    category: "نصائح بيداغوجية",
     date: "5 مارس 2024",
     readTime: "6 دقائق",
-    image: "https://picsum.photos/seed/assessment/600/400",
-    author: "أ. كمال ح."
+    imageId: "blog-assessment",
+    author: "أ. كمال ح.",
+    featured: false
+  },
+  {
+    id: 5,
+    title: "صيانة الوسائل الرياضية في المؤسسات التربوية",
+    excerpt: "دليل عملي للأستاذ والمدير حول كيفية الحفاظ على العتاد الرياضي وتمديد عمره الافتراضي في ظل نقص الإمكانيات...",
+    category: "وثائق تربوية",
+    date: "1 مارس 2024",
+    readTime: "4 دقائق",
+    imageId: "blog-equipment",
+    author: "أ. عيسى م.",
+    featured: false
   }
 ];
 
 const CATEGORIES = [
-  { name: "الكل", count: 12, icon: Newspaper },
-  { name: "أخبار المنهاج", count: 4, icon: BookOpen },
-  { name: "نصائح بيداغوجية", count: 5, icon: Lightbulb },
-  { name: "تطوير مهني", count: 3, icon: GraduationCap },
-  { name: "وثائق تربوية", count: 2, icon: FileText },
+  { name: "الكل", icon: Newspaper },
+  { name: "أخبار المنهاج", icon: BookOpen },
+  { name: "نصائح بيداغوجية", icon: Lightbulb },
+  { name: "تطوير مهني", icon: GraduationCap },
+  { name: "وثائق تربوية", icon: FileText },
 ];
 
 export default function AboutBlogPage() {
   const [selectedCategory, setSelectedCategory] = useState("الكل");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredPosts = useMemo(() => {
+    return BLOG_POSTS.filter(post => {
+      const matchesCategory = selectedCategory === "الكل" || post.category === selectedCategory;
+      const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                           post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesCategory && matchesSearch;
+    });
+  }, [selectedCategory, searchQuery]);
+
+  const featuredPost = useMemo(() => BLOG_POSTS.find(p => p.featured), []);
+
+  const getImageUrl = (id: string) => {
+    return PlaceHolderImages.find(img => img.id === id)?.imageUrl || "/placeholder.svg";
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F8FAFC]">
@@ -100,7 +133,122 @@ export default function AboutBlogPage() {
       <main className="flex-1 container mx-auto px-4 py-8 lg:py-12">
         <div className="grid lg:grid-cols-12 gap-8">
           
-          {/* Sidebar - Desktop Only (on right because RTL) */}
+          {/* Main Content Area */}
+          <div className="lg:col-span-9 space-y-12 order-1 lg:order-1">
+            
+            {/* Featured Post */}
+            {selectedCategory === "الكل" && !searchQuery && featuredPost && (
+              <section className="relative group cursor-pointer overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition-all">
+                <div className="grid md:grid-cols-2">
+                  <div className="relative aspect-video md:aspect-auto min-h-[300px]">
+                    <Image 
+                      src={getImageUrl(featuredPost.imageId)} 
+                      alt={featuredPost.title} 
+                      fill 
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      data-ai-hint="curriculum blog"
+                    />
+                    <div className="absolute top-4 right-4">
+                      <Badge className="bg-primary text-white shadow-lg">مقالات مميزة</Badge>
+                    </div>
+                  </div>
+                  <div className="p-8 flex flex-col justify-center space-y-4">
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground font-tajawal">
+                      <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> {featuredPost.date}</span>
+                      <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {featuredPost.readTime}</span>
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-bold font-headline group-hover:text-primary transition-colors">
+                      {featuredPost.title}
+                    </h2>
+                    <p className="text-muted-foreground font-tajawal leading-relaxed">
+                      {featuredPost.excerpt}
+                    </p>
+                    <div className="pt-4 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <User className="h-5 w-5 text-primary" />
+                        </div>
+                        <span className="font-bold text-sm font-tajawal">{featuredPost.author}</span>
+                      </div>
+                      <Button variant="link" className="text-primary p-0 h-auto font-bold">
+                        واصل القراءة <ChevronLeft className="mr-2 h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* Blog Posts Grid */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold font-headline">
+                  {searchQuery ? `نتائج البحث عن: ${searchQuery}` : selectedCategory === "الكل" ? "أحدث المقالات" : selectedCategory}
+                </h2>
+                <span className="text-sm text-muted-foreground font-tajawal">{filteredPosts.length} مقال</span>
+              </div>
+              
+              {filteredPosts.length > 0 ? (
+                <div className="grid md:grid-cols-2 gap-6">
+                  {filteredPosts.map((post) => (
+                    <Card key={post.id} className="border-none shadow-sm hover:shadow-md transition-all flex flex-col group overflow-hidden bg-white">
+                      <div className="relative aspect-video overflow-hidden">
+                        <Image 
+                          src={getImageUrl(post.imageId)} 
+                          alt={post.title} 
+                          fill 
+                          className="object-cover group-hover:scale-105 transition-transform duration-500" 
+                        />
+                        <div className="absolute top-4 right-4">
+                          <Badge className="bg-white/90 text-primary hover:bg-white shadow-sm border-none backdrop-blur-sm">
+                            {post.category}
+                          </Badge>
+                        </div>
+                      </div>
+                      <CardContent className="p-6 flex-1 space-y-4">
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground font-tajawal">
+                          <span className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {post.date}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {post.readTime}
+                          </span>
+                        </div>
+                        <CardTitle className="text-xl font-headline group-hover:text-primary transition-colors leading-tight">
+                          {post.title}
+                        </CardTitle>
+                        <p className="text-muted-foreground font-tajawal text-sm line-clamp-2 leading-relaxed">
+                          {post.excerpt}
+                        </p>
+                      </CardContent>
+                      <CardFooter className="p-6 pt-0 mt-auto flex items-center justify-between border-t border-slate-50">
+                        <div className="flex items-center gap-2">
+                          <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center">
+                            <User className="h-4 w-4 text-slate-400" />
+                          </div>
+                          <span className="text-xs font-bold font-tajawal text-slate-700">{post.author}</span>
+                        </div>
+                        <Button variant="ghost" size="sm" className="text-primary font-bold group">
+                          اقرأ المزيد
+                          <ChevronLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-20 bg-white rounded-3xl border border-dashed">
+                  <Newspaper className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-20" />
+                  <p className="text-muted-foreground font-tajawal">لم يتم العثور على أي مقالات تطابق بحثك.</p>
+                  <Button variant="link" onClick={() => {setSearchQuery(""); setSelectedCategory("الكل");}} className="mt-2">إعادة تعيين البحث</Button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Sidebar */}
           <aside className="lg:col-span-3 space-y-8 order-2 lg:order-2">
             
             {/* Search Box */}
@@ -108,7 +256,12 @@ export default function AboutBlogPage() {
               <CardContent className="p-4">
                 <div className="relative">
                   <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="بحث في المقالات..." className="pr-10 h-11" />
+                  <Input 
+                    placeholder="بحث في المقالات..." 
+                    className="pr-10 h-11" 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -137,14 +290,16 @@ export default function AboutBlogPage() {
                         <cat.icon className="h-4 w-4" />
                         <span>{cat.name}</span>
                       </div>
-                      <Badge variant="secondary" className="bg-white/50">{cat.count}</Badge>
+                      <Badge variant="secondary" className="bg-white/50">
+                        {cat.name === "الكل" ? BLOG_POSTS.length : BLOG_POSTS.filter(p => p.category === cat.name).length}
+                      </Badge>
                     </button>
                   ))}
                 </nav>
               </CardContent>
             </Card>
 
-            {/* Featured Section / Newsletter */}
+            {/* Newsletter */}
             <Card className="border-none shadow-sm bg-primary text-primary-foreground overflow-hidden">
               <CardContent className="p-6 text-center space-y-4">
                 <div className="bg-white/20 p-3 rounded-full w-fit mx-auto">
@@ -156,87 +311,21 @@ export default function AboutBlogPage() {
                 <Button variant="secondary" className="w-full bg-white text-primary hover:bg-white/90">اشترك الآن</Button>
               </CardContent>
             </Card>
+
+            {/* App Promotion */}
+            <Card className="border-none shadow-sm bg-accent text-white overflow-hidden">
+              <CardContent className="p-6 space-y-4">
+                <div className="flex items-center gap-2">
+                  <Star className="h-5 w-5 fill-white" />
+                  <span className="font-bold text-sm">جرّب RiyadiPlan AI</span>
+                </div>
+                <p className="text-sm font-tajawal">أنشئ مذكراتك بذكاء في ثوانٍ. وفر 80% من وقت التحضير.</p>
+                <Link href="/auth/sign-up" className="block">
+                  <Button className="w-full bg-white text-accent hover:bg-white/90">ابدأ الآن</Button>
+                </Link>
+              </CardContent>
+            </Card>
           </aside>
-
-          {/* Main Content Area */}
-          <div className="lg:col-span-9 space-y-8 order-1 lg:order-1">
-            
-            {/* Blog Header Section */}
-            <div className="space-y-4">
-              <div className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold bg-primary/10 text-primary mb-2">
-                مدونة RiyadiPlan
-              </div>
-              <h1 className="text-3xl md:text-5xl font-bold font-headline text-slate-900">
-                المدونة البيداغوجية <br />
-                <span className="text-primary">للأستاذ الجزائري</span>
-              </h1>
-              <p className="text-lg text-slate-600 font-tajawal max-w-2xl leading-relaxed">
-                وجهتكم الأولى لمواكبة مستجدات التربية البدنية، نصائح تحضير المذكرات، واستراتيجيات التعليم الحديثة.
-              </p>
-            </div>
-
-            {/* Blog Posts Grid */}
-            <div className="grid md:grid-cols-2 gap-6">
-              {BLOG_POSTS.map((post) => (
-                <Card key={post.id} className="border-none shadow-sm hover:shadow-md transition-all flex flex-col group overflow-hidden bg-white">
-                  <div className="relative aspect-video overflow-hidden">
-                    <Image 
-                      src={post.image} 
-                      alt={post.title} 
-                      fill 
-                      className="object-cover group-hover:scale-105 transition-transform duration-500" 
-                    />
-                    <div className="absolute top-4 right-4">
-                      <Badge className="bg-white/90 text-primary hover:bg-white shadow-sm border-none backdrop-blur-sm">
-                        {post.category}
-                      </Badge>
-                    </div>
-                  </div>
-                  <CardContent className="p-6 flex-1 space-y-4">
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground font-tajawal">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        {post.date}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {post.readTime}
-                      </span>
-                    </div>
-                    <CardTitle className="text-xl font-headline group-hover:text-primary transition-colors leading-tight">
-                      {post.title}
-                    </CardTitle>
-                    <p className="text-muted-foreground font-tajawal text-sm line-clamp-2 leading-relaxed">
-                      {post.excerpt}
-                    </p>
-                  </CardContent>
-                  <CardFooter className="p-6 pt-0 mt-auto flex items-center justify-between border-t border-slate-50">
-                    <div className="flex items-center gap-2">
-                      <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center">
-                        <User className="h-4 w-4 text-slate-400" />
-                      </div>
-                      <span className="text-xs font-bold font-tajawal text-slate-700">{post.author}</span>
-                    </div>
-                    <Button variant="ghost" size="sm" className="text-primary font-bold group">
-                      اقرأ المزيد
-                      <ChevronLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-
-            {/* Pagination Placeholder */}
-            <div className="flex justify-center pt-8">
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="icon" disabled><ArrowRight className="h-4 w-4 rotate-180" /></Button>
-                <Button variant="secondary" size="sm" className="bg-primary text-white">1</Button>
-                <Button variant="outline" size="sm">2</Button>
-                <Button variant="outline" size="sm">3</Button>
-                <Button variant="outline" size="icon"><ChevronLeft className="h-4 w-4" /></Button>
-              </div>
-            </div>
-          </div>
 
         </div>
       </main>
@@ -261,4 +350,3 @@ export default function AboutBlogPage() {
     </div>
   );
 }
-
