@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
@@ -14,13 +13,50 @@ import {
   Zap,
   ShieldCheck,
   Star,
-  Quote
+  Quote,
+  MessageCircle,
+  HelpCircle
 } from "lucide-react";
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export default function LandingPage() {
   const mockupImage = PlaceHolderImages.find(img => img.id === 'app-mockup');
-  const teacherImage = PlaceHolderImages.find(img => img.id === 'teacher-testimonial');
+
+  const faqs = [
+    {
+      category: "البداية والحساب",
+      questions: [
+        { q: "هل أحتاج لبطاقة بنكية للتسجيل؟", a: "لا، التسجيل مجاني تماماً ونمنحك اعتمادات تجريبية للبدء فوراً دون الحاجة لأي معلومات دفع." },
+        { q: "هل يمكنني تغيير باقتي لاحقاً؟", a: "نعم، يمكنك الترقية إلى باقة المحترفين في أي وقت للحصول على سعة أكبر من الاعتمادات." }
+      ]
+    },
+    {
+      category: "الأمور التقنية",
+      questions: [
+        { q: "هل أحتاج لتحميل أي برنامج على حاسوبي؟", a: "لا، RiyadiPlan AI يعمل 100% عبر المتصفح. يمكنك استخدامه من الهاتف، اللوحة الإلكترونية، أو الحاسوب دون تثبيت أي شيء." },
+        { q: "هل بياناتي ومذكراتي آمنة؟", a: "بالتأكيد، نستخدم تشفير SSL المتطور وخوادم Google Cloud لضمان خصوصية وأمان كافة ملفاتك." }
+      ]
+    },
+    {
+      category: "الدفع والاشتراكات",
+      questions: [
+        { q: "ما هي طرق الدفع المتاحة؟", a: "ندعم الدفع المحلي عبر البطاقة الذهبية وبطاقة CIB من خلال بوابة Chargily الآمنة." },
+        { q: "ما هي سياسة الاسترجاع؟", a: "نظراً لأننا نقدم خدمة رقمية فورية، لا نوفر استرجاعاً للأموال بعد استخدام الاعتمادات، ولكن يمكنك دائماً تجربة الخدمة مجاناً قبل الشراء." }
+      ]
+    },
+    {
+      category: "الدعم والتدريب",
+      questions: [
+        { q: "هل توفرون دعماً فنياً في حال واجهت مشكلة؟", a: "نعم، فريقنا متواجد عبر واتساب والبريد الإلكتروني للرد على استفساراتكم في أقل من 24 ساعة." }
+      ]
+    }
+  ];
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground font-body" dir="rtl">
@@ -36,6 +72,7 @@ export default function LandingPage() {
           <Link className="text-sm font-medium hover:text-primary transition-colors" href="#features">المميزات</Link>
           <Link className="text-sm font-medium hover:text-primary transition-colors" href="#process">كيف يعمل؟</Link>
           <Link className="text-sm font-medium hover:text-primary transition-colors" href="#pricing">الأسعار</Link>
+          <Link className="text-sm font-medium hover:text-primary transition-colors" href="#faq">الأسئلة الشائعة</Link>
         </nav>
         <div className="flex gap-3 items-center">
           <Link href="/auth/sign-in" className="hidden sm:block">
@@ -139,14 +176,18 @@ export default function LandingPage() {
               {/* Basic Plan */}
               <div className="p-8 rounded-3xl border bg-white shadow-sm flex flex-col relative hover:border-primary/50 transition-colors">
                 <h3 className="text-2xl font-bold font-headline mb-4">الباقة الأساسية</h3>
-                <div className="flex items-baseline justify-center gap-1 mb-6">
-                  <span className="text-4xl font-bold font-rajdhani text-primary">500</span>
+                <div className="flex items-baseline justify-center gap-1 mb-6 text-primary">
+                  <span className="text-4xl font-bold font-rajdhani">500</span>
                   <span className="text-muted-foreground font-tajawal">د.ج</span>
                 </div>
                 <ul className="space-y-4 mb-8 flex-1 text-start">
                   <li className="flex items-center gap-3 text-sm font-tajawal">
                     <CheckCircle2 className="h-5 w-5 text-green-500" />
                     <span className="font-bold">توليد حوالي 40 مذكرة كاملة</span>
+                  </li>
+                  <li className="flex items-center gap-3 text-sm font-tajawal">
+                    <CheckCircle2 className="h-5 w-5 text-green-500" />
+                    <span>الوصول للمنهاج الرسمي 2023</span>
                   </li>
                 </ul>
                 <Link href="/pricing">
@@ -160,14 +201,22 @@ export default function LandingPage() {
                   الأكثر طلباً
                 </div>
                 <h3 className="text-2xl font-bold font-headline mb-4 text-primary">باقة المحترفين PRO</h3>
-                <div className="flex items-baseline justify-center gap-1 mb-6">
-                  <span className="text-4xl font-bold font-rajdhani text-primary">1000</span>
+                <div className="flex items-baseline justify-center gap-1 mb-6 text-primary">
+                  <span className="text-4xl font-bold font-rajdhani">1000</span>
                   <span className="text-muted-foreground font-tajawal">د.ج</span>
                 </div>
                 <ul className="space-y-4 mb-8 flex-1 text-start">
                   <li className="flex items-center gap-3 text-sm font-tajawal">
                     <CheckCircle2 className="h-5 w-5 text-primary" />
                     <span className="font-bold">توليد حوالي 80 مذكرة كاملة</span>
+                  </li>
+                  <li className="flex items-center gap-3 text-sm font-tajawal">
+                    <CheckCircle2 className="h-5 w-5 text-primary" />
+                    <span>أولوية في الدعم الفني</span>
+                  </li>
+                  <li className="flex items-center gap-3 text-sm font-tajawal">
+                    <CheckCircle2 className="h-5 w-5 text-primary" />
+                    <span>أرشفة سحابية غير محدودة</span>
                   </li>
                 </ul>
                 <Link href="/pricing">
@@ -178,154 +227,46 @@ export default function LandingPage() {
             
             <div className="mt-12 text-center text-muted-foreground font-tajawal flex items-center justify-center gap-4">
               <span className="text-xs">الدفع متاح عبر:</span>
-              <div className="flex gap-4 opacity-50">
-                <span className="font-bold text-sm">الذهبية</span>
+              <div className="flex gap-4 opacity-50 grayscale transition-all hover:grayscale-0">
+                <span className="font-bold text-sm">البطاقة الذهبية</span>
                 <span className="font-bold text-sm">CIB</span>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 4. Problem & Solution Section */}
-        <section className="w-full py-20 bg-white border-y">
-          <div className="container px-4 md:px-6 mx-auto">
-            <div className="grid md:grid-cols-2 gap-16 items-center">
-              <div className="space-y-6">
-                <h2 className="text-3xl md:text-4xl font-bold font-headline text-destructive">هل تعبت من العمل الورقي التقليدي؟</h2>
-                <p className="text-lg text-muted-foreground font-tajawal leading-relaxed">
-                  نعلم المعاناة اليومية للأستاذ الجزائري في صياغة الأهداف وتنسيق المذكرات يدوياً. إضاعة الساعات في البحث في ملفات PDF القديمة وصعوبة ملاحقة تحديثات المنهاج.
-                </p>
-                <ul className="space-y-4">
-                  {[
-                    "إضاعة ساعات في صياغة الأهداف الإجرائية (SMART).",
-                    "عدم تناسق التنسيق اليدوي والخطوط.",
-                    "صعوبة الوصول للمذكرات القديمة عند الحاجة."
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3 text-muted-foreground">
-                      <div className="h-5 w-5 rounded-full bg-red-100 flex items-center justify-center shrink-0">
-                        <div className="h-1.5 w-1.5 rounded-full bg-red-500"></div>
-                      </div>
-                      <span className="font-tajawal">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="space-y-6 bg-primary/5 p-8 rounded-3xl border border-primary/20 shadow-inner">
-                <h2 className="text-3xl md:text-4xl font-bold font-headline text-primary">حل ذكي، بلمسة واحدة</h2>
-                <p className="text-lg text-muted-foreground font-tajawal leading-relaxed">
-                  RiyadiPlan AI يختصر عليك الطريق. بفضل قاعدة بيانات المنهاج الرسمي المدمجة، تحصل على مذكرة احترافية جاهزة للطباعة في ثوانٍ.
-                </p>
-                <ul className="space-y-4">
-                  {[
-                    "توليد أهداف دقيقة باستخدام أفعال حركية رسمية.",
-                    "تنسيق احترافي موحد بضغطة زر واحدة.",
-                    "أرشيف سحابي آمن لمذكراتك متاح من أي جهاز."
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3 text-foreground font-medium">
-                      <CheckCircle2 className="h-5 w-5 text-primary" />
-                      <span className="font-tajawal">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 5. Key Features Section */}
-        <section id="features" className="w-full py-20 bg-muted/30">
+        {/* 4. FAQ Section */}
+        <section id="faq" className="w-full py-20 bg-white">
           <div className="container px-4 md:px-6 mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-              <h2 className="text-3xl md:text-4xl font-bold font-headline text-primary">لماذا RiyadiPlan AI؟</h2>
-              <p className="text-lg text-muted-foreground font-tajawal">مصمم خصيصاً ليناسب احتياجات الأستاذ في المؤسسة الجزائرية</p>
-            </div>
-            
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[
-                { 
-                  title: "منهاج 2023 مدمج", 
-                  desc: "يحتوي على كافة ميادين وموارد المنهاج الرسمي الجديد لضمان الدقة البيداغوجية.", 
-                  icon: BookOpen,
-                  color: "bg-blue-500"
-                },
-                { 
-                  title: "مولد أهداف SMART", 
-                  desc: "صياغة أهداف إجرائية ذكية وقابلة للقياس باستخدام أفعال حركية دقيقة (يقذف، يركض..).", 
-                  icon: Target,
-                  color: "bg-orange-500"
-                },
-                { 
-                  title: "تصدير PDF فوري", 
-                  desc: "احصل على مذكرتك بتنسيق احترافي جاهز للطباعة أو الإرسال لمديرك في ثوانٍ.", 
-                  icon: Printer,
-                  color: "bg-green-500"
-                },
-                { 
-                  title: "توفير 80% من الوقت", 
-                  desc: "حوّل عملية التحضير من ساعات من التفكير والكتابة إلى ثوانٍ من المراجعة والتدقيق.", 
-                  icon: Clock,
-                  color: "bg-purple-500"
-                },
-                { 
-                  title: "دعم فني محلي", 
-                  desc: "فريقنا متواجد دائماً لدعمك عبر واتساب والرد على استفساراتك التقنية والتربوية.", 
-                  icon: Zap,
-                  color: "bg-yellow-500"
-                },
-                { 
-                  title: "أمان وخصوصية", 
-                  desc: "بياناتك ومذكراتك محمية بأحدث بروتوكولات التشفير على خوادم Google Cloud.", 
-                  icon: ShieldCheck,
-                  color: "bg-teal-500"
-                }
-              ].map((feature, i) => (
-                <div key={i} className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-all border group">
-                  <div className={`${feature.color} h-12 w-12 rounded-xl flex items-center justify-center text-white mb-6 group-hover:scale-110 transition-transform`}>
-                    <feature.icon className="h-6 w-6" />
-                  </div>
-                  <h3 className="text-xl font-bold font-headline mb-3">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground font-tajawal leading-relaxed">{feature.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* 6. Social Proof Section */}
-        <section className="w-full py-20 bg-primary/5">
-          <div className="container px-4 md:px-6 mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold font-headline mb-4">ماذا يقول الأساتذة عنا؟</h2>
-              <div className="flex justify-center gap-1 mb-4">
-                {[1, 2, 3, 4, 5].map(i => <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />)}
+              <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <HelpCircle className="h-8 w-8 text-primary" />
               </div>
+              <h2 className="text-3xl md:text-4xl font-bold font-headline">الأسئلة الشائعة</h2>
+              <p className="text-lg text-muted-foreground font-tajawal">كل ما تحتاج معرفته عن منصة RiyadiPlan AI</p>
             </div>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[
-                { name: "أحمد ب.", role: "أستاذ تربية بدنية - العاصمة", text: "وفرت عليّ المنصة الكثير من الجهد في صياغة الأهداف. المذكرات المولدة دقيقة جداً وموافقة للمنهاج." },
-                { name: "سارة م.", role: "أستاذة مدرسة ابتدائية - وهران", text: "سهولة الاستخدام مذهلة. الآن أستطيع تحضير أسبوع كامل من الدروس في أقل من 10 دقائق." },
-                { name: "محمد ق.", role: "مفتش تربوي سابق", text: "فكرة رائعة تدعم التحول الرقمي في التعليم. استخدام الأفعال الحركية في الأهداف احترافي للغاية." }
-              ].map((t, i) => (
-                <div key={i} className="bg-white p-8 rounded-2xl shadow-sm border relative">
-                  <Quote className="absolute top-4 right-4 h-8 w-8 text-primary/10" />
-                  <p className="text-sm font-tajawal italic mb-6 leading-relaxed text-muted-foreground">"{t.text}"</p>
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
-                      {t.name[0]}
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-bold font-headline">{t.name}</h4>
-                      <p className="text-[10px] text-muted-foreground">{t.role}</p>
-                    </div>
-                  </div>
+
+            <div className="max-w-3xl mx-auto space-y-8">
+              {faqs.map((category, idx) => (
+                <div key={idx} className="space-y-4">
+                  <h3 className="text-xl font-bold font-headline text-primary border-r-4 border-primary ps-3">{category.category}</h3>
+                  <Accordion type="single" collapsible className="w-full">
+                    {category.questions.map((faq, fIdx) => (
+                      <AccordionItem key={fIdx} value={`${idx}-${fIdx}`} className="border rounded-xl px-4 mb-2 bg-muted/5">
+                        <AccordionTrigger className="text-start font-bold font-tajawal hover:no-underline">{faq.q}</AccordionTrigger>
+                        <AccordionContent className="text-muted-foreground font-tajawal leading-relaxed">
+                          {faq.a}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* 7. Final Call to Action Section */}
+        {/* 5. Final Call to Action Section */}
         <section className="w-full py-24 relative overflow-hidden bg-primary">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
           <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
@@ -335,7 +276,7 @@ export default function LandingPage() {
               توقف عن العمل الورقي المتعب <br />
               <span className="text-accent-foreground font-extrabold drop-shadow-sm">وابدأ التحضير بذكاء اليوم</span>
             </h2>
-            <p className="text-xl md:text-2xl text-white font-tajawal max-w-2xl mx-auto leading-relaxed drop-shadow-sm">
+            <p className="text-xl md:text-2xl text-white font-tajawal max-w-2xl mx-auto leading-relaxed drop-shadow-sm opacity-90">
               انضم لمئات الأساتذة الجزائريين الذين وفروا ساعات من وقتهم أسبوعياً. مذكرتك القادمة جاهزة في انتظارك.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center pt-8">
@@ -346,7 +287,8 @@ export default function LandingPage() {
                 </Button>
               </Link>
               <Link href="https://wa.me/213555000000">
-                <Button size="lg" variant="outline" className="h-16 px-12 text-2xl border-white/40 text-white hover:bg-white/10 rounded-2xl font-bold">
+                <Button size="lg" variant="outline" className="h-16 px-12 text-2xl border-white/40 text-white hover:bg-white/10 rounded-2xl font-bold gap-2">
+                  <MessageCircle className="h-6 w-6" />
                   تحدث مع الدعم
                 </Button>
               </Link>
@@ -371,7 +313,7 @@ export default function LandingPage() {
               </p>
             </div>
             
-            <div className="grid grid-cols-2 sm:grid-cols-2 gap-8">
+            <div className="grid grid-cols-2 gap-8">
               <div className="space-y-3">
                 <h4 className="font-bold text-sm">قانوني</h4>
                 <ul className="text-sm space-y-2 text-muted-foreground">

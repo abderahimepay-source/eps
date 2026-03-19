@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
-import { GraduationCap, ArrowRight, FileText } from "lucide-react";
+import { GraduationCap, ArrowRight, FileText, AlertCircle, CreditCard, Scale, ShieldAlert } from "lucide-react";
 
 export default function TermsOfServicePage() {
   return (
@@ -23,67 +23,70 @@ export default function TermsOfServicePage() {
         </Link>
       </header>
 
-      <main className="container max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8 space-y-8">
+      <main className="container max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8 space-y-12 text-start">
         <div className="text-center space-y-4">
-          <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
-            <FileText className="h-8 w-8 text-primary" />
+          <div className="bg-primary/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <FileText className="h-10 w-10 text-primary" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold font-headline">شروط الخدمة</h1>
-          <p className="text-muted-foreground">آخر تحديث: مارس 2024</p>
+          <h1 className="text-3xl md:text-5xl font-bold font-headline m-0">شروط الخدمة</h1>
+          <p className="text-muted-foreground text-lg italic">يرجى قراءة القواعد المنظمة لاستخدام المنصة بعناية.</p>
         </div>
 
-        <div className="prose prose-teal max-w-none space-y-8 text-foreground/80 leading-relaxed text-start">
-          <section>
-            <h2 className="text-2xl font-bold text-primary mb-4">1. قبول الشروط</h2>
-            <p>بمجرد إنشاء حساب أو استخدام خدمات RiyadiPlan AI، فإنك توافق على الالتزام بهذه الشروط والسياسات المذكورة هنا.</p>
+        <div className="prose prose-teal max-w-none space-y-10 text-foreground/80 leading-relaxed">
+          
+          <section className="space-y-4">
+            <div className="flex items-center gap-2 text-primary">
+              <Scale className="h-6 w-6" />
+              <h2 className="text-2xl font-bold font-headline m-0">1. قبول الشروط ووصف الخدمة</h2>
+            </div>
+            <p>باستخدامك لمنصة RiyadiPlan AI، فإنك توافق على الالتزام بهذه الشروط. المنصة هي خدمة سحابية (SaaS) تستخدم الذكاء الاصطناعي لتوليد محتوى بيداغوجي لأساتذة التربية البدنية وفق المنهاج الجزائري الرسمي.</p>
           </section>
 
-          <section>
-            <h2 className="text-2xl font-bold text-primary mb-4">2. وصف الخدمة</h2>
-            <p>RiyadiPlan AI هي منصة سحابية تستخدم الذكاء الاصطناعي لمساعدة أساتذة التربية البدنية في الجزائر على توليد مذكرات بيداغوجية وأهداف تعلمية وفق المنهاج الدراسي الرسمي.</p>
+          <section className="space-y-4">
+            <div className="flex items-center gap-2 text-primary">
+              <ShieldAlert className="h-6 w-6" />
+              <h2 className="text-2xl font-bold font-headline m-0">2. الحسابات والمسؤولية</h2>
+            </div>
+            <p>يجب أن يكون عمرك 18 عاماً على الأقل. أنت مسؤول عن الحفاظ على سرية كلمة مرورك وعن كافة الأنشطة التي تتم عبر حسابك. يمنع منعاً باتاً مشاركة الحساب مع أشخاص آخرين، فالحساب مخصص للاستخدام الشخصي فقط.</p>
           </section>
 
-          <section>
-            <h2 className="text-2xl font-bold text-primary mb-4">3. حسابات المستخدمين</h2>
-            <ul className="list-disc list-inside space-y-2 mt-2">
-              <li>يجب أن تكون المعلومات المقدمة عند التسجيل دقيقة وحديثة.</li>
-              <li>أنت مسؤول عن الحفاظ على سرية كلمة المرور الخاصة بك.</li>
-              <li>يمنع منعاً باتاً مشاركة الحساب مع أشخاص آخرين؛ الحساب مخصص للاستخدام الفردي فقط.</li>
-            </ul>
+          <section className="space-y-4">
+            <div className="flex items-center gap-2 text-primary">
+              <AlertCircle className="h-6 w-6" />
+              <h2 className="text-2xl font-bold font-headline m-0">3. سياسة الاستخدام المقبول</h2>
+            </div>
+            <div className="bg-destructive/5 p-6 rounded-2xl border border-destructive/20">
+              <p className="font-bold text-destructive mb-2">يحظر تماماً القيام بما يلي:</p>
+              <ul className="list-disc list-inside space-y-2 text-sm">
+                <li>استخدام الخدمة لأغراض غير قانونية أو تخريبية.</li>
+                <li>محاولة الوصول غير المصرح به أو الهندسة العكسية للبرمجيات.</li>
+                <li>توليد محتوى مسيء أو ينتهك أخلاقيات المهنة التربوية.</li>
+              </ul>
+            </div>
           </section>
 
-          <section>
-            <h2 className="text-2xl font-bold text-primary mb-4">4. سياسة الدفع والاشتراكات</h2>
-            <ul className="list-disc list-inside space-y-2 mt-2">
-              <li>تعتمد الخدمة على نظام "الاعتمادات" (Credits) التي يتم شراؤها عبر منصة Chargily.</li>
-              <li>الأسعار المعلنة نهائية وتشمل جميع الرسوم.</li>
-              <li><strong>سياسة الاسترجاع:</strong> نظراً للطبيعة الرقمية والفورية للخدمة، لا توفر المنصة استرجاعاً للأموال بعد استخدام الاعتمادات لتوليد المحتوى، إلا في حالات الخلل التقني المثبت.</li>
-            </ul>
+          <section className="space-y-4">
+            <div className="flex items-center gap-2 text-primary">
+              <CreditCard className="h-6 w-6" />
+              <h2 className="text-2xl font-bold font-headline m-0">4. الدفع، الاشتراكات، والتحصيل</h2>
+            </div>
+            <p>تعتمد الخدمة نظام "الاعتمادات" التي يتم شراؤها عبر بوابة <strong>Chargily</strong>. يتم تفعيل الاعتمادات فورياً بعد نجاح عملية الدفع.</p>
+            <p className="font-bold">سياسة الاسترجاع:</p>
+            <p>نظراً للطبيعة الرقمية والفورية للخدمة، <strong>لا نوفر استرجاعاً للأموال</strong> بعد استهلاك الاعتمادات لتوليد المحتوى، إلا في حالات الخلل التقني المثبت الذي منعك من الحصول على مذكرتك.</p>
           </section>
 
-          <section>
-            <h2 className="text-2xl font-bold text-primary mb-4">5. الاستخدام المقبول</h2>
-            <p>يُحظر استخدام المنصة في:</p>
-            <ul className="list-disc list-inside space-y-2 mt-2">
-              <li>محاولة اختراق أو تعطيل البنية التحتية للمنصة.</li>
-              <li>استخدام المحتوى المولد لأغراض تجارية لإعادة البيع كخدمة منافسة.</li>
-              <li>توليد محتوى مسيء أو غير قانوني.</li>
-            </ul>
+          <section className="space-y-4">
+            <div className="flex items-center gap-2 text-primary">
+              <Scale className="h-6 w-6" />
+              <h2 className="text-2xl font-bold font-headline m-0">5. إخلاء المسؤولية والملكية الفكرية</h2>
+            </div>
+            <p>نحن نمتلك الكود المصدري والتصميم، بينما تمتلك أنت (المستخدم) كامل الحقوق في المذكرات التي تقوم بتوليدها لاستخدامها في مسارك المهني.</p>
+            <p className="bg-muted p-4 rounded-xl text-sm italic">"يتم تقديم الخدمة كما هي (As Is). المنصة أداة مساعدة، ويجب على الأستاذ مراجعة المحتوى المولد وتكييفه بيداغوجياً قبل تقديمه رسمياً. نحن غير مسؤولين عن أي أخطاء تربوية ناتجة عن عدم المراجعة."</p>
           </section>
 
-          <section>
-            <h2 className="text-2xl font-bold text-primary mb-4">6. إخلاء المسؤولية</h2>
-            <p>بينما نسعى لضمان أعلى درجات الدقة، فإن المحتوى المولد بواسطة الذكاء الاصطناعي يجب مراجعته من قبل الأستاذ قبل اعتماده رسمياً. المنصة غير مسؤولة عن أي قرارات تربوية أو إدارية ناتجة عن استخدام المحتوى.</p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-primary mb-4">7. الملكية الفكرية</h2>
-            <p>تمتلك RiyadiPlan AI كافة الحقوق المتعلقة بالكود المصدري، التصميم، والخوارزميات. يحق للمستخدم امتلاك المذكرات التي يقوم بتوليدها واستخدامها في مساره المهني والتربوي.</p>
-          </section>
-
-          <section className="bg-primary/5 p-6 rounded-2xl border border-primary/10">
-            <h2 className="text-2xl font-bold text-primary mb-4">8. القانون الحاكم</h2>
-            <p>تخضع هذه الشروط وتفسر وفقاً للقوانين السارية في الجمهورية الجزائرية الديمقراطية الشعبية.</p>
+          <section className="bg-primary/5 p-8 rounded-3xl border border-primary/20">
+            <h2 className="text-2xl font-bold font-headline text-primary mb-4 m-0 m-0">6. القانون الحاكم</h2>
+            <p>تخضع هذه الشروط وتفسر وفقاً للقوانين السارية في <strong>الجمهورية الجزائرية الديمقراطية الشعبية</strong>.</p>
           </section>
         </div>
       </main>
