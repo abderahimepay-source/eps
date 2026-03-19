@@ -60,7 +60,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <GraduationCap className="h-6 w-6 text-primary-foreground" />
             </div>
             {!isCollapsed && (
-              <span className="font-headline text-2xl font-bold text-primary truncate">RiyadiPlan</span>
+              <span className="font-headline text-2xl font-bold text-primary truncate">Modakira</span>
             )}
           </div>
 
@@ -146,7 +146,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="bg-primary p-1 rounded-md">
               <GraduationCap className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="font-headline font-bold text-lg text-primary">RiyadiPlan</span>
+            <span className="font-headline font-bold text-lg text-primary">Modakira</span>
           </div>
           
           <div className="ms-auto flex items-center gap-2">

@@ -7,15 +7,13 @@ import {
   BookOpen, 
   GraduationCap, 
   CheckCircle2, 
-  Printer, 
   Target,
   Clock,
   Zap,
   ShieldCheck,
-  Star,
-  Quote,
+  HelpCircle,
   MessageCircle,
-  HelpCircle
+  ArrowRight
 } from "lucide-react";
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import {
@@ -39,7 +37,7 @@ export default function LandingPage() {
     {
       category: "الأمور التقنية",
       questions: [
-        { q: "هل أحتاج لتحميل أي برنامج على حاسوبي؟", a: "لا، RiyadiPlan AI يعمل 100% عبر المتصفح. يمكنك استخدامه من الهاتف، اللوحة الإلكترونية، أو الحاسوب دون تثبيت أي شيء." },
+        { q: "هل أحتاج لتحميل أي برنامج على حاسوبي؟", a: "لا، Modakira يعمل 100% عبر المتصفح. يمكنك استخدامه من الهاتف، اللوحة الإلكترونية، أو الحاسوب دون تثبيت أي شيء." },
         { q: "هل بياناتي ومذكراتي آمنة؟", a: "بالتأكيد، نستخدم تشفير SSL المتطور وخوادم Google Cloud لضمان خصوصية وأمان كافة ملفاتك." }
       ]
     },
@@ -66,12 +64,12 @@ export default function LandingPage() {
           <div className="bg-primary p-1.5 rounded-lg">
             <GraduationCap className="h-6 w-6 text-primary-foreground" />
           </div>
-          <span className="font-headline text-2xl font-bold tracking-tight text-primary">RiyadiPlan AI</span>
+          <span className="font-headline text-2xl font-bold tracking-tight text-primary">Modakira</span>
         </Link>
         <nav className="hidden md:flex gap-6 items-center">
-          <Link className="text-sm font-medium hover:text-primary transition-colors" href="#features">المميزات</Link>
           <Link className="text-sm font-medium hover:text-primary transition-colors" href="#process">كيف يعمل؟</Link>
           <Link className="text-sm font-medium hover:text-primary transition-colors" href="#pricing">الأسعار</Link>
+          <Link className="text-sm font-medium hover:text-primary transition-colors" href="#comparison">لماذا نحن؟</Link>
           <Link className="text-sm font-medium hover:text-primary transition-colors" href="#faq">الأسئلة الشائعة</Link>
         </nav>
         <div className="flex gap-3 items-center">
@@ -108,7 +106,7 @@ export default function LandingPage() {
                       <ChevronLeft className="ms-2 h-6 w-6" />
                     </Button>
                   </Link>
-                  <Link href="#features">
+                  <Link href="#process">
                     <Button size="lg" variant="outline" className="h-14 px-10 text-xl">
                       اكتشف المميزات
                     </Button>
@@ -173,7 +171,6 @@ export default function LandingPage() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {/* Basic Plan */}
               <div className="p-8 rounded-3xl border bg-white shadow-sm flex flex-col relative hover:border-primary/50 transition-colors">
                 <h3 className="text-2xl font-bold font-headline mb-4">الباقة الأساسية</h3>
                 <div className="flex items-baseline justify-center gap-1 mb-6 text-primary">
@@ -195,7 +192,6 @@ export default function LandingPage() {
                 </Link>
               </div>
 
-              {/* Pro Plan */}
               <div className="p-8 rounded-3xl border-2 border-primary bg-primary/5 shadow-xl flex flex-col relative transform lg:scale-105">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white px-4 py-1 rounded-full text-xs font-bold font-tajawal shadow-lg">
                   الأكثر طلباً
@@ -224,26 +220,65 @@ export default function LandingPage() {
                 </Link>
               </div>
             </div>
-            
-            <div className="mt-12 text-center text-muted-foreground font-tajawal flex items-center justify-center gap-4">
-              <span className="text-xs">الدفع متاح عبر:</span>
-              <div className="flex gap-4 opacity-50 grayscale transition-all hover:grayscale-0">
-                <span className="font-bold text-sm">البطاقة الذهبية</span>
-                <span className="font-bold text-sm">CIB</span>
+          </div>
+        </section>
+
+        {/* 4. Comparison Section */}
+        <section id="comparison" className="w-full py-20 bg-white">
+          <div className="container px-4 md:px-6 mx-auto">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <h2 className="text-3xl md:text-4xl font-bold font-headline">لماذا يختار الأساتذة Modakira؟</h2>
+                <p className="text-lg text-muted-foreground font-tajawal">
+                  نحن نفهم التحديات التي تواجه الأستاذ الجزائري يومياً. بدلاً من قضاء ساعات في البحث والنسخ، نمنحك الدقة والسرعة.
+                </p>
+                <div className="space-y-4">
+                  {[
+                    { title: "توافق كامل مع منهاج 2023", desc: "نظامنا محدث باستمرار وفق آخر التوصيات البيداغوجية." },
+                    { title: "صياغة أهداف SMART", desc: "الذكاء الاصطناعي يختار الأفعال الإجرائية المناسبة التي يطلبها المفتشون." },
+                    { title: "تصدير جاهز للطباعة", desc: "احصل على مذكرة منسقة وجاهزة للتوقيع في ثوانٍ." }
+                  ].map((item, i) => (
+                    <div key={i} className="flex gap-4 items-start">
+                      <div className="bg-primary/10 p-2 rounded-lg">
+                        <CheckCircle2 className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold font-headline text-lg">{item.title}</h4>
+                        <p className="text-sm text-muted-foreground font-tajawal">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="bg-muted/30 rounded-3xl p-8 border-2 border-dashed border-primary/20">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-sm">
+                    <div className="h-10 w-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold">1</div>
+                    <p className="font-tajawal text-sm font-medium">تم توليد الهدف الإجرائي بنجاح...</p>
+                  </div>
+                  <div className="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-sm translate-x-4">
+                    <div className="h-10 w-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">2</div>
+                    <p className="font-tajawal text-sm font-medium">جاري صياغة المرحلة التعلمية...</p>
+                  </div>
+                  <div className="flex items-center gap-3 bg-white p-4 rounded-2xl shadow-sm">
+                    <div className="h-10 w-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold">3</div>
+                    <p className="font-tajawal text-sm font-medium">المذكرة جاهزة للتحميل بصيغة PDF</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 4. FAQ Section */}
-        <section id="faq" className="w-full py-20 bg-white">
+        {/* 5. FAQ Section */}
+        <section id="faq" className="w-full py-20 bg-muted/20">
           <div className="container px-4 md:px-6 mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
               <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <HelpCircle className="h-8 w-8 text-primary" />
               </div>
               <h2 className="text-3xl md:text-4xl font-bold font-headline">الأسئلة الشائعة</h2>
-              <p className="text-lg text-muted-foreground font-tajawal">كل ما تحتاج معرفته عن منصة RiyadiPlan AI</p>
+              <p className="text-lg text-muted-foreground font-tajawal">كل ما تحتاج معرفته عن منصة Modakira</p>
             </div>
 
             <div className="max-w-3xl mx-auto space-y-8">
@@ -252,7 +287,7 @@ export default function LandingPage() {
                   <h3 className="text-xl font-bold font-headline text-primary border-r-4 border-primary ps-3">{category.category}</h3>
                   <Accordion type="single" collapsible className="w-full">
                     {category.questions.map((faq, fIdx) => (
-                      <AccordionItem key={fIdx} value={`${idx}-${fIdx}`} className="border rounded-xl px-4 mb-2 bg-muted/5">
+                      <AccordionItem key={fIdx} value={`${idx}-${fIdx}`} className="border rounded-xl px-4 mb-2 bg-white">
                         <AccordionTrigger className="text-start font-bold font-tajawal hover:no-underline">{faq.q}</AccordionTrigger>
                         <AccordionContent className="text-muted-foreground font-tajawal leading-relaxed">
                           {faq.a}
@@ -266,7 +301,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* 5. Final Call to Action Section */}
+        {/* 6. Final Call to Action Section */}
         <section className="w-full py-24 relative overflow-hidden bg-primary">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
           <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
@@ -274,9 +309,9 @@ export default function LandingPage() {
           <div className="container px-4 md:px-6 mx-auto text-center space-y-8 relative z-10">
             <h2 className="text-4xl md:text-6xl font-bold font-headline text-white leading-tight">
               توقف عن العمل الورقي المتعب <br />
-              <span className="text-accent-foreground font-extrabold drop-shadow-sm">وابدأ التحضير بذكاء اليوم</span>
+              <span className="text-white font-extrabold drop-shadow-md">وابدأ التحضير بذكاء اليوم</span>
             </h2>
-            <p className="text-xl md:text-2xl text-white font-tajawal max-w-2xl mx-auto leading-relaxed drop-shadow-sm opacity-90">
+            <p className="text-xl md:text-2xl text-white/90 font-tajawal max-w-2xl mx-auto leading-relaxed drop-shadow-sm">
               انضم لمئات الأساتذة الجزائريين الذين وفروا ساعات من وقتهم أسبوعياً. مذكرتك القادمة جاهزة في انتظارك.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center pt-8">
@@ -306,7 +341,7 @@ export default function LandingPage() {
                 <div className="bg-primary p-1 rounded-md">
                   <GraduationCap className="h-5 w-5 text-primary-foreground" />
                 </div>
-                <span className="font-headline font-bold text-2xl text-primary">RiyadiPlan AI</span>
+                <span className="font-headline font-bold text-2xl text-primary">Modakira</span>
               </div>
               <p className="text-sm text-muted-foreground font-tajawal max-w-xs text-center md:text-start">
                 أول منصة ذكية لأساتذة التربية البدنية في الجزائر، مصممة لتسهيل العمل التربوي وتوفير الوقت.
@@ -314,24 +349,24 @@ export default function LandingPage() {
             </div>
             
             <div className="grid grid-cols-2 gap-8">
-              <div className="space-y-3">
+              <div className="space-y-3 text-start">
                 <h4 className="font-bold text-sm">قانوني</h4>
-                <ul className="text-sm space-y-2 text-muted-foreground">
+                <ul className="text-sm space-y-2 text-muted-foreground font-tajawal">
                   <li><Link href="/privacy-policy" className="hover:text-primary transition-colors">سياسة الخصوصية</Link></li>
                   <li><Link href="/terms-of-service" className="hover:text-primary transition-colors">شروط الخدمة</Link></li>
                 </ul>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-3 text-start">
                 <h4 className="font-bold text-sm">الدعم</h4>
-                <ul className="text-sm space-y-2 text-muted-foreground">
+                <ul className="text-sm space-y-2 text-muted-foreground font-tajawal">
                   <li><Link href="https://wa.me/213555000000" className="text-primary font-bold hover:underline">واتساب</Link></li>
-                  <li><Link href="mailto:support@riyadiplan.ai" className="hover:text-primary transition-colors">البريد الإلكتروني</Link></li>
+                  <li><Link href="mailto:support@modakira.ai" className="hover:text-primary transition-colors">البريد الإلكتروني</Link></li>
                 </ul>
               </div>
             </div>
           </div>
           <div className="mt-12 pt-8 border-t text-center text-sm text-muted-foreground font-tajawal">
-            © 2024 RiyadiPlan AI. جميع الحقوق محفوظة للأستاذ الجزائري.
+            © 2024 Modakira. جميع الحقوق محفوظة للأستاذ الجزائري.
           </div>
         </div>
       </footer>

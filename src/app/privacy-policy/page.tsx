@@ -13,7 +13,7 @@ export default function PrivacyPolicyPage() {
           <div className="bg-primary p-1.5 rounded-lg">
             <GraduationCap className="h-6 w-6 text-primary-foreground" />
           </div>
-          <span className="font-headline text-2xl font-bold tracking-tight text-primary">RiyadiPlan AI</span>
+          <span className="font-headline text-2xl font-bold tracking-tight text-primary">Modakira</span>
         </Link>
         <Link href="/">
           <Button variant="ghost" className="gap-2">
@@ -90,7 +90,7 @@ export default function PrivacyPolicyPage() {
             </div>
             <p>لأي استفسارات تتعلق بالخصوصية أو لحذف بياناتك، يرجى التواصل معنا:</p>
             <div className="flex flex-col gap-2 font-bold">
-              <a href="mailto:support@riyadiplan.ai" className="hover:text-primary transition-colors">البريد الإلكتروني: support@riyadiplan.ai</a>
+              <a href="mailto:support@modakira.ai" className="hover:text-primary transition-colors">البريد الإلكتروني: support@modakira.ai</a>
               <a href="https://wa.me/213555000000" className="hover:text-primary transition-colors">واتساب: 213555000000+</a>
             </div>
           </section>
@@ -98,7 +98,7 @@ export default function PrivacyPolicyPage() {
       </main>
 
       <footer className="border-t py-8 text-center text-sm text-muted-foreground bg-white">
-        © 2024 RiyadiPlan AI. جميع الحقوق محفوظة للأستاذ الجزائري.
+        © 2024 Modakira. جميع الحقوق محفوظة للأستاذ الجزائري.
       </footer>
     </div>
   );

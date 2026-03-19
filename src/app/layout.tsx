@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { FirebaseClientProvider } from '@/firebase';
 
 export const metadata: Metadata = {
-  title: 'RiyadiPlan AI - مولد مذكرات التربية البدنية',
+  title: 'Modakira - مولد مذكرات التربية البدنية',
   description: 'أداة ذكية مدعومة بالذكاء الاصطناعي لإنشاء مذكرات دروس التربية البدنية والرياضية وفق المنهاج الجزائري.',
 };
 

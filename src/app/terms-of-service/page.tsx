@@ -13,7 +13,7 @@ export default function TermsOfServicePage() {
           <div className="bg-primary p-1.5 rounded-lg">
             <GraduationCap className="h-6 w-6 text-primary-foreground" />
           </div>
-          <span className="font-headline text-2xl font-bold tracking-tight text-primary">RiyadiPlan AI</span>
+          <span className="font-headline text-2xl font-bold tracking-tight text-primary">Modakira</span>
         </Link>
         <Link href="/">
           <Button variant="ghost" className="gap-2">
@@ -39,7 +39,7 @@ export default function TermsOfServicePage() {
               <Scale className="h-6 w-6" />
               <h2 className="text-2xl font-bold font-headline m-0">1. قبول الشروط ووصف الخدمة</h2>
             </div>
-            <p>باستخدامك لمنصة RiyadiPlan AI، فإنك توافق على الالتزام بهذه الشروط. المنصة هي خدمة سحابية (SaaS) تستخدم الذكاء الاصطناعي لتوليد محتوى بيداغوجي لأساتذة التربية البدنية وفق المنهاج الجزائري الرسمي.</p>
+            <p>باستخدامك لمنصة Modakira، فإنك توافق على الالتزام بهذه الشروط. المنصة هي خدمة سحابية (SaaS) تستخدم الذكاء الاصطناعي لتوليد محتوى بيداغوجي لأساتذة التربية البدنية وفق المنهاج الجزائري الرسمي.</p>
           </section>
 
           <section className="space-y-4">
@@ -85,14 +85,14 @@ export default function TermsOfServicePage() {
           </section>
 
           <section className="bg-primary/5 p-8 rounded-3xl border border-primary/20">
-            <h2 className="text-2xl font-bold font-headline text-primary mb-4 m-0 m-0">6. القانون الحاكم</h2>
+            <h2 className="text-2xl font-bold font-headline text-primary mb-4 m-0">6. القانون الحاكم</h2>
             <p>تخضع هذه الشروط وتفسر وفقاً للقوانين السارية في <strong>الجمهورية الجزائرية الديمقراطية الشعبية</strong>.</p>
           </section>
         </div>
       </main>
 
       <footer className="border-t py-8 text-center text-sm text-muted-foreground bg-white">
-        © 2024 RiyadiPlan AI. جميع الحقوق محفوظة.
+        © 2024 Modakira. جميع الحقوق محفوظة.
       </footer>
     </div>
   );

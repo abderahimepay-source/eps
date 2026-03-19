@@ -55,7 +55,7 @@ export default function SignUpPage() {
 
       toast({
         title: "تم إنشاء الحساب بنجاح",
-        description: "مرحباً بك في RiyadiPlan AI!",
+        description: "مرحباً بك في Modakira!",
       });
 
       router.push('/dashboard');
@@ -78,7 +78,7 @@ export default function SignUpPage() {
             <div className="bg-primary p-2 rounded-xl shadow-lg">
               <GraduationCap className="h-8 w-8 text-primary-foreground" />
             </div>
-            <span className="font-headline text-3xl font-bold text-primary">RiyadiPlan AI</span>
+            <span className="font-headline text-3xl font-bold text-primary">Modakira</span>
           </Link>
         </div>
         
