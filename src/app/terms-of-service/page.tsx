@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
-import { GraduationCap, ArrowRight, FileText, AlertCircle, CreditCard, Scale, ShieldAlert } from "lucide-react";
+import { ClipboardPenLine, ArrowRight, FileText, AlertCircle, CreditCard, Scale, ShieldAlert } from "lucide-react";
 
 export default function TermsOfServicePage() {
   return (
@@ -11,7 +11,7 @@ export default function TermsOfServicePage() {
       <header className="px-4 lg:px-6 h-16 flex items-center justify-between border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <Link className="flex items-center justify-center gap-2" href="/">
           <div className="bg-primary p-1.5 rounded-lg">
-            <GraduationCap className="h-6 w-6 text-primary-foreground" />
+            <ClipboardPenLine className="h-6 w-6 text-primary-foreground" />
           </div>
           <span className="font-headline text-2xl font-bold tracking-tight text-primary">Modakira</span>
         </Link>

@@ -12,7 +12,7 @@ import {
   FileText, 
   Calendar, 
   ChevronLeft, 
-  GraduationCap, 
+  ClipboardPenLine, 
   BookOpen,
   Loader2
 } from "lucide-react";
@@ -92,7 +92,7 @@ export default function LessonPlansPage() {
                         <h3 className="font-bold font-tajawal text-sm sm:text-lg truncate group-hover:text-primary transition-colors">{plan.title}</h3>
                         <div className="flex flex-wrap gap-x-3 sm:gap-x-4 gap-y-1 mt-1 text-[10px] sm:text-sm text-muted-foreground font-tajawal">
                           <span className="flex items-center gap-1 shrink-0">
-                            <GraduationCap className="h-3 w-3" /> 
+                            <ClipboardPenLine className="h-3 w-3" /> 
                             {plan.year?.replace('_', ' ')}
                           </span>
                           <span className="flex items-center gap-1 shrink-0">

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import { GraduationCap, ArrowRight, Loader2 } from "lucide-react";
+import { ClipboardPenLine, ArrowRight, Loader2 } from "lucide-react";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useFirebase } from '@/firebase';
@@ -76,7 +76,7 @@ export default function SignUpPage() {
         <div className="flex justify-center mb-8">
           <Link href="/" className="flex items-center gap-2">
             <div className="bg-primary p-2 rounded-xl shadow-lg">
-              <GraduationCap className="h-8 w-8 text-primary-foreground" />
+              <ClipboardPenLine className="h-8 w-8 text-primary-foreground" />
             </div>
             <span className="font-headline text-3xl font-bold text-primary">Modakira</span>
           </Link>

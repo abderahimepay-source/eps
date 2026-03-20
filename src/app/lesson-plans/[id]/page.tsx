@@ -1,4 +1,3 @@
-
 "use client";
 
 import { use } from 'react';
@@ -14,7 +13,7 @@ import {
   ArrowRight, 
   FileText, 
   Calendar, 
-  GraduationCap, 
+  ClipboardPenLine, 
   BookOpen, 
   Loader2,
   ExternalLink
@@ -151,7 +150,7 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
                 </h1>
                 <div className="flex flex-wrap gap-4 text-sm text-muted-foreground font-tajawal">
                   <span className="flex items-center gap-2">
-                    <GraduationCap className="h-4 w-4 text-accent" />
+                    <ClipboardPenLine className="h-4 w-4 text-accent" />
                     {plan.year}
                   </span>
                   <span className="flex items-center gap-2">

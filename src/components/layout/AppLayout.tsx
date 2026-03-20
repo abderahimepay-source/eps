@@ -1,11 +1,10 @@
-
 "use client";
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { 
-  GraduationCap, 
+  ClipboardPenLine, 
   LayoutDashboard, 
   BookOpen, 
   User, 
@@ -60,7 +59,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             isCollapsed ? "justify-center" : ""
           )}>
             <div className="bg-primary p-1.5 rounded-lg shrink-0">
-              <GraduationCap className="h-6 w-6 text-primary-foreground" />
+              <ClipboardPenLine className="h-6 w-6 text-primary-foreground" />
             </div>
             {!isCollapsed && (
               <span className="font-headline text-2xl font-bold text-primary truncate">Modakira</span>
@@ -146,7 +145,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <header className="h-16 border-b bg-white flex items-center px-4 lg:px-8 justify-between sticky top-0 z-40">
           <div className="flex lg:hidden items-center gap-2">
             <div className="bg-primary p-1 rounded-md">
-              <GraduationCap className="h-5 w-5 text-primary-foreground" />
+              <ClipboardPenLine className="h-5 w-5 text-primary-foreground" />
             </div>
             <span className="font-headline font-bold text-lg text-primary">Modakira</span>
           </div>

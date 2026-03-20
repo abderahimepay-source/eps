@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import {
   ChevronLeft, 
   Sparkles, 
   BookOpen, 
-  GraduationCap, 
+  ClipboardPenLine, 
   CheckCircle2, 
   Target,
   Clock,
@@ -64,7 +63,7 @@ export default function LandingPage() {
       <header className="px-4 lg:px-6 h-16 flex items-center justify-between border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <Link className="flex items-center justify-center gap-2" href="/">
           <div className="bg-primary p-1.5 rounded-lg">
-            <GraduationCap className="h-6 w-6 text-primary-foreground" />
+            <ClipboardPenLine className="h-6 w-6 text-primary-foreground" />
           </div>
           <span className="font-headline text-2xl font-bold tracking-tight text-primary">Modakira</span>
         </Link>
@@ -170,7 +169,6 @@ export default function LandingPage() {
               <p className="text-lg text-muted-foreground font-tajawal">ابدأ مجاناً ثم اختر الباقة التي تمنحك إنتاجية أكبر</p>
             </div>
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {/* Pricing Cards... Same as before but with better Arabic labels */}
               <div className="p-8 rounded-3xl border bg-white shadow-sm flex flex-col relative hover:border-primary/50 transition-colors">
                 <h3 className="text-2xl font-bold font-headline mb-4">الباقة الأساسية</h3>
                 <div className="flex items-baseline justify-center gap-1 mb-6 text-primary">
@@ -259,7 +257,7 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-3 gap-8 items-center text-center md:text-start">
             <div className="flex flex-col items-center md:items-start gap-4">
               <Link href="/" className="flex items-center gap-2">
-                <GraduationCap className="h-6 w-6 text-primary" />
+                <ClipboardPenLine className="h-6 w-6 text-primary" />
                 <span className="font-headline font-bold text-2xl text-primary">Modakira</span>
               </Link>
               <p className="text-sm text-muted-foreground font-tajawal max-w-xs">أول منصة ذكية لأساتذة التربية البدنية في الجزائر.</p>

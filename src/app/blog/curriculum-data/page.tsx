@@ -1,9 +1,8 @@
-
 "use client";
 
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
-import { GraduationCap, ArrowRight, Tag, Calendar, User, BookOpen, Layers } from "lucide-react";
+import { ClipboardPenLine, ArrowRight, Tag, Calendar, User, BookOpen, Layers } from "lucide-react";
 import { CURRICULUM_DATA } from '@/lib/curriculum';
 
 export default function CurriculumDataPost() {
@@ -13,7 +12,7 @@ export default function CurriculumDataPost() {
       <header className="px-4 lg:px-6 h-16 flex items-center justify-between border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <Link className="flex items-center justify-center gap-2" href="/">
           <div className="bg-primary p-1.5 rounded-lg">
-            <GraduationCap className="h-6 w-6 text-primary-foreground" />
+            <ClipboardPenLine className="h-6 w-6 text-primary-foreground" />
           </div>
           <span className="font-headline text-2xl font-bold tracking-tight text-primary">Modakira</span>
         </Link>
@@ -45,7 +44,7 @@ export default function CurriculumDataPost() {
             <section key={grade.grade} className="bg-white rounded-3xl border shadow-sm overflow-hidden">
               <div className="bg-primary p-6 text-white">
                 <div className="flex items-center gap-3 mb-2">
-                  <GraduationCap className="h-8 w-8" />
+                  <ClipboardPenLine className="h-8 w-8" />
                   <h2 className="text-2xl font-bold font-headline">{grade.grade_name}</h2>
                 </div>
                 <p className="text-primary-foreground/90 text-sm leading-relaxed">
