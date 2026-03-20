@@ -74,6 +74,45 @@
   font-family: 'Tajawal', sans-serif;
 }
 
+/* Simplified PDF Styles */
+.pdf-simple-mode {
+  background: white !important;
+  color: black !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.pdf-simple-mode * {
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  color: black !important;
+  border-color: #ddd !important;
+}
+
+.pdf-simple-mode .no-pdf,
+.pdf-simple-mode svg,
+.pdf-simple-mode .icon-container {
+  display: none !important;
+}
+
+.pdf-simple-mode header {
+  padding: 1rem !important;
+  margin-bottom: 1rem !important;
+  border-bottom: 2px solid black !important;
+}
+
+.pdf-simple-mode section {
+  margin-bottom: 1rem !important;
+  page-break-inside: avoid;
+}
+
+.pdf-simple-mode h1 { font-size: 1.5rem !important; }
+.pdf-simple-mode h2 { font-size: 1.25rem !important; }
+.pdf-simple-mode h3 { font-size: 1.1rem !important; }
+.pdf-simple-mode p, .pdf-simple-mode div { font-size: 0.9rem !important; line-height: 1.4 !important; }
+
 /* Print Styles */
 @media print {
   body {
@@ -81,7 +120,7 @@
   }
   
   .no-print, 
-  header, 
+  header:not(#lesson-plan-document header), 
   aside, 
   nav, 
   button,
@@ -100,13 +139,27 @@
     border: none !important;
   }
 
-  #lesson-plan-content {
+  #lesson-plan-document {
     border: none !important;
     width: 100% !important;
     max-width: none !important;
+    box-shadow: none !important;
+  }
+
+  #lesson-plan-document * {
+    color: black !important;
+  }
+
+  /* Force hide icons in native print too for simple look */
+  /* Corrected: Escaped slashes in Tailwind opacity classes to prevent PostCSS parsing errors */
+  #lesson-plan-document svg,
+  #lesson-plan-document .bg-primary\/10,
+  #lesson-plan-document .bg-accent\/10 {
+    display: none !important;
   }
   
   @page {
     margin: 1cm;
+    size: A4;
   }
 }
