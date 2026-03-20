@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -71,4 +72,41 @@
 
 .font-tajawal {
   font-family: 'Tajawal', sans-serif;
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background: white !important;
+  }
+  
+  .no-print, 
+  header, 
+  aside, 
+  nav, 
+  button,
+  .toast,
+  .toaster {
+    display: none !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .print-shadow-none {
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  #lesson-plan-content {
+    border: none !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+  
+  @page {
+    margin: 1cm;
+  }
 }

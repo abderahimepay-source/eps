@@ -1,15 +1,14 @@
+
 "use client";
 
 import { use } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
+import { CardHeader, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { 
   Download, 
-  Share2, 
-  Printer, 
   ArrowRight, 
   FileText, 
   Calendar, 
@@ -24,7 +23,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import jsPDF from 'jsPDF';
 import { useToast } from '@/hooks/use-toast';
 
 export default function LessonPlanDetail({ params }: { params: Promise<{ id: string }> }) {
@@ -78,9 +77,14 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
   };
 
   const handleExportToDrive = () => {
-    // Note: A full Google Drive integration requires OAuth. 
-    // This provides a "printable" version that the user can "Save to Drive" via Chrome's print dialog.
-    window.print();
+    toast({ 
+      title: "تصدير إلى Google Drive", 
+      description: "يرجى اختيار 'Save to Google Drive' من قائمة الوجهات (Destination) في نافذة الطباعة.",
+    });
+    // Triggers the browser print dialog which has a "Save to Drive" option in Chrome
+    setTimeout(() => {
+      window.print();
+    }, 500);
   };
 
   if (isLoading) {
@@ -110,7 +114,7 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
   return (
     <AppLayout>
       <div className="max-w-4xl mx-auto space-y-6 pb-20">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 no-print">
           <Link href="/lesson-plans" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors self-start">
             <ArrowRight className="h-4 w-4" />
             <span className="font-tajawal">العودة للمذكرات</span>
@@ -119,7 +123,7 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <Button 
               variant="outline" 
-              className="flex-1 sm:flex-none gap-2" 
+              className="flex-1 sm:flex-none gap-2 border-primary text-primary hover:bg-primary/5" 
               onClick={handleExportToDrive}
             >
               <ExternalLink className="h-4 w-4" />
@@ -137,9 +141,9 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
         </div>
 
         {/* Content Area for Export/Display */}
-        <div ref={printRef} className="bg-white rounded-3xl shadow-xl overflow-hidden border border-border/50">
+        <div id="lesson-plan-content" ref={printRef} className="bg-white rounded-3xl shadow-xl overflow-hidden border border-border/50 print-shadow-none">
           <header className="bg-primary/10 p-6 sm:p-10 border-b relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-accent"></div>
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-accent no-print"></div>
             <div className="flex flex-col md:flex-row justify-between gap-6 relative z-10">
               <div className="space-y-4">
                 <Badge variant="secondary" className="bg-primary/20 text-primary-foreground text-xs px-3 py-1">
@@ -248,3 +252,4 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
     </AppLayout>
   );
 }
+
