@@ -44,7 +44,6 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
 
   const { data: plan, isLoading } = useDoc(memoizedDocRef);
 
-  // Fetch profile for the teacher's name and school in the header
   const profileRef = useMemoFirebase(() => {
     if (!user || !firestore) return null;
     return doc(firestore, 'profiles', user.uid);
@@ -94,6 +93,29 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
     setTimeout(() => {
       window.print();
     }, 500);
+  };
+
+  const formatStageContent = (content: string) => {
+    if (!content) return null;
+    
+    // Split by newlines or by patterns that look like headers (e.g., "Text:")
+    // This helps if the AI returns a dense block of text
+    return content.split('\n').map((line, i) => {
+      const trimmedLine = line.trim();
+      if (!trimmedLine) return <div key={i} className="h-4" />;
+
+      // Simple header detection: line contains a colon and is relatively short or matches specific keywords
+      const isHeader = /^[^:]{3,30}:/.test(trimmedLine) || trimmedLine.includes('الجانب التنظيمي') || trimmedLine.includes('التسخين');
+      
+      return (
+        <p key={i} className={cn(
+          "mb-3 last:mb-0 text-gray-700 leading-relaxed",
+          isHeader && "font-bold text-gray-900 mt-6 first:mt-0 border-r-4 border-primary/20 pr-3"
+        )}>
+          {trimmedLine}
+        </p>
+      );
+    });
   };
 
   if (isLoading) {
@@ -149,18 +171,15 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
           </div>
         </div>
 
-        {/* Professional Lesson Plan Document */}
         <div 
           ref={printRef} 
           className="bg-white rounded-xl shadow-2xl overflow-hidden border border-border/50 print:shadow-none print:border-none print:rounded-none"
           id="lesson-plan-document"
         >
-          {/* Official Document Header */}
           <header className="p-8 sm:p-10 bg-gradient-to-br from-gray-50 to-white border-b relative">
             <div className="absolute top-0 right-0 left-0 h-1.5 bg-primary no-print"></div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
-              {/* Institutional Info */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-primary font-bold">
                   <School className="h-5 w-5" />
@@ -176,7 +195,6 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
                 </div>
               </div>
 
-              {/* Title Central */}
               <div className="text-center space-y-2">
                 <Badge variant="outline" className="border-primary text-primary font-bold font-tajawal px-4 py-1">
                   التربية البدنية والرياضية
@@ -187,7 +205,6 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
                 <p className="text-muted-foreground font-tajawal text-sm">مستخرجة من منصة Modakira</p>
               </div>
 
-              {/* Lesson Metadata */}
               <div className="bg-white p-4 rounded-xl border border-dashed border-primary/30 space-y-2 shadow-sm">
                 <div className="flex justify-between text-xs">
                   <span className="text-muted-foreground font-tajawal">المستوى:</span>
@@ -210,7 +227,6 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
           </header>
 
           <CardContent className="p-8 sm:p-12 space-y-12 text-start">
-            {/* Objectives Section */}
             <section className="space-y-6">
               <div className="flex items-center gap-3 pb-2 border-b-2 border-primary/20">
                 <div className="bg-primary/10 p-2.5 rounded-xl">
@@ -225,7 +241,7 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
                     <div className="h-7 w-7 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 text-xs font-bold transition-colors group-hover:bg-primary group-hover:text-white">
                       {i + 1}
                     </div>
-                    <div className="p-4 rounded-2xl bg-gray-50/50 border border-transparent hover:border-primary/20 hover:bg-white transition-all w-full">
+                    <div className="p-4 rounded-2xl bg-gray-50/50 border border-transparent hover:border-primary/20 hover:bg-white transition-all w-full text-start">
                       <p className="font-tajawal text-gray-700 leading-relaxed">{obj}</p>
                     </div>
                   </div>
@@ -233,7 +249,6 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
               </div>
             </section>
 
-            {/* Stages Section */}
             <div className="space-y-10">
               {[
                 { 
@@ -280,15 +295,13 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
                     </div>
 
                     <div className={cn(
-                      "p-8 rounded-3xl border-r-8 shadow-sm font-tajawal text-gray-700 leading-loose whitespace-pre-wrap relative overflow-hidden",
+                      "p-8 rounded-3xl border-r-8 shadow-sm font-tajawal text-gray-700 leading-loose relative overflow-hidden text-start",
                       isPrimary ? "bg-primary/5 border-primary" : isAccent ? "bg-accent/5 border-accent" : "bg-gray-50 border-gray-300"
                     )}>
-                      {/* Sub-section patterns highlighting (Optional visual improvement) */}
                       <div className="relative z-10">
-                        {stage.content}
+                        {formatStageContent(stage.content)}
                       </div>
                       
-                      {/* Background decorative watermark */}
                       <div className="absolute -bottom-6 -left-6 opacity-[0.03] select-none no-print">
                         <stage.icon className="h-32 w-32" />
                       </div>
@@ -298,7 +311,6 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
               })}
             </div>
 
-            {/* Formal Footer Signatures */}
             <footer className="pt-20 grid grid-cols-2 gap-12 text-center mt-12 border-t-2 border-dashed border-gray-200">
               <div className="space-y-8">
                 <div className="space-y-2">
@@ -321,7 +333,6 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
             </footer>
           </CardContent>
 
-          {/* Document Footer */}
           <div className="bg-gray-50 p-4 border-t flex items-center justify-between text-[10px] text-muted-foreground font-tajawal">
             <span>تم الإنشاء بواسطة Modakira AI - الجزائر</span>
             <span className="dir-ltr font-rajdhani">{new Date().getFullYear()} © Modakira.dz</span>
