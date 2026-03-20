@@ -2,14 +2,10 @@
 "use client";
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { Button } from "@/components/ui/button";
-import { GraduationCap, ArrowRight, Calendar, Clock, ChevronLeft } from "lucide-react";
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { GraduationCap, ArrowRight, Calendar, Clock, ChevronLeft, BookOpen } from "lucide-react";
 
 export default function BlogPage() {
-  const curriculumImage = PlaceHolderImages.find(img => img.id === 'blog-curriculum');
-
   const posts = [
     {
       id: 'curriculum-2023',
@@ -17,8 +13,15 @@ export default function BlogPage() {
       excerpt: "تعرف على أهم التغييرات في المنهاج الجديد وكيفية بناء الكفاءات الإجرائية للمرحلة الابتدائية وفق المقاربة الجديدة.",
       date: "15 مارس 2024",
       readTime: "8 دقائق",
-      image: curriculumImage?.imageUrl,
       category: "مناهج تربوية"
+    },
+    {
+      id: 'curriculum-data',
+      title: "المنهاج الرسمي بالتفصيل: الكفاءات والموارد المعرفية",
+      excerpt: "عرض كامل وشامل لكافة الكفاءات الختامية والموارد المعرفية لكل المستويات الابتدائية وفق الوثيقة الرسمية.",
+      date: "17 مارس 2024",
+      readTime: "12 دقيقة",
+      category: "وثائق رسمية"
     }
   ];
 
@@ -48,36 +51,25 @@ export default function BlogPage() {
           </p>
         </div>
 
-        <div className="grid gap-8">
+        <div className="grid gap-6">
           {posts.map((post) => (
             <Link key={post.id} href={`/blog/${post.id}`}>
-              <article className="group bg-white rounded-3xl overflow-hidden border shadow-sm hover:shadow-xl transition-all grid md:grid-cols-2">
-                <div className="relative h-64 md:h-full overflow-hidden">
-                  {post.image && (
-                    <Image 
-                      src={post.image} 
-                      alt={post.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      unoptimized
-                    />
-                  )}
-                  <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-bold">
+              <article className="group bg-white rounded-3xl p-8 border shadow-sm hover:shadow-md transition-all text-start space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold">
                     {post.category}
                   </div>
-                </div>
-                <div className="p-8 flex flex-col justify-center space-y-4 text-start">
                   <div className="flex items-center gap-4 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> {post.date}</span>
                     <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {post.readTime}</span>
                   </div>
-                  <h2 className="text-2xl font-bold font-headline group-hover:text-primary transition-colors">{post.title}</h2>
-                  <p className="text-muted-foreground leading-relaxed">{post.excerpt}</p>
-                  <Button variant="link" className="p-0 h-auto text-primary font-bold self-start gap-2">
-                    اقرأ المقال كاملاً
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
                 </div>
+                <h2 className="text-2xl font-bold font-headline group-hover:text-primary transition-colors">{post.title}</h2>
+                <p className="text-muted-foreground leading-relaxed">{post.excerpt}</p>
+                <Button variant="link" className="p-0 h-auto text-primary font-bold self-start gap-2">
+                  اقرأ المقال كاملاً
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
               </article>
             </Link>
           ))}

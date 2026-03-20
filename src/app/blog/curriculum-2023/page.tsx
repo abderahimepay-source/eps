@@ -2,14 +2,10 @@
 "use client";
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { GraduationCap, ArrowRight, Calendar, Clock, User, Share2, Tag } from "lucide-react";
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function CurriculumBlogPost() {
-  const curriculumImage = PlaceHolderImages.find(img => img.id === 'blog-curriculum');
-
   return (
     <div className="min-h-screen bg-background font-tajawal" dir="rtl">
       {/* Navigation */}
@@ -43,19 +39,6 @@ export default function CurriculumBlogPost() {
             <span className="flex items-center gap-2"><Clock className="h-4 w-4" /> 8 دقائق قراءة</span>
           </div>
         </header>
-
-        <div className="relative h-64 md:h-[450px] rounded-3xl overflow-hidden shadow-2xl">
-          {curriculumImage?.imageUrl && (
-            <Image 
-              src={curriculumImage.imageUrl} 
-              alt="Algerian Curriculum 2023"
-              fill
-              className="object-cover"
-              unoptimized
-              priority
-            />
-          )}
-        </div>
 
         <div className="prose prose-teal max-w-none text-start text-foreground/80 leading-loose space-y-8">
           <p className="text-xl font-medium text-foreground">
