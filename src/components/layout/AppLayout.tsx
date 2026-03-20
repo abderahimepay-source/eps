@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -12,7 +13,8 @@ import {
   Plus, 
   ChevronRight, 
   ChevronLeft,
-  CreditCard 
+  CreditCard,
+  FileText
 } from "lucide-react";
 import { useState, useEffect } from 'react';
 import { useFirebase, useDoc, useMemoFirebase } from '@/firebase';
@@ -23,6 +25,7 @@ import { cn } from "@/lib/utils";
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'الرئيسية', icon: LayoutDashboard },
   { href: '/lesson-plans', label: 'مذكراتي', icon: BookOpen },
+  { href: '/blog', label: 'المدونة', icon: FileText },
   { href: '/pricing', label: 'الاشتراك', icon: CreditCard },
   { href: '/profile', label: 'حسابي', icon: User },
 ];
@@ -76,7 +79,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
           <nav className="flex-1 space-y-2">
             {NAV_ITEMS.map((item) => {
-              const isActive = pathname === item.href;
+              const isActive = pathname === item.href || (item.href === '/blog' && pathname.startsWith('/blog'));
               return (
                 <Link key={item.href} href={item.href}>
                   <Button
@@ -137,7 +140,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       {/* Content Wrapper */}
       <div className={cn(
         "flex-1 flex flex-col min-w-0 transition-all duration-300",
-        "lg:me-0", // RTL right padding/margin
         isCollapsed ? "lg:pr-20" : "lg:pr-64"
       )}>
         {/* Header - Desktop & Mobile */}

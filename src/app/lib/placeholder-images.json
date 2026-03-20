@@ -16,32 +16,8 @@
     {
       "id": "blog-curriculum",
       "description": "صورة تعبيرية للمنهاج الدراسي الجزائري الجديد",
-      "imageUrl": "https://picsum.photos/seed/curriculum/600/400",
+      "imageUrl": "https://picsum.photos/seed/curriculum/800/400",
       "imageHint": "curriculum books"
-    },
-    {
-      "id": "blog-games",
-      "description": "أطفال يمارسون ألعاباً شبه رياضية في الساحة",
-      "imageUrl": "https://picsum.photos/seed/sports/600/400",
-      "imageHint": "kids sports"
-    },
-    {
-      "id": "blog-smart",
-      "description": "رسم توضيحي لأهداف SMART التربوية",
-      "imageUrl": "https://picsum.photos/seed/goals/600/400",
-      "imageHint": "smart goals"
-    },
-    {
-      "id": "blog-assessment",
-      "description": "أستاذ يسجل ملاحظات تقويمية في سجل بيداغوجي",
-      "imageUrl": "https://picsum.photos/seed/check/600/400",
-      "imageHint": "teacher notes"
-    },
-    {
-      "id": "blog-equipment",
-      "description": "معدات رياضية مدرسية مرتبة بشكل منظم",
-      "imageUrl": "https://picsum.photos/seed/gym/600/400",
-      "imageHint": "sports equipment"
     }
   ]
 }
