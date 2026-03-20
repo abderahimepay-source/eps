@@ -1,4 +1,3 @@
-
 "use client";
 
 import { use } from 'react';
@@ -23,7 +22,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
-import jsPDF from 'jsPDF';
+import jsPDF from 'jspdf';
 import { useToast } from '@/hooks/use-toast';
 
 export default function LessonPlanDetail({ params }: { params: Promise<{ id: string }> }) {
@@ -252,4 +251,3 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
     </AppLayout>
   );
 }
-
