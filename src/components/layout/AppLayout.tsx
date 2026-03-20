@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -170,7 +171,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
         {/* Bottom Nav - Mobile Only */}
         <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-50 px-4 h-16 flex items-center justify-around shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
-          {NAV_ITEMS.map((item) => {
+          {NAV_ITEMS.filter(item => item.href !== '/blog').map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link key={item.href} href={item.href} className="flex-1">
