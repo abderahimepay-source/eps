@@ -5,14 +5,10 @@ import AppLayout from '@/components/layout/AppLayout';
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { 
   Download, 
   ArrowRight, 
-  FileText, 
   Calendar, 
-  ClipboardPenLine, 
-  BookOpen, 
   Loader2,
   ExternalLink,
   User,
@@ -98,22 +94,30 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
   const formatStageContent = (content: string) => {
     if (!content) return null;
     
-    // Split by newlines or by patterns that look like headers (e.g., "Text:")
-    // This helps if the AI returns a dense block of text
-    return content.split('\n').map((line, i) => {
+    // Split by newlines and handle cases where content might be dense
+    const lines = content.split('\n');
+    
+    return lines.map((line, i) => {
       const trimmedLine = line.trim();
       if (!trimmedLine) return <div key={i} className="h-4" />;
 
-      // Simple header detection: line contains a colon and is relatively short or matches specific keywords
-      const isHeader = /^[^:]{3,30}:/.test(trimmedLine) || trimmedLine.includes('الجانب التنظيمي') || trimmedLine.includes('التسخين');
+      // 1. Detect Main Headers (e.g. "الجانب التنظيمي:", "1. الورشة الأولى:")
+      const isHeader = /^(\d+\.|\*|-)?\s*[^:]{2,40}:/.test(trimmedLine) || 
+                       trimmedLine.includes('الجانب التنظيمي') || 
+                       trimmedLine.includes('التسخين') ||
+                       trimmedLine.includes('الورشة');
+
+      // 2. Detect Bullet points
+      const isBullet = trimmedLine.startsWith('*') || trimmedLine.startsWith('-') || trimmedLine.startsWith('•');
       
       return (
-        <p key={i} className={cn(
-          "mb-3 last:mb-0 text-gray-700 leading-relaxed",
-          isHeader && "font-bold text-gray-900 mt-6 first:mt-0 border-r-4 border-primary/20 pr-3"
+        <div key={i} className={cn(
+          "mb-2 last:mb-0 text-gray-700 leading-relaxed text-start",
+          isHeader && "font-bold text-gray-900 mt-6 first:mt-0 border-r-4 border-primary/30 pr-3 bg-primary/5 py-1 rounded-l-md",
+          isBullet && "pr-6 relative before:content-['•'] before:absolute before:right-1 before:text-primary before:font-bold"
         )}>
-          {trimmedLine}
-        </p>
+          {isBullet ? trimmedLine.replace(/^[*•-]\s*/, '') : trimmedLine}
+        </div>
       );
     });
   };
@@ -295,10 +299,10 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
                     </div>
 
                     <div className={cn(
-                      "p-8 rounded-3xl border-r-8 shadow-sm font-tajawal text-gray-700 leading-loose relative overflow-hidden text-start",
+                      "p-8 rounded-3xl border-r-8 shadow-sm font-body text-gray-700 leading-loose relative overflow-hidden text-start",
                       isPrimary ? "bg-primary/5 border-primary" : isAccent ? "bg-accent/5 border-accent" : "bg-gray-50 border-gray-300"
                     )}>
-                      <div className="relative z-10">
+                      <div className="relative z-10 space-y-1">
                         {formatStageContent(stage.content)}
                       </div>
                       
