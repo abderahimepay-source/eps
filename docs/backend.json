@@ -32,6 +32,10 @@
         "isPro": {
           "type": "boolean"
         },
+        "isAdmin": {
+          "type": "boolean",
+          "description": "Whether the user has administrative privileges."
+        },
         "credit_balance": {
           "type": "number"
         },

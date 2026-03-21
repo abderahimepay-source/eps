@@ -14,7 +14,8 @@ import {
   ChevronRight, 
   ChevronLeft,
   CreditCard,
-  FileText
+  FileText,
+  ShieldAlert
 } from "lucide-react";
 import { useState, useEffect } from 'react';
 import { useFirebase, useDoc, useMemoFirebase } from '@/firebase';
@@ -97,6 +98,23 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 </Link>
               );
             })}
+
+            {/* Admin Link - Only visible to Admins */}
+            {profile?.isAdmin && (
+              <Link href="/admin">
+                <Button
+                  variant={pathname === '/admin' ? 'secondary' : 'ghost'}
+                  className={cn(
+                    "w-full justify-start gap-3 h-11 text-base transition-all duration-200 mt-4 border-t pt-4 rounded-none",
+                    pathname === '/admin' && "bg-destructive/10 text-destructive hover:bg-destructive/20",
+                    isCollapsed ? "px-0 justify-center" : "px-4"
+                  )}
+                >
+                  <ShieldAlert className={cn("h-5 w-5 shrink-0", pathname === '/admin' ? "text-destructive" : "text-muted-foreground")} />
+                  {!isCollapsed && <span className="font-tajawal font-bold">لوحة الإدارة</span>}
+                </Button>
+              </Link>
+            )}
           </nav>
 
           <div className="pt-4 border-t space-y-1">

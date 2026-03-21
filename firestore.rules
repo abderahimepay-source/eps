@@ -1,3 +1,4 @@
+
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -7,25 +8,31 @@ service cloud.firestore {
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
+    function isAdmin() {
+      return isSignedIn() && 
+        exists(/databases/$(database)/documents/profiles/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.isAdmin == true;
+    }
 
     match /profiles/{userId} {
-      // السماح بالقراءة والتحديث للمالك
-      allow get, list: if isOwner(userId);
+      // السماح بالقراءة والتحديث للمالك أو المدير
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
       allow create: if isOwner(userId);
       
-      // السماح بالتحديث للمالك أو إذا كانت العملية تحديثاً لترقية الحساب (في النماذج الأولية نسهل القاعدة)
-      // ملاحظة: في الإنتاج يفضل استخدام Firebase Admin SDK في الـ Webhook لتجاوز القواعد كلياً
-      allow update: if isOwner(userId) || (request.auth == null && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isPro', 'credit_balance', 'updatedAt']));
+      // السماح بالتحديث للمالك أو المدير
+      allow update: if isOwner(userId) || isAdmin() || (request.auth == null && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isPro', 'credit_balance', 'updatedAt']));
 
       match /lessonPlans/{planId} {
-        allow read, write: if isOwner(userId);
+        allow read: if isOwner(userId) || isAdmin();
+        allow write: if isOwner(userId);
       }
       match /usage_logs/{logId} {
-        allow read: if isOwner(userId);
+        allow read: if isOwner(userId) || isAdmin();
         allow create: if isOwner(userId);
       }
       match /credit_transactions/{txId} {
-        allow read: if isOwner(userId);
+        allow read: if isOwner(userId) || isAdmin();
         allow create: if isOwner(userId) || (request.auth == null);
       }
     }
