@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -47,6 +48,7 @@ export default function SignUpPage() {
         school: school,
         directorate: '', // Can be updated later in profile settings
         isPro: false,
+        isAdmin: false, // Default to false for all new users
         credit_balance: 10, // Starting credits for new users
         totalLessonPlansCreated: 0,
         createdAt: serverTimestamp(),
