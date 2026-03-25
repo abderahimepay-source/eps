@@ -1,3 +1,4 @@
+
 "use client";
 
 import AppLayout from '@/components/layout/AppLayout';
@@ -5,24 +6,37 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { 
   Plus, 
   Search, 
   Filter, 
-  MoreVertical, 
   FileText, 
   Calendar, 
   ChevronLeft, 
   ClipboardPenLine, 
   BookOpen,
-  Loader2
+  Loader2,
+  Trash2
 } from "lucide-react";
 import Link from 'next/link';
-import { useFirebase, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
+import { useFirebase, useCollection, useMemoFirebase, deleteDocumentNonBlocking } from '@/firebase';
+import { collection, query, orderBy, doc } from 'firebase/firestore';
 import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function LessonPlansPage() {
   const { user, firestore } = useFirebase();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
 
   // Fetch real lesson plans from Firestore
@@ -40,6 +54,16 @@ export default function LessonPlansPage() {
     plan.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     plan.field?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
+
+  const handleDelete = (e: React.MouseEvent, planId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!user || !firestore) return;
+    
+    const docRef = doc(firestore, 'profiles', user.uid, 'lessonPlans', planId);
+    deleteDocumentNonBlocking(docRef);
+    toast({ title: "تم الحذف", description: "تم حذف المذكرة بنجاح" });
+  };
 
   return (
     <AppLayout>
@@ -81,39 +105,66 @@ export default function LessonPlansPage() {
             </div>
           ) : filteredPlans.length > 0 ? (
             filteredPlans.map((plan) => (
-              <Link key={plan.id} href={`/lesson-plans/${plan.id}`}>
-                <Card className="border-none shadow-sm hover:shadow-md transition-all group overflow-hidden bg-white">
-                  <CardContent className="p-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3 sm:gap-4 overflow-hidden">
-                      <div className="bg-primary/10 p-2.5 sm:p-3 rounded-xl group-hover:bg-primary group-hover:text-white transition-colors shrink-0">
-                        <FileText className="h-5 w-5 sm:h-6 sm:w-6" />
-                      </div>
-                      <div className="min-w-0">
-                        <h3 className="font-bold font-tajawal text-sm sm:text-lg truncate group-hover:text-primary transition-colors">{plan.title}</h3>
-                        <div className="flex flex-wrap gap-x-3 sm:gap-x-4 gap-y-1 mt-1 text-[10px] sm:text-sm text-muted-foreground font-tajawal">
-                          <span className="flex items-center gap-1 shrink-0">
-                            <ClipboardPenLine className="h-3 w-3" /> 
-                            {plan.year?.replace('_', ' ')}
-                          </span>
-                          <span className="flex items-center gap-1 shrink-0">
-                            <BookOpen className="h-3 w-3" /> 
-                            {plan.field}
-                          </span>
-                          <span className="flex items-center gap-1 shrink-0">
-                            <Calendar className="h-3 w-3" /> 
-                            {plan.createdAt?.toDate().toLocaleDateString('ar-DZ')}
-                          </span>
+              <div key={plan.id} className="relative group">
+                <Link href={`/lesson-plans/${plan.id}`}>
+                  <Card className="border-none shadow-sm hover:shadow-md transition-all group overflow-hidden bg-white">
+                    <CardContent className="p-4 flex items-center justify-between">
+                      <div className="flex items-center gap-3 sm:gap-4 overflow-hidden">
+                        <div className="bg-primary/10 p-2.5 sm:p-3 rounded-xl group-hover:bg-primary group-hover:text-white transition-colors shrink-0">
+                          <FileText className="h-5 w-5 sm:h-6 sm:w-6" />
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="font-bold font-tajawal text-sm sm:text-lg truncate group-hover:text-primary transition-colors">{plan.title}</h3>
+                          <div className="flex flex-wrap gap-x-3 sm:gap-x-4 gap-y-1 mt-1 text-[10px] sm:text-sm text-muted-foreground font-tajawal">
+                            <span className="flex items-center gap-1 shrink-0">
+                              <ClipboardPenLine className="h-3 w-3" /> 
+                              {plan.year?.replace('_', ' ')}
+                            </span>
+                            <span className="flex items-center gap-1 shrink-0">
+                              <BookOpen className="h-3 w-3" /> 
+                              {plan.field}
+                            </span>
+                            <span className="flex items-center gap-1 shrink-0">
+                              <Calendar className="h-3 w-3" /> 
+                              {plan.createdAt?.toDate().toLocaleDateString('ar-DZ')}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary shrink-0">
-                        <ChevronLeft className="h-5 w-5" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
+                      
+                      <div className="flex items-center gap-1">
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent dir="rtl" className="rounded-2xl">
+                            <AlertDialogHeader>
+                              <AlertDialogTitle className="font-headline">حذف المذكرة؟</AlertDialogTitle>
+                              <AlertDialogDescription className="font-tajawal">
+                                هل أنت متأكد من رغبتك في حذف "{plan.title}"؟
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter className="gap-2">
+                              <AlertDialogCancel onClick={(e) => e.stopPropagation()} className="font-tajawal">إلغاء</AlertDialogCancel>
+                              <AlertDialogAction onClick={(e) => handleDelete(e, plan.id)} className="bg-destructive hover:bg-destructive/90 font-tajawal">
+                                تأكيد الحذف
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                        <ChevronLeft className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </div>
             ))
           ) : (
             <div className="text-center py-16 sm:py-20 border-2 border-dashed rounded-2xl bg-muted/20">

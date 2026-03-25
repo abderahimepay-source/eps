@@ -7,6 +7,17 @@ import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { 
   Download, 
   ArrowRight, 
   Calendar, 
@@ -16,9 +27,10 @@ import {
   School,
   Clock,
   CheckCircle2,
-  Info
+  Info,
+  Trash2
 } from "lucide-react";
-import { useFirebase, useDoc, useMemoFirebase } from '@/firebase';
+import { useFirebase, useDoc, useMemoFirebase, deleteDocumentNonBlocking } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
@@ -26,13 +38,16 @@ import html2canvas from 'html2canvas';
 import jspdf from 'jspdf';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from "@/lib/utils";
+import { useRouter } from 'next/navigation';
 
 export default function LessonPlanDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { user, firestore } = useFirebase();
   const { toast } = useToast();
+  const router = useRouter();
   const printRef = useRef<HTMLDivElement>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [pdfMode, setPdfMode] = useState(false);
 
   const memoizedDocRef = useMemoFirebase(() => {
@@ -51,9 +66,8 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
   const handleDownloadPDF = async () => {
     if (!printRef.current) return;
     setIsExporting(true);
-    setPdfMode(true); // Trigger simple styling
+    setPdfMode(true);
     
-    // Small timeout to allow React to apply the pdfMode classes
     setTimeout(async () => {
       try {
         const element = printRef.current!;
@@ -75,8 +89,6 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
         
-        // If height exceeds A4, it will still try to fit or you can add pages.
-        // For "contained to one A4", we'll just let it scale.
         pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
         pdf.save(`${plan?.title || 'lesson-plan'}.pdf`);
         
@@ -101,22 +113,25 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
     }, 500);
   };
 
+  const handleDelete = () => {
+    if (!memoizedDocRef) return;
+    setIsDeleting(true);
+    deleteDocumentNonBlocking(memoizedDocRef);
+    toast({ title: "تم الحذف", description: "تم حذف المذكرة من قاعدة البيانات بنجاح" });
+    router.push('/lesson-plans');
+  };
+
   const formatStageContent = (content: string) => {
     if (!content) return null;
-    
     const lines = content.split('\n');
-    
     return lines.map((line, i) => {
       const trimmedLine = line.trim();
       if (!trimmedLine) return <div key={i} className={cn(pdfMode ? "h-1" : "h-4")} />;
-
       const isHeader = /^(\d+\.|\*|-)?\s*[^:]{2,40}:/.test(trimmedLine) || 
                        trimmedLine.includes('الجانب التنظيمي') || 
                        trimmedLine.includes('التسخين') ||
                        trimmedLine.includes('الورشة');
-
       const isBullet = trimmedLine.startsWith('*') || trimmedLine.startsWith('-') || trimmedLine.startsWith('•');
-      
       return (
         <div key={i} className={cn(
           "mb-1 last:mb-0 text-gray-700 leading-relaxed text-start",
@@ -164,16 +179,39 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
           </Link>
           
           <div className="flex items-center gap-2 w-full sm:w-auto">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="ghost" className="text-destructive hover:bg-destructive/10 hover:text-destructive gap-2 h-11 px-4">
+                  <Trash2 className="h-4 w-4" />
+                  حذف
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent dir="rtl" className="rounded-2xl">
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="font-headline">هل أنت متأكد من الحذف؟</AlertDialogTitle>
+                  <AlertDialogDescription className="font-tajawal">
+                    سيتم حذف المذكرة نهائياً من قاعدة البيانات ولا يمكن التراجع عن هذا الإجراء.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter className="gap-2">
+                  <AlertDialogCancel className="font-tajawal">إلغاء</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90 font-tajawal">
+                    تأكيد الحذف
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
             <Button 
               variant="outline" 
-              className="flex-1 sm:flex-none gap-2 border-primary text-primary hover:bg-primary/5" 
+              className="flex-1 sm:flex-none gap-2 border-primary text-primary hover:bg-primary/5 h-11" 
               onClick={handleExportToDrive}
             >
               <ExternalLink className="h-4 w-4" />
               تصدير لـ Drive
             </Button>
             <Button 
-              className="flex-1 sm:flex-none gap-2 bg-accent hover:bg-accent/90 shadow-lg shadow-accent/20" 
+              className="flex-1 sm:flex-none gap-2 bg-accent hover:bg-accent/90 shadow-lg shadow-accent/20 h-11" 
               onClick={handleDownloadPDF}
               disabled={isExporting}
             >
