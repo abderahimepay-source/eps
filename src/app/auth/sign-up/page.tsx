@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -21,6 +20,8 @@ export default function SignUpPage() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [school, setSchool] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [directorate, setDirectorate] = useState('');
   
   const { auth, firestore } = useFirebase();
   const router = useRouter();
@@ -46,7 +47,8 @@ export default function SignUpPage() {
         email: user.email,
         displayName: displayName,
         school: school,
-        directorate: '', // Can be updated later in profile settings
+        phoneNumber: phoneNumber,
+        directorate: directorate,
         isPro: false,
         isAdmin: false, // Default to false for all new users
         credit_balance: 10, // Starting credits for new users
@@ -74,7 +76,7 @@ export default function SignUpPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md my-8">
         <div className="flex justify-center mb-8">
           <Link href="/" className="flex items-center gap-2">
             <div className="bg-primary p-2 rounded-xl shadow-lg">
@@ -115,6 +117,33 @@ export default function SignUpPage() {
                   />
                 </div>
               </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="phoneNumber">رقم الهاتف</Label>
+                  <Input 
+                    id="phoneNumber" 
+                    type="tel"
+                    placeholder="05 / 06 / 07"
+                    required 
+                    className="h-12" 
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="directorate">مديرية التربية</Label>
+                  <Input 
+                    id="directorate" 
+                    placeholder="مثلاً: الجزائر غرب"
+                    required 
+                    className="h-12" 
+                    value={directorate}
+                    onChange={(e) => setDirectorate(e.target.value)}
+                  />
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="school">المؤسسة التعليمية</Label>
                 <Input 
@@ -126,6 +155,7 @@ export default function SignUpPage() {
                   onChange={(e) => setSchool(e.target.value)}
                 />
               </div>
+              
               <div className="space-y-2">
                 <Label htmlFor="email">البريد الإلكتروني</Label>
                 <Input 
