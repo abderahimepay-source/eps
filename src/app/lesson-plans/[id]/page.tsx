@@ -1,7 +1,7 @@
 
 "use client";
 
-import { use } from 'react';
+import { use, useEffect, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
@@ -30,10 +30,10 @@ import {
   Info,
   Trash2
 } from "lucide-react";
-import { useFirebase, useDoc, useMemoFirebase, deleteDocumentNonBlocking } from '@/firebase';
+import { useFirebase, useDoc, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import Link from 'next/link';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import html2canvas from 'html2canvas';
 import jspdf from 'jspdf';
 import { useToast } from '@/hooks/use-toast';
@@ -47,21 +47,24 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
   const router = useRouter();
   const printRef = useRef<HTMLDivElement>(null);
   const [isExporting, setIsExporting] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
   const [pdfMode, setPdfMode] = useState(false);
+  const [plan, setPlan] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const memoizedDocRef = useMemoFirebase(() => {
-    if (!user || !firestore || !id) return null;
-    return doc(firestore, 'profiles', user.uid, 'lessonPlans', id);
-  }, [user, firestore, id]);
-
-  const { data: plan, isLoading } = useDoc(memoizedDocRef);
-
+  // Load profile for header
   const profileRef = useMemoFirebase(() => {
     if (!user || !firestore) return null;
     return doc(firestore, 'profiles', user.uid);
   }, [user, firestore]);
   const { data: profile } = useDoc(profileRef);
+
+  // Load specific plan from LocalStorage
+  useEffect(() => {
+    const savedPlans = JSON.parse(localStorage.getItem('modakira_plans') || '[]');
+    const foundPlan = savedPlans.find((p: any) => p.id === id);
+    setPlan(foundPlan);
+    setLoading(false);
+  }, [id]);
 
   const handleDownloadPDF = async () => {
     if (!printRef.current) return;
@@ -114,10 +117,11 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
   };
 
   const handleDelete = () => {
-    if (!memoizedDocRef) return;
-    setIsDeleting(true);
-    deleteDocumentNonBlocking(memoizedDocRef);
-    toast({ title: "تم الحذف", description: "تم حذف المذكرة من قاعدة البيانات بنجاح" });
+    const savedPlans = JSON.parse(localStorage.getItem('modakira_plans') || '[]');
+    const updatedPlans = savedPlans.filter((p: any) => p.id !== id);
+    localStorage.setItem('modakira_plans', JSON.stringify(updatedPlans));
+    
+    toast({ title: "تم الحذف", description: "تم حذف المذكرة من التخزين المحلي بنجاح" });
     router.push('/lesson-plans');
   };
 
@@ -145,7 +149,7 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
     });
   };
 
-  if (isLoading) {
+  if (loading) {
     return (
       <AppLayout>
         <div className="flex flex-col items-center justify-center py-20 gap-4">
@@ -190,7 +194,7 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
                 <AlertDialogHeader>
                   <AlertDialogTitle className="font-headline">هل أنت متأكد من الحذف؟</AlertDialogTitle>
                   <AlertDialogDescription className="font-tajawal">
-                    سيتم حذف المذكرة نهائياً من قاعدة البيانات ولا يمكن التراجع عن هذا الإجراء.
+                    سيتم حذف المذكرة نهائياً من جهازك ولا يمكن التراجع عن هذا الإجراء.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter className="gap-2">
@@ -247,7 +251,7 @@ export default function LessonPlanDetail({ params }: { params: Promise<{ id: str
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground text-sm font-tajawal">
                   {!pdfMode && <Calendar className="h-4 w-4" />}
-                  <span>تاريخ: {plan.createdAt?.toDate().toLocaleDateString('ar-DZ')}</span>
+                  <span>تاريخ: {new Date(plan.createdAt).toLocaleDateString('ar-DZ')}</span>
                 </div>
               </div>
 

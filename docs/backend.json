@@ -63,29 +63,6 @@
         "createdAt"
       ]
     },
-    "LessonPlan": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "LessonPlan",
-      "type": "object",
-      "properties": {
-        "id": { "type": "string" },
-        "userId": { "type": "string" },
-        "title": { "type": "string" },
-        "year": { "type": "string" },
-        "field": { "type": "string" },
-        "objectives": { "type": "array", "items": { "type": "string" } },
-        "stages": {
-          "type": "object",
-          "properties": {
-            "introductory_stage": { "type": "string" },
-            "building_stage": { "type": "string" },
-            "final_stage": { "type": "string" }
-          }
-        },
-        "createdAt": { "type": "string", "format": "date-time" },
-        "updatedAt": { "type": "string", "format": "date-time" }
-      }
-    },
     "UsageLog": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "UsageLog",
@@ -128,14 +105,6 @@
           "entityName": "UserProfile",
           "schema": { "$ref": "#/backend/entities/UserProfile" },
           "description": "User profile document."
-        }
-      },
-      {
-        "path": "/profiles/{userId}/lessonPlans/{lessonPlanId}",
-        "definition": {
-          "entityName": "LessonPlan",
-          "schema": { "$ref": "#/backend/entities/LessonPlan" },
-          "description": "Saved lesson plans."
         }
       },
       {

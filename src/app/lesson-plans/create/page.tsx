@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -15,7 +16,6 @@ import { Sparkles, CheckCircle2, Loader2, BookOpen, CreditCard, ChevronRight, Ch
 import { useToast } from '@/hooks/use-toast';
 import { useFirebase } from '@/firebase';
 import { trackAiUsage, incrementLessonPlanCount } from '@/firebase/usage';
-import { collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import { cn } from "@/lib/utils";
 
@@ -126,9 +126,10 @@ export default function CreateLessonPlan() {
     if (!user || !firestore || !lessonPlan || !currentYearData) return;
     setLoading(true);
     try {
-      const planRef = doc(collection(firestore, 'profiles', user.uid, 'lessonPlans'));
-      await setDoc(planRef, {
-        id: planRef.id,
+      // Create a unique ID and new plan object
+      const newPlanId = Date.now().toString();
+      const newPlan = {
+        id: newPlanId,
         userId: user.uid,
         title: `${specificResource} - ${currentYearData.grade_name}`,
         year: currentYearData.grade_name,
@@ -139,15 +140,21 @@ export default function CreateLessonPlan() {
           building_stage: lessonPlan.buildingStage,
           final_stage: lessonPlan.finalStage,
         },
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
+        createdAt: new Date().toISOString(),
+      };
 
+      // Save to LocalStorage
+      const localPlans = JSON.parse(localStorage.getItem('modakira_plans') || '[]');
+      localPlans.push(newPlan);
+      localStorage.setItem('modakira_plans', JSON.stringify(localPlans));
+
+      // Still increment count in Firestore for profile stats
       await incrementLessonPlanCount(firestore, user.uid);
-      toast({ title: "نجاح", description: "تم حفظ المذكرة بنجاح" });
+      
+      toast({ title: "نجاح", description: "تم حفظ المذكرة محلياً بنجاح" });
       router.push('/lesson-plans');
     } catch (error: any) {
-      toast({ title: "خطأ", description: "فشل الحفظ", variant: "destructive" });
+      toast({ title: "خطأ", description: "فشل الحفظ المحلي", variant: "destructive" });
     } finally {
       setLoading(false);
     }

@@ -25,44 +25,39 @@ import {
   ChevronLeft, 
   ClipboardPenLine, 
   BookOpen,
-  Loader2,
   Trash2
 } from "lucide-react";
 import Link from 'next/link';
-import { useFirebase, useCollection, useMemoFirebase, deleteDocumentNonBlocking } from '@/firebase';
-import { collection, query, orderBy, doc } from 'firebase/firestore';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function LessonPlansPage() {
-  const { user, firestore } = useFirebase();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
+  const [plans, setPlans] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch real lesson plans from Firestore
-  const plansQuery = useMemoFirebase(() => {
-    if (!user || !firestore) return null;
-    return query(
-      collection(firestore, 'profiles', user.uid, 'lessonPlans'),
-      orderBy('createdAt', 'desc')
-    );
-  }, [user, firestore]);
+  // Load plans from LocalStorage
+  useEffect(() => {
+    const savedPlans = JSON.parse(localStorage.getItem('modakira_plans') || '[]');
+    setPlans(savedPlans.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+    setLoading(false);
+  }, []);
 
-  const { data: plans, isLoading } = useCollection(plansQuery);
-
-  const filteredPlans = plans?.filter(plan => 
+  const filteredPlans = plans.filter(plan => 
     plan.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     plan.field?.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  );
 
   const handleDelete = (e: React.MouseEvent, planId: string) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!user || !firestore) return;
     
-    const docRef = doc(firestore, 'profiles', user.uid, 'lessonPlans', planId);
-    deleteDocumentNonBlocking(docRef);
-    toast({ title: "تم الحذف", description: "تم حذف المذكرة بنجاح" });
+    const updatedPlans = plans.filter(p => p.id !== planId);
+    setPlans(updatedPlans);
+    localStorage.setItem('modakira_plans', JSON.stringify(updatedPlans));
+    
+    toast({ title: "تم الحذف", description: "تم حذف المذكرة من التخزين المحلي بنجاح" });
   };
 
   return (
@@ -71,7 +66,7 @@ export default function LessonPlansPage() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-center sm:text-start">
             <h1 className="text-2xl sm:text-3xl font-bold font-headline mb-1">مذكراتي</h1>
-            <p className="text-sm sm:text-base text-muted-foreground font-tajawal">استعرض وعدل جميع مذكراتك المحفوظة.</p>
+            <p className="text-sm sm:text-base text-muted-foreground font-tajawal">استعرض وعدل جميع مذكراتك المحفوظة محلياً.</p>
           </div>
           <Link href="/lesson-plans/create" className="hidden sm:block">
             <Button className="bg-accent hover:bg-accent/90 gap-2 h-12 px-6 shadow-lg">
@@ -98,11 +93,8 @@ export default function LessonPlansPage() {
         </div>
 
         <div className="grid gap-4">
-          {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-20 gap-4">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <p className="text-muted-foreground font-tajawal">جاري تحميل مذكراتك...</p>
-            </div>
+          {loading ? (
+            <div className="text-center py-20 font-tajawal text-muted-foreground">جاري تحميل مذكراتك المحلية...</div>
           ) : filteredPlans.length > 0 ? (
             filteredPlans.map((plan) => (
               <div key={plan.id} className="relative group">
@@ -118,7 +110,7 @@ export default function LessonPlansPage() {
                           <div className="flex flex-wrap gap-x-3 sm:gap-x-4 gap-y-1 mt-1 text-[10px] sm:text-sm text-muted-foreground font-tajawal">
                             <span className="flex items-center gap-1 shrink-0">
                               <ClipboardPenLine className="h-3 w-3" /> 
-                              {plan.year?.replace('_', ' ')}
+                              {plan.year}
                             </span>
                             <span className="flex items-center gap-1 shrink-0">
                               <BookOpen className="h-3 w-3" /> 
@@ -126,7 +118,7 @@ export default function LessonPlansPage() {
                             </span>
                             <span className="flex items-center gap-1 shrink-0">
                               <Calendar className="h-3 w-3" /> 
-                              {plan.createdAt?.toDate().toLocaleDateString('ar-DZ')}
+                              {new Date(plan.createdAt).toLocaleDateString('ar-DZ')}
                             </span>
                           </div>
                         </div>
@@ -148,7 +140,7 @@ export default function LessonPlansPage() {
                             <AlertDialogHeader>
                               <AlertDialogTitle className="font-headline">حذف المذكرة؟</AlertDialogTitle>
                               <AlertDialogDescription className="font-tajawal">
-                                هل أنت متأكد من رغبتك في حذف "{plan.title}"؟
+                                هل أنت متأكد من رغبتك في حذف "{plan.title}" من جهازك؟
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter className="gap-2">
@@ -171,8 +163,8 @@ export default function LessonPlansPage() {
               <div className="bg-muted p-4 rounded-full w-fit mx-auto mb-4">
                 <BookOpen className="h-8 w-8 text-muted-foreground" />
               </div>
-              <h3 className="text-xl font-bold font-headline mb-2">لا توجد مذكرات</h3>
-              <p className="text-sm sm:text-base text-muted-foreground font-tajawal mb-6 px-4">ابدأ بإنشاء مذكرتك الأولى الآن باستخدام الذكاء الاصطناعي.</p>
+              <h3 className="text-xl font-bold font-headline mb-2">لا توجد مذكرات محفوظة</h3>
+              <p className="text-sm sm:text-base text-muted-foreground font-tajawal mb-6 px-4">ابدأ بإنشاء مذكرتك الأولى الآن وحفظها محلياً.</p>
               <Link href="/lesson-plans/create">
                 <Button variant="outline" className="gap-2 bg-white">
                   <Plus className="h-4 w-4" />
