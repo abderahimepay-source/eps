@@ -13,7 +13,6 @@ import {
   ChevronRight, 
   ChevronLeft,
   CreditCard,
-  FileText,
   ShieldAlert
 } from "lucide-react";
 import { useState, useEffect } from 'react';
@@ -25,7 +24,6 @@ import { cn } from "@/lib/utils";
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'الرئيسية', icon: LayoutDashboard },
   { href: '/lesson-plans', label: 'مذكراتي', icon: BookOpen },
-  { href: '/blog', label: 'المدونة', icon: FileText },
   { href: '/pricing', label: 'شحن الرصيد', icon: CreditCard },
   { href: '/profile', label: 'حسابي', icon: User },
 ];
@@ -79,7 +77,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
           <nav className="flex-1 space-y-2">
             {NAV_ITEMS.map((item) => {
-              const isActive = pathname === item.href || (item.href === '/blog' && pathname.startsWith('/blog'));
+              const isActive = pathname === item.href;
               return (
                 <Link key={item.href} href={item.href}>
                   <Button
@@ -188,7 +186,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
         {/* Bottom Nav - Mobile Only */}
         <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-50 px-4 h-16 flex items-center justify-around shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
-          {NAV_ITEMS.filter(item => item.href !== '/blog').map((item) => {
+          {NAV_ITEMS.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link key={item.href} href={item.href} className="flex-1">
