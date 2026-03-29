@@ -69,14 +69,6 @@ export default function ProfilePage() {
             <div className="text-center md:text-start space-y-2">
               <div className="flex flex-col md:flex-row items-center gap-3">
                 <h1 className="text-3xl font-bold font-headline">{profile?.displayName || 'تحميل...'}</h1>
-                {profile?.isPro ? (
-                  <Badge className="bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 border-none px-3 py-1 text-xs font-bold gap-1 shadow-sm">
-                    <Sparkles className="h-3 w-3" />
-                    عضو محترف PRO
-                  </Badge>
-                ) : (
-                  <Badge variant="secondary" className="px-3 py-1 text-xs font-bold font-tajawal">حساب مجاني</Badge>
-                )}
                 {profile?.isAdmin && (
                   <Badge variant="destructive" className="px-3 py-1 text-xs font-bold font-tajawal">مسؤول النظام</Badge>
                 )}
@@ -89,7 +81,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="flex flex-wrap justify-center gap-3 relative z-10">
-            <Link href="/pricing" className={profile?.isPro ? "hidden" : "block"}>
+            <Link href="/pricing">
               <Button className="bg-accent hover:bg-accent/90 h-11 px-6 font-bold shadow-lg shadow-accent/20">
                 شحن الرصيد الآن
               </Button>
@@ -135,11 +127,11 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="space-y-3 pt-2">
-                  <p className="text-xs font-bold text-muted-foreground border-b pb-2">مميزات باقتك الحالية:</p>
+                  <p className="text-xs font-bold text-muted-foreground border-b pb-2">مميزات المنصة:</p>
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-xs font-tajawal text-foreground/80">
                       <Check className="h-4 w-4 text-green-500 shrink-0" />
-                      <span>{profile?.isPro ? 'مذكرات ذكية غير محدودة' : '10 اعتمادات مجانية شهرياً'}</span>
+                      <span>مذكرات ذكية متوافقة مع المنهاج</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs font-tajawal text-foreground/80">
                       <Check className="h-4 w-4 text-green-500 shrink-0" />
@@ -152,15 +144,13 @@ export default function ProfilePage() {
                   </div>
                 </div>
               </CardContent>
-              {!profile?.isPro && (
-                <CardFooter className="bg-muted/10 p-4 border-t">
-                  <Link href="/pricing" className="w-full">
-                    <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary/5 font-bold">
-                      استكشف باقات الشحن
-                    </Button>
-                  </Link>
-                </CardFooter>
-              )}
+              <CardFooter className="bg-muted/10 p-4 border-t">
+                <Link href="/pricing" className="w-full">
+                  <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary/5 font-bold">
+                    استكشف باقات الشحن
+                  </Button>
+                </Link>
+              </CardFooter>
             </Card>
 
             <Card className="border-none shadow-sm bg-white overflow-hidden">
@@ -252,7 +242,7 @@ export default function ProfilePage() {
                   <div className="space-y-1">
                     <p className="text-sm font-bold text-amber-800 font-headline">ملاحظة هامة</p>
                     <p className="text-xs text-amber-700 font-tajawal leading-relaxed">
-                      المعلومات أعلاه تُستخدم حصرياً لتوليد ترويسة مذكراتك بشكل احترافي. لتعديل هذه البيانات، يرجى التواصل مع الدعم الفني أو الترقية لباقة PRO.
+                      المعلومات أعلاه تُستخدم حصرياً لتوليد ترويسة مذكراتك بشكل احترافي. لتعديل هذه البيانات، يرجى التواصل مع الدعم الفني.
                     </p>
                   </div>
                 </div>
