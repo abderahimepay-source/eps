@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -27,7 +26,7 @@ const NAV_ITEMS = [
   { href: '/dashboard', label: 'الرئيسية', icon: LayoutDashboard },
   { href: '/lesson-plans', label: 'مذكراتي', icon: BookOpen },
   { href: '/blog', label: 'المدونة', icon: FileText },
-  { href: '/pricing', label: 'الاشتراك', icon: CreditCard },
+  { href: '/pricing', label: 'شحن الرصيد', icon: CreditCard },
   { href: '/profile', label: 'حسابي', icon: User },
 ];
 
@@ -124,7 +123,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-primary text-lg font-rajdhani">{profile?.credit_balance || 0}</span>
                   <Link href="/pricing">
-                    <Button variant="ghost" size="sm" className="h-7 text-xs px-2 text-accent">ترقية</Button>
+                    <Button variant="ghost" size="sm" className="h-7 text-xs px-2 text-accent">شحن</Button>
                   </Link>
                 </div>
               </div>

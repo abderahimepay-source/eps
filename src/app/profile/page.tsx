@@ -91,7 +91,7 @@ export default function ProfilePage() {
           <div className="flex flex-wrap justify-center gap-3 relative z-10">
             <Link href="/pricing" className={profile?.isPro ? "hidden" : "block"}>
               <Button className="bg-accent hover:bg-accent/90 h-11 px-6 font-bold shadow-lg shadow-accent/20">
-                ترقية لـ PRO
+                شحن الرصيد الآن
               </Button>
             </Link>
             <Button variant="outline" className="h-11 px-6 border-destructive text-destructive hover:bg-destructive/5 gap-2" onClick={handleSignOut}>
@@ -108,7 +108,7 @@ export default function ProfilePage() {
               <CardHeader className="bg-primary/5 border-b">
                 <CardTitle className="font-headline text-lg flex items-center gap-2 text-primary">
                   <CreditCard className="h-5 w-5" />
-                  الرصيد والاشتراك
+                  الرصيد وعمليات الشحن
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-6 space-y-6">
@@ -156,7 +156,7 @@ export default function ProfilePage() {
                 <CardFooter className="bg-muted/10 p-4 border-t">
                   <Link href="/pricing" className="w-full">
                     <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary/5 font-bold">
-                      استكشف باقات PRO
+                      استكشف باقات الشحن
                     </Button>
                   </Link>
                 </CardFooter>

@@ -1,4 +1,3 @@
-
 "use client";
 
 import AppLayout from '@/components/layout/AppLayout';
@@ -21,7 +20,7 @@ const PLANS = [
     features: [
       "توليد حوالي 40 مذكرة كاملة"
     ],
-    buttonText: "اشترك الآن",
+    buttonText: "شحن الآن",
     buttonVariant: "outline" as const,
     highlight: false,
     actionType: "buy" as const,
@@ -37,7 +36,7 @@ const PLANS = [
     features: [
       "توليد حوالي 80 مذكرة كاملة"
     ],
-    buttonText: "اشترك الآن",
+    buttonText: "شحن الآن",
     buttonVariant: "default" as const,
     highlight: true,
     actionType: "buy" as const,
@@ -54,7 +53,7 @@ export default function PricingPage() {
   const handleSubscribe = async (plan: typeof PLANS[0]) => {
     if (plan.actionType !== "buy") return;
     if (!user) {
-      toast({ title: "عذراً", description: "يجب تسجيل الدخول أولاً للتمكن من الاشتراك", variant: "destructive" });
+      toast({ title: "عذراً", description: "يجب تسجيل الدخول أولاً للتمكن من الشحن", variant: "destructive" });
       return;
     }
 
@@ -69,7 +68,7 @@ export default function PricingPage() {
     } catch (error: any) {
       toast({
         title: "خطأ في الاتصال",
-        description: error.message || "تعذر بدء عملية الدفع حالياً، حاول مرة أخرى.",
+        description: error.message || "تعذر بدء عملية الشحن حالياً، حاول مرة أخرى.",
         variant: "destructive"
       });
     } finally {
@@ -81,7 +80,7 @@ export default function PricingPage() {
     <AppLayout>
       <div className="max-w-5xl mx-auto space-y-12 py-8">
         <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold font-headline">خطط الأسعار والاشتراكات</h1>
+          <h1 className="text-4xl font-bold font-headline">خطط الأسعار وشحن الرصيد</h1>
           <p className="text-xl text-muted-foreground font-tajawal max-w-2xl mx-auto">
             اختر الباقة التي تناسب احتياجاتك البيداغوجية ووفر ساعات من العمل الورقي.
           </p>
