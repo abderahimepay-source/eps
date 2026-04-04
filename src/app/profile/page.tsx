@@ -17,17 +17,6 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { 
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { 
   User, 
   Shield, 
   Sparkles, 
@@ -42,12 +31,11 @@ import {
   Lock,
   LogOut,
   Pencil,
-  Trash2,
   Loader2
 } from "lucide-react";
 import { useFirebase, useDoc, useMemoFirebase } from '@/firebase';
-import { doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
-import { signOut, updateProfile, deleteUser } from 'firebase/auth';
+import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { signOut, updateProfile } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -60,7 +48,6 @@ export default function ProfilePage() {
 
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -123,42 +110,6 @@ export default function ProfilePage() {
       });
     } finally {
       setIsUpdating(false);
-    }
-  };
-
-  const handleDeleteAccount = async () => {
-    if (!user || !profileRef) return;
-
-    setIsDeleting(true);
-    try {
-      // 1. Delete Firestore Document
-      await deleteDoc(profileRef);
-
-      // 2. Delete Auth User (Note: Might require recent login)
-      await deleteUser(user);
-
-      toast({
-        title: "تم حذف الحساب",
-        description: "تم مسح بياناتك نهائياً من المنصة.",
-      });
-      router.push('/');
-    } catch (error: any) {
-      console.error(error);
-      if (error.code === 'auth/requires-recent-login') {
-        toast({
-          variant: "destructive",
-          title: "إجراء أمني",
-          description: "يرجى تسجيل الخروج والدخول مرة أخرى للقيام بهذا الإجراء الحساس.",
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          title: "خطأ",
-          description: "تعذر حذف الحساب حالياً.",
-        });
-      }
-    } finally {
-      setIsDeleting(false);
     }
   };
 
@@ -271,46 +222,6 @@ export default function ProfilePage() {
                   </Button>
                 </Link>
               </CardFooter>
-            </Card>
-
-            <Card className="border-none shadow-sm bg-white overflow-hidden">
-               <CardHeader className="bg-muted/50 border-b">
-                <CardTitle className="font-headline text-lg flex items-center gap-2">
-                  <Lock className="h-5 w-5 text-muted-foreground" />
-                  الأمان
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6 space-y-4">
-                <p className="text-xs text-muted-foreground font-tajawal leading-relaxed">
-                  بإمكانك حذف حسابك نهائياً من المنصة. هذا الإجراء سيقوم بمسح كافة بياناتك ولا يمكن التراجع عنه.
-                </p>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="ghost" className="w-full h-11 text-destructive hover:bg-destructive/10 hover:text-destructive gap-2">
-                      <Trash2 className="h-4 w-4" />
-                      حذف الحساب نهائياً
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent dir="rtl" className="rounded-2xl">
-                    <AlertDialogHeader>
-                      <AlertDialogTitle className="font-headline text-destructive">حذف الحساب نهائياً؟</AlertDialogTitle>
-                      <AlertDialogDescription className="font-tajawal">
-                        هل أنت متأكد تماماً؟ سيتم حذف بياناتك، سجلاتك، ورصيد اعتماداتك نهائياً. لا يمكننا استعادة الحساب بعد الحذف.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter className="gap-2">
-                      <AlertDialogCancel className="font-tajawal">تراجع</AlertDialogCancel>
-                      <AlertDialogAction 
-                        onClick={handleDeleteAccount} 
-                        className="bg-destructive hover:bg-destructive/90 font-tajawal"
-                        disabled={isDeleting}
-                      >
-                        {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : "تأكيد الحذف النهائي"}
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </CardContent>
             </Card>
           </div>
 
