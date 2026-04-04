@@ -79,7 +79,7 @@ export default function SignInPage() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password">كلمة المرور</Label>
-                  <Link href="#" className="text-xs text-primary hover:underline">نسيت كلمة المرور؟</Link>
+                  <Link href="/auth/forgot-password" size="sm" className="text-xs text-primary hover:underline">نسيت كلمة المرور؟</Link>
                 </div>
                 <Input 
                   id="password" 
