@@ -1,3 +1,4 @@
+
 "use client";
 
 import AppLayout from '@/components/layout/AppLayout';
@@ -6,6 +7,26 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { 
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { 
   User, 
   Shield, 
@@ -19,17 +40,34 @@ import {
   CreditCard,
   FileText,
   Lock,
-  LogOut
+  LogOut,
+  Pencil,
+  Trash2,
+  Loader2
 } from "lucide-react";
 import { useFirebase, useDoc, useMemoFirebase } from '@/firebase';
-import { doc } from 'firebase/firestore';
-import { signOut } from 'firebase/auth';
+import { doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { signOut, updateProfile, deleteUser } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ProfilePage() {
   const { user, firestore, auth } = useFirebase();
   const router = useRouter();
+  const { toast } = useToast();
+
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Form State
+  const [formData, setFormData] = useState({
+    displayName: '',
+    school: '',
+    phoneNumber: '',
+    directorate: ''
+  });
 
   const profileRef = useMemoFirebase(() => {
     if (!user || !firestore) return null;
@@ -37,9 +75,90 @@ export default function ProfilePage() {
   }, [user, firestore]);
   const { data: profile } = useDoc(profileRef);
 
+  // Sync form data with profile data when it loads
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        displayName: profile.displayName || '',
+        school: profile.school || '',
+        phoneNumber: profile.phoneNumber || '',
+        directorate: profile.directorate || ''
+      });
+    }
+  }, [profile]);
+
   const handleSignOut = async () => {
     await signOut(auth);
     router.push('/');
+  };
+
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user || !profileRef) return;
+
+    setIsUpdating(true);
+    try {
+      // 1. Update Firestore Document
+      await updateDoc(profileRef, {
+        ...formData,
+        updatedAt: serverTimestamp()
+      });
+
+      // 2. Update Auth Profile Display Name
+      await updateProfile(user, {
+        displayName: formData.displayName
+      });
+
+      toast({
+        title: "تم التحديث",
+        description: "تمت تحديث بياناتك الشخصية بنجاح.",
+      });
+      setIsEditOpen(false);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "خطأ",
+        description: "تعذر تحديث البيانات. يرجى المحاولة لاحقاً.",
+      });
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user || !profileRef) return;
+
+    setIsDeleting(true);
+    try {
+      // 1. Delete Firestore Document
+      await deleteDoc(profileRef);
+
+      // 2. Delete Auth User (Note: Might require recent login)
+      await deleteUser(user);
+
+      toast({
+        title: "تم حذف الحساب",
+        description: "تم مسح بياناتك نهائياً من المنصة.",
+      });
+      router.push('/');
+    } catch (error: any) {
+      console.error(error);
+      if (error.code === 'auth/requires-recent-login') {
+        toast({
+          variant: "destructive",
+          title: "إجراء أمني",
+          description: "يرجى تسجيل الخروج والدخول مرة أخرى للقيام بهذا الإجراء الحساس.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "خطأ",
+          description: "تعذر حذف الحساب حالياً.",
+        });
+      }
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const formatDate = (timestamp: any) => {
@@ -162,12 +281,34 @@ export default function ProfilePage() {
               </CardHeader>
               <CardContent className="pt-6 space-y-4">
                 <p className="text-xs text-muted-foreground font-tajawal leading-relaxed">
-                  يمكنك تحديث كلمة المرور الخاصة بك لتأمين حسابك بشكل دوري.
+                  بإمكانك حذف حسابك نهائياً من المنصة. هذا الإجراء سيقوم بمسح كافة بياناتك ولا يمكن التراجع عنه.
                 </p>
-                <Button variant="outline" className="w-full h-11" disabled>
-                  تغيير كلمة المرور
-                </Button>
-                <p className="text-[10px] text-center text-muted-foreground italic">سيتم تفعيل هذه الميزة قريباً</p>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="ghost" className="w-full h-11 text-destructive hover:bg-destructive/10 hover:text-destructive gap-2">
+                      <Trash2 className="h-4 w-4" />
+                      حذف الحساب نهائياً
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent dir="rtl" className="rounded-2xl">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="font-headline text-destructive">حذف الحساب نهائياً؟</AlertDialogTitle>
+                      <AlertDialogDescription className="font-tajawal">
+                        هل أنت متأكد تماماً؟ سيتم حذف بياناتك، سجلاتك، ورصيد اعتماداتك نهائياً. لا يمكننا استعادة الحساب بعد الحذف.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter className="gap-2">
+                      <AlertDialogCancel className="font-tajawal">تراجع</AlertDialogCancel>
+                      <AlertDialogAction 
+                        onClick={handleDeleteAccount} 
+                        className="bg-destructive hover:bg-destructive/90 font-tajawal"
+                        disabled={isDeleting}
+                      >
+                        {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : "تأكيد الحذف النهائي"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </CardContent>
             </Card>
           </div>
@@ -176,10 +317,73 @@ export default function ProfilePage() {
           <div className="md:col-span-2 space-y-6">
             <Card className="border-none shadow-sm bg-white">
               <CardHeader className="border-b">
-                <CardTitle className="font-headline text-xl flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-primary" />
-                  المعلومات المهنية والشخصية
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="font-headline text-xl flex items-center gap-2">
+                    <Shield className="h-5 w-5 text-primary" />
+                    المعلومات المهنية والشخصية
+                  </CardTitle>
+                  <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="gap-2">
+                        <Pencil className="h-4 w-4" />
+                        تعديل
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent dir="rtl" className="rounded-2xl sm:max-w-md">
+                      <DialogHeader>
+                        <DialogTitle className="font-headline">تعديل الملف الشخصي</DialogTitle>
+                        <DialogDescription className="font-tajawal">
+                          حدث معلوماتك المهنية التي تظهر في المذكرات.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <form onSubmit={handleUpdateProfile} className="space-y-4 py-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="displayName">الاسم واللقب</Label>
+                          <Input 
+                            id="displayName" 
+                            value={formData.displayName} 
+                            onChange={(e) => setFormData({...formData, displayName: e.target.value})} 
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="phoneNumber">رقم الهاتف</Label>
+                          <Input 
+                            id="phoneNumber" 
+                            value={formData.phoneNumber} 
+                            onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})} 
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="school">المؤسسة التعليمية</Label>
+                          <Input 
+                            id="school" 
+                            value={formData.school} 
+                            onChange={(e) => setFormData({...formData, school: e.target.value})} 
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="directorate">مديرية التربية</Label>
+                          <Input 
+                            id="directorate" 
+                            value={formData.directorate} 
+                            onChange={(e) => setFormData({...formData, directorate: e.target.value})} 
+                            required
+                          />
+                        </div>
+                        <DialogFooter className="gap-2">
+                          <Button type="button" variant="ghost" onClick={() => setIsEditOpen(false)}>إلغاء</Button>
+                          <Button type="submit" className="bg-primary hover:bg-primary/90" disabled={isUpdating}>
+                            {isUpdating ? <Loader2 className="h-4 w-4 animate-spin me-2" /> : null}
+                            حفظ التغييرات
+                          </Button>
+                        </DialogFooter>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
+                </div>
                 <CardDescription className="font-tajawal">هذه المعلومات تظهر تلقائياً في ترويسة مذكراتك البيداغوجية.</CardDescription>
               </CardHeader>
               <CardContent className="pt-8 space-y-8">
@@ -242,17 +446,13 @@ export default function ProfilePage() {
                   <div className="space-y-1">
                     <p className="text-sm font-bold text-amber-800 font-headline">ملاحظة هامة</p>
                     <p className="text-xs text-amber-700 font-tajawal leading-relaxed">
-                      المعلومات أعلاه تُستخدم حصرياً لتوليد ترويسة مذكراتك بشكل احترافي. لتعديل هذه البيانات، يرجى التواصل مع الدعم الفني.
+                      المعلومات أعلاه تُستخدم حصرياً لتوليد ترويسة مذكراتك بشكل احترافي. يمكنك تعديلها في أي وقت عبر زر التعديل.
                     </p>
                   </div>
                 </div>
               </CardContent>
               <CardFooter className="border-t pt-6 flex justify-between items-center">
                  <p className="text-xs text-muted-foreground font-tajawal">آخر تحديث: {formatDate(profile?.updatedAt)}</p>
-                 <Button variant="ghost" className="text-primary font-bold gap-2">
-                   طلب تعديل البيانات
-                   <ChevronLeft className="h-4 w-4" />
-                 </Button>
               </CardFooter>
             </Card>
           </div>
