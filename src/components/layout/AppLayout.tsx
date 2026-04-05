@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -6,16 +7,16 @@ import { Button } from "@/components/ui/button";
 import { 
   ClipboardPenLine, 
   LayoutDashboard, 
-  BookOpen, 
   User, 
   LogOut, 
   Plus, 
   ChevronRight, 
   ChevronLeft,
   CreditCard,
-  ShieldAlert
+  ShieldAlert,
+  Sparkles
 } from "lucide-react";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useFirebase, useDoc, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
@@ -23,7 +24,7 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'الرئيسية', icon: LayoutDashboard },
-  { href: '/lesson-plans', label: 'مذكراتي', icon: BookOpen },
+  { href: '/lesson-plans/create', label: 'إنشاء مذكرة', icon: Sparkles },
   { href: '/pricing', label: 'شحن الرصيد', icon: CreditCard },
   { href: '/profile', label: 'حسابي', icon: User },
 ];
@@ -87,7 +88,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                       isActive && "bg-primary/10 text-primary hover:bg-primary/20",
                       isCollapsed ? "px-0 justify-center" : "px-4"
                     )}
-                    title={isCollapsed ? item.label : undefined}
                   >
                     <item.icon className={cn("h-5 w-5 shrink-0", isActive ? "text-primary" : "text-muted-foreground")} />
                     {!isCollapsed && <span className="font-tajawal">{item.label}</span>}
@@ -96,7 +96,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               );
             })}
 
-            {/* Admin Link - Only visible to Admins */}
             {profile?.isAdmin && (
               <Link href="/admin">
                 <Button
@@ -141,7 +140,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
 
-        {/* Collapse Toggle */}
         <Button
           variant="secondary"
           size="icon"
@@ -152,12 +150,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </Button>
       </aside>
 
-      {/* Content Wrapper */}
       <div className={cn(
         "flex-1 flex flex-col min-w-0 transition-all duration-300",
         isCollapsed ? "lg:pr-20" : "lg:pr-64"
       )}>
-        {/* Header - Desktop & Mobile */}
         <header className="h-16 border-b bg-white flex items-center px-4 lg:px-8 justify-between sticky top-0 z-40">
           <div className="flex lg:hidden items-center gap-2">
             <div className="bg-primary p-1 rounded-md">
@@ -174,17 +170,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               onClick={handleSignOut}
             >
               <LogOut className="h-5 w-5" />
-              <span className="font-tajawal font-bold">تسجيل الخروج</span>
+              <span className="font-tajawal font-bold">خروج</span>
             </Button>
           </div>
         </header>
 
-        {/* Main Content Area */}
         <main className="flex-1 p-4 lg:p-8 pb-24 lg:pb-8 overflow-y-auto">
           {children}
         </main>
 
-        {/* Bottom Nav - Mobile Only */}
         <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-50 px-4 h-16 flex items-center justify-around shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
           {NAV_ITEMS.map((item) => {
             const isActive = pathname === item.href;
