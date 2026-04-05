@@ -90,7 +90,7 @@
   box-shadow: none !important;
   text-shadow: none !important;
   color: black !important;
-  border-color: #000 !important;
+  border: none !important;
 }
 
 .pdf-simple-mode .no-pdf,
@@ -102,12 +102,13 @@
 .pdf-simple-mode header {
   padding: 0.5rem 1rem !important;
   margin-bottom: 0.5rem !important;
-  border-bottom: 1px solid black !important;
+  border: none !important;
 }
 
 .pdf-simple-mode section {
   margin-bottom: 0.25rem !important;
   page-break-inside: avoid;
+  border: none !important;
 }
 
 .pdf-simple-mode h1 { font-size: 1.1rem !important; }
@@ -150,6 +151,7 @@
 
   #lesson-plan-document * {
     color: black !important;
+    border: none !important;
   }
 
   #lesson-plan-document svg,
