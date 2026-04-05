@@ -165,15 +165,16 @@ ${lessonPlan.finalStage}
     setIsExporting(true);
     setPdfMode(true);
     
+    // Wait for the state update to re-render in compact mode
     setTimeout(async () => {
       try {
         const element = printRef.current!;
         const canvas = await html2canvas(element, {
-          scale: 2,
+          scale: 3, // High quality
           useCORS: true,
           logging: false,
           backgroundColor: '#ffffff',
-          windowWidth: 800,
+          width: 794, // Force capture at A4 pixel width
         });
         
         const imgData = canvas.toDataURL('image/png');
@@ -183,13 +184,11 @@ ${lessonPlan.finalStage}
           format: 'a4',
         });
         
-        const imgProps = pdf.getImageProperties(imgData);
         const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        const pdfHeight = pdf.internal.pageSize.getHeight();
         
-        const finalPdfHeight = pdfHeight > 297 ? 297 : pdfHeight;
-        
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, finalPdfHeight);
+        // Add the image to fill the A4 page exactly
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
         pdf.save(`${specificResource || 'lesson-plan'}.pdf`);
         
         toast({ title: "نجاح", description: "تم تحميل ملف PDF بنجاح" });
@@ -200,7 +199,7 @@ ${lessonPlan.finalStage}
         setIsExporting(false);
         setPdfMode(false);
       }
-    }, 300);
+    }, 500);
   };
 
   const formatStageContent = (content: string) => {
@@ -219,8 +218,8 @@ ${lessonPlan.finalStage}
           "mb-1 last:mb-0 text-gray-700 leading-relaxed text-start text-xs sm:text-sm",
           isHeader && "font-bold text-gray-900 mt-2 first:mt-0 border-r-2 border-primary/30 pr-2 bg-primary/5 py-0.5",
           isBullet && "pr-4 relative before:content-['•'] before:absolute before:right-0 before:text-primary",
-          pdfMode && isHeader && "mt-1 bg-transparent border-none py-0 text-[11px]",
-          pdfMode && !isHeader && "text-[10px] leading-tight mb-0.5"
+          pdfMode && "text-[9px] leading-tight mb-0",
+          pdfMode && isHeader && "mt-1 bg-transparent border-none py-0 font-bold",
         )}>
           {isBullet ? trimmedLine.replace(/^[*•-]\s*/, '') : trimmedLine}
         </div>
@@ -400,7 +399,7 @@ ${lessonPlan.finalStage}
               ref={printRef} 
               className={cn(
                 "bg-white rounded-xl shadow-2xl overflow-hidden border border-border/50 transition-all duration-200 mx-auto",
-                pdfMode && "pdf-simple-mode shadow-none border-none rounded-none w-[794px]"
+                pdfMode && "pdf-simple-mode shadow-none border-none rounded-none"
               )}
               id="lesson-plan-document"
             >
@@ -408,7 +407,7 @@ ${lessonPlan.finalStage}
                 <div className="grid grid-cols-3 gap-4 items-start">
                   <div className={cn("space-y-1 text-[10px] text-muted-foreground font-tajawal", pdfMode && "text-[9px]")}>
                     <div className="flex items-center gap-1 font-bold text-primary">
-                      <School className="h-3 w-3" />
+                      <School className={cn("h-3 w-3", pdfMode && "hidden")} />
                       <span>{profile?.school || "..."}</span>
                     </div>
                     <div>أ/{profile?.displayName || "..."}</div>
@@ -432,7 +431,7 @@ ${lessonPlan.finalStage}
                 {/* Objectives */}
                 <section className={cn("space-y-2", pdfMode && "space-y-1")}>
                   <h3 className={cn("text-xs font-bold font-headline flex items-center gap-2 pb-1 border-b border-primary/20", pdfMode && "text-[10px] pb-0.5 border-none")}>
-                    <CheckCircle2 className="h-3 w-3 text-primary" />
+                    <CheckCircle2 className={cn("h-3 w-3 text-primary", pdfMode && "hidden")} />
                     الأهداف الإجرائية (SMART)
                   </h3>
                   <div className={cn("space-y-1", pdfMode && "space-y-0.5")}>
@@ -446,7 +445,7 @@ ${lessonPlan.finalStage}
                 </section>
 
                 {/* Stages */}
-                <div className={cn("space-y-4", pdfMode && "space-y-2")}>
+                <div className={cn("space-y-4", pdfMode && "space-y-1")}>
                   {[
                     { title: 'المرحلة التحضيرية', time: '10-15 د', content: lessonPlan.introductoryStage, icon: Clock, color: 'primary' },
                     { title: 'المرحلة التعلمية', time: '25-30 د', content: lessonPlan.buildingStage, icon: Info, color: 'accent' },
@@ -458,7 +457,7 @@ ${lessonPlan.finalStage}
                           <span className={cn(
                             "h-5 w-5 rounded flex items-center justify-center text-white",
                             stage.color === 'primary' ? "bg-primary" : stage.color === 'accent' ? "bg-accent" : "bg-gray-400",
-                            pdfMode && "h-4 w-4 bg-transparent text-black border-none"
+                            pdfMode && "hidden"
                           )}>{idx + 1}</span>
                           <h4 className="font-headline">{stage.title}</h4>
                         </div>

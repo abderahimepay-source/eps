@@ -74,14 +74,16 @@
   font-family: 'Tajawal', sans-serif;
 }
 
-/* Compact PDF Styles for single page fit */
+/* Aggressive Compact PDF Styles */
 .pdf-simple-mode {
   background: white !important;
   color: black !important;
   box-shadow: none !important;
   border: none !important;
-  padding: 0 !important;
-  margin: 0 auto !important;
+  padding: 10px !important;
+  margin: 0 !important;
+  width: 794px !important; /* Fixed A4 Width at 96dpi */
+  height: auto !important;
 }
 
 .pdf-simple-mode * {
@@ -90,7 +92,8 @@
   box-shadow: none !important;
   text-shadow: none !important;
   color: black !important;
-  border: none !important;
+  border-color: transparent !important;
+  border-width: 0 !important;
 }
 
 .pdf-simple-mode .no-pdf,
@@ -100,21 +103,28 @@
 }
 
 .pdf-simple-mode header {
-  padding: 0.5rem 1rem !important;
-  margin-bottom: 0.5rem !important;
-  border: none !important;
+  padding: 0.5rem !important;
+  margin-bottom: 0.25rem !important;
 }
 
 .pdf-simple-mode section {
   margin-bottom: 0.25rem !important;
   page-break-inside: avoid;
-  border: none !important;
 }
 
-.pdf-simple-mode h1 { font-size: 1.1rem !important; }
-.pdf-simple-mode h2 { font-size: 0.9rem !important; }
-.pdf-simple-mode h3 { font-size: 0.85rem !important; }
-.pdf-simple-mode p, .pdf-simple-mode div { font-size: 0.75rem !important; line-height: 1.1 !important; }
+.pdf-simple-mode h1 { font-size: 1rem !important; margin-bottom: 2px !important; }
+.pdf-simple-mode h2 { font-size: 0.85rem !important; margin-bottom: 2px !important; }
+.pdf-simple-mode h3 { font-size: 0.8rem !important; margin-bottom: 2px !important; }
+.pdf-simple-mode h4 { font-size: 0.75rem !important; }
+.pdf-simple-mode p, .pdf-simple-mode div, .pdf-simple-mode span { 
+  font-size: 0.7rem !important; 
+  line-height: 1.1 !important; 
+}
+
+.pdf-simple-mode .badge {
+  padding: 2px 4px !important;
+  font-size: 0.6rem !important;
+}
 
 /* Print Styles */
 @media print {
@@ -137,27 +147,11 @@
     margin: 0 !important;
   }
 
-  .print-shadow-none {
-    box-shadow: none !important;
-    border: none !important;
-  }
-
   #lesson-plan-document {
     border: none !important;
     width: 100% !important;
     max-width: none !important;
     box-shadow: none !important;
-  }
-
-  #lesson-plan-document * {
-    color: black !important;
-    border: none !important;
-  }
-
-  #lesson-plan-document svg,
-  #lesson-plan-document .bg-primary\/10,
-  #lesson-plan-document .bg-accent\/10 {
-    display: none !important;
   }
   
   @page {
