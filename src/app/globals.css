@@ -74,12 +74,14 @@
   font-family: 'Tajawal', sans-serif;
 }
 
-/* Simplified PDF Styles */
+/* Compact PDF Styles for single page fit */
 .pdf-simple-mode {
   background: white !important;
   color: black !important;
   box-shadow: none !important;
   border: none !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
 }
 
 .pdf-simple-mode * {
@@ -88,7 +90,7 @@
   box-shadow: none !important;
   text-shadow: none !important;
   color: black !important;
-  border-color: #ddd !important;
+  border-color: #000 !important;
 }
 
 .pdf-simple-mode .no-pdf,
@@ -98,20 +100,20 @@
 }
 
 .pdf-simple-mode header {
-  padding: 1rem !important;
-  margin-bottom: 1rem !important;
-  border-bottom: 2px solid black !important;
+  padding: 0.5rem 1rem !important;
+  margin-bottom: 0.5rem !important;
+  border-bottom: 1px solid black !important;
 }
 
 .pdf-simple-mode section {
-  margin-bottom: 1rem !important;
+  margin-bottom: 0.25rem !important;
   page-break-inside: avoid;
 }
 
-.pdf-simple-mode h1 { font-size: 1.5rem !important; }
-.pdf-simple-mode h2 { font-size: 1.25rem !important; }
-.pdf-simple-mode h3 { font-size: 1.1rem !important; }
-.pdf-simple-mode p, .pdf-simple-mode div { font-size: 0.9rem !important; line-height: 1.4 !important; }
+.pdf-simple-mode h1 { font-size: 1.1rem !important; }
+.pdf-simple-mode h2 { font-size: 0.9rem !important; }
+.pdf-simple-mode h3 { font-size: 0.85rem !important; }
+.pdf-simple-mode p, .pdf-simple-mode div { font-size: 0.75rem !important; line-height: 1.1 !important; }
 
 /* Print Styles */
 @media print {
@@ -150,8 +152,6 @@
     color: black !important;
   }
 
-  /* Force hide icons in native print too for simple look */
-  /* Corrected: Escaped slashes in Tailwind opacity classes to prevent PostCSS parsing errors */
   #lesson-plan-document svg,
   #lesson-plan-document .bg-primary\/10,
   #lesson-plan-document .bg-accent\/10 {
@@ -159,7 +159,7 @@
   }
   
   @page {
-    margin: 1cm;
+    margin: 0;
     size: A4;
   }
 }

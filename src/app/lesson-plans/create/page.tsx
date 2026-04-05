@@ -165,6 +165,7 @@ ${lessonPlan.finalStage}
     setIsExporting(true);
     setPdfMode(true);
     
+    // Small delay to allow React to apply pdfMode classes
     setTimeout(async () => {
       try {
         const element = printRef.current!;
@@ -173,6 +174,7 @@ ${lessonPlan.finalStage}
           useCORS: true,
           logging: false,
           backgroundColor: '#ffffff',
+          windowWidth: 800, // Fixed width for consistent capture
         });
         
         const imgData = canvas.toDataURL('image/png');
@@ -186,7 +188,10 @@ ${lessonPlan.finalStage}
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
         
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        // Ensure it fits within A4 height (297mm)
+        const finalPdfHeight = pdfHeight > 297 ? 297 : pdfHeight;
+        
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, finalPdfHeight);
         pdf.save(`${specificResource || 'lesson-plan'}.pdf`);
         
         toast({ title: "نجاح", description: "تم تحميل ملف PDF بنجاح" });
@@ -197,7 +202,7 @@ ${lessonPlan.finalStage}
         setIsExporting(false);
         setPdfMode(false);
       }
-    }, 100);
+    }, 300);
   };
 
   const formatStageContent = (content: string) => {
@@ -205,7 +210,7 @@ ${lessonPlan.finalStage}
     const lines = content.split('\n');
     return lines.map((line, i) => {
       const trimmedLine = line.trim();
-      if (!trimmedLine) return <div key={i} className={cn(pdfMode ? "h-1" : "h-4")} />;
+      if (!trimmedLine) return <div key={i} className={cn(pdfMode ? "h-0.5" : "h-4")} />;
       const isHeader = /^(\d+\.|\*|-)?\s*[^:]{2,40}:/.test(trimmedLine) || 
                        trimmedLine.includes('الجانب التنظيمي') || 
                        trimmedLine.includes('التسخين') ||
@@ -216,7 +221,8 @@ ${lessonPlan.finalStage}
           "mb-1 last:mb-0 text-gray-700 leading-relaxed text-start text-xs sm:text-sm",
           isHeader && "font-bold text-gray-900 mt-2 first:mt-0 border-r-2 border-primary/30 pr-2 bg-primary/5 py-0.5",
           isBullet && "pr-4 relative before:content-['•'] before:absolute before:right-0 before:text-primary",
-          pdfMode && isHeader && "mt-1 bg-transparent border-black"
+          pdfMode && isHeader && "mt-1 bg-transparent border-black py-0 text-[11px]",
+          pdfMode && !isHeader && "text-[10px] leading-tight mb-0.5"
         )}>
           {isBullet ? trimmedLine.replace(/^[*•-]\s*/, '') : trimmedLine}
         </div>
@@ -395,14 +401,14 @@ ${lessonPlan.finalStage}
             <div 
               ref={printRef} 
               className={cn(
-                "bg-white rounded-xl shadow-2xl overflow-hidden border border-border/50 transition-all duration-200",
-                pdfMode && "pdf-simple-mode shadow-none border-none rounded-none"
+                "bg-white rounded-xl shadow-2xl overflow-hidden border border-border/50 transition-all duration-200 mx-auto",
+                pdfMode && "pdf-simple-mode shadow-none border-none rounded-none w-[794px]" // A4 Pixel width at 96DPI
               )}
               id="lesson-plan-document"
             >
               <header className={cn("p-6 bg-gradient-to-br from-gray-50 to-white border-b", pdfMode && "p-4 border-black")}>
                 <div className="grid grid-cols-3 gap-4 items-start">
-                  <div className="space-y-1 text-[10px] text-muted-foreground font-tajawal">
+                  <div className={cn("space-y-1 text-[10px] text-muted-foreground font-tajawal", pdfMode && "text-[9px]")}>
                     <div className="flex items-center gap-1 font-bold text-primary">
                       <School className="h-3 w-3" />
                       <span>{profile?.school || "..."}</span>
@@ -411,30 +417,30 @@ ${lessonPlan.finalStage}
                     <div>تاريخ: {new Date().toLocaleDateString('ar-DZ')}</div>
                   </div>
                   <div className="text-center space-y-0.5">
-                    <h1 className={cn("text-xl font-bold font-headline text-gray-900", pdfMode && "text-lg")}>مذكـرة تربويـة</h1>
+                    <h1 className={cn("text-xl font-bold font-headline text-gray-900", pdfMode && "text-base")}>مذكـرة تربويـة</h1>
                     <p className="text-[9px] text-muted-foreground">التربية البدنية والرياضية</p>
                   </div>
-                  <div className={cn("bg-white p-2 rounded-lg border border-dashed border-primary/30 text-[9px]", pdfMode && "border-solid border-black")}>
+                  <div className={cn("bg-white p-2 rounded-lg border border-dashed border-primary/30 text-[9px]", pdfMode && "border-solid border-black p-1 text-[8px]")}>
                     <div className="flex justify-between"><span>المستوى:</span><span className="font-bold">{currentYearData?.grade_name}</span></div>
                     <div className="flex justify-between"><span>الميدان:</span><span className="font-bold">{learningField}</span></div>
                   </div>
                 </div>
-                <div className={cn("mt-4 text-center p-2 bg-primary/5 rounded-xl border border-primary/10", pdfMode && "bg-transparent border-black")}>
-                  <h2 className="text-sm font-bold font-headline text-primary">الموضوع: {specificResource}</h2>
+                <div className={cn("mt-4 text-center p-2 bg-primary/5 rounded-xl border border-primary/10", pdfMode && "mt-2 p-1 bg-transparent border-black")}>
+                  <h2 className={cn("text-sm font-bold font-headline text-primary", pdfMode && "text-[12px]")}>الموضوع: {specificResource}</h2>
                 </div>
               </header>
 
-              <div className={cn("p-6 space-y-6 text-start", pdfMode && "p-4 space-y-3")}>
+              <div className={cn("p-6 space-y-6 text-start", pdfMode && "p-4 space-y-2")}>
                 {/* Objectives */}
-                <section className="space-y-2">
-                  <h3 className="text-xs font-bold font-headline flex items-center gap-2 pb-1 border-b border-primary/20">
+                <section className={cn("space-y-2", pdfMode && "space-y-1")}>
+                  <h3 className={cn("text-xs font-bold font-headline flex items-center gap-2 pb-1 border-b border-primary/20", pdfMode && "text-[10px] pb-0.5")}>
                     <CheckCircle2 className="h-3 w-3 text-primary" />
                     الأهداف الإجرائية (SMART)
                   </h3>
-                  <div className="space-y-1">
+                  <div className={cn("space-y-1", pdfMode && "space-y-0.5")}>
                     {selectedObjectives.map((obj, i) => (
-                      <div key={i} className="flex gap-2 text-[10px] text-gray-700 bg-gray-50/50 p-1.5 rounded-md leading-tight">
-                        <span className="font-bold text-primary">{i + 1}.</span>
+                      <div key={i} className={cn("flex gap-2 text-[10px] text-gray-700 bg-gray-50/50 p-1.5 rounded-md leading-tight", pdfMode && "p-1 text-[9px] leading-none")}>
+                        <span className="font-bold text-primary shrink-0">{i + 1}.</span>
                         {obj}
                       </div>
                     ))}
@@ -442,18 +448,19 @@ ${lessonPlan.finalStage}
                 </section>
 
                 {/* Stages */}
-                <div className="space-y-4">
+                <div className={cn("space-y-4", pdfMode && "space-y-2")}>
                   {[
                     { title: 'المرحلة التحضيرية', time: '10-15 د', content: lessonPlan.introductoryStage, icon: Clock, color: 'primary' },
                     { title: 'المرحلة التعلمية', time: '25-30 د', content: lessonPlan.buildingStage, icon: Info, color: 'accent' },
                     { title: 'المرحلة الختامية', time: '5-10 د', content: lessonPlan.finalStage, icon: CheckCircle2, color: 'muted' }
                   ].map((stage, idx) => (
-                    <section key={idx} className="space-y-1.5">
-                      <div className="flex items-center justify-between text-[10px] font-bold">
+                    <section key={idx} className={cn("space-y-1.5", pdfMode && "space-y-0.5")}>
+                      <div className={cn("flex items-center justify-between text-[10px] font-bold", pdfMode && "text-[9px]")}>
                         <div className="flex items-center gap-1.5">
                           <span className={cn(
                             "h-5 w-5 rounded flex items-center justify-center text-white",
-                            stage.color === 'primary' ? "bg-primary" : stage.color === 'accent' ? "bg-accent" : "bg-gray-400"
+                            stage.color === 'primary' ? "bg-primary" : stage.color === 'accent' ? "bg-accent" : "bg-gray-400",
+                            pdfMode && "h-4 w-4"
                           )}>{idx + 1}</span>
                           <h4 className="font-headline">{stage.title}</h4>
                         </div>
@@ -462,7 +469,7 @@ ${lessonPlan.finalStage}
                       <div className={cn(
                         "p-3 rounded-xl border-r-2 bg-gray-50/30",
                         stage.color === 'primary' ? "border-primary" : stage.color === 'accent' ? "border-accent" : "border-gray-300",
-                        pdfMode && "bg-transparent border-black p-2"
+                        pdfMode && "bg-transparent border-black p-1 rounded-none border-r"
                       )}>
                         {formatStageContent(stage.content)}
                       </div>
@@ -471,14 +478,14 @@ ${lessonPlan.finalStage}
                 </div>
 
                 {/* Footer Signature */}
-                <footer className="pt-6 grid grid-cols-2 gap-4 text-center border-t border-dashed border-gray-200">
+                <footer className={cn("pt-6 grid grid-cols-2 gap-4 text-center border-t border-dashed border-gray-200", pdfMode && "pt-2 gap-2 border-solid border-black")}>
                   <div className="space-y-1">
-                    <p className="font-bold text-[10px]">إمضاء الأستاذ</p>
-                    <div className="h-10 border border-gray-100 rounded-lg bg-gray-50/30"></div>
+                    <p className={cn("font-bold text-[10px]", pdfMode && "text-[9px]")}>إمضاء الأستاذ</p>
+                    <div className={cn("h-10 border border-gray-100 rounded-lg bg-gray-50/30", pdfMode && "h-8 border-black")}></div>
                   </div>
                   <div className="space-y-1">
-                    <p className="font-bold text-[10px]">تأشيرة السيد المدير</p>
-                    <div className="h-10 border border-gray-100 rounded-lg bg-gray-50/30"></div>
+                    <p className={cn("font-bold text-[10px]", pdfMode && "text-[9px]")}>تأشيرة السيد المدير</p>
+                    <div className={cn("h-10 border border-gray-100 rounded-lg bg-gray-50/30", pdfMode && "h-8 border-black")}></div>
                   </div>
                 </footer>
               </div>
