@@ -3,7 +3,7 @@
 
 import AppLayout from '@/components/layout/AppLayout';
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -18,17 +18,11 @@ import {
 } from "@/components/ui/dialog";
 import { 
   User, 
-  Shield, 
-  Sparkles, 
   Check, 
-  Phone, 
-  MapPin, 
-  School, 
   Mail, 
   Calendar,
   CreditCard,
   FileText,
-  Lock,
   LogOut,
   Pencil,
   Loader2
@@ -86,13 +80,11 @@ export default function ProfilePage() {
 
     setIsUpdating(true);
     try {
-      // 1. Update Firestore Document
       await updateDoc(profileRef, {
         ...formData,
         updatedAt: serverTimestamp()
       });
 
-      // 2. Update Auth Profile Display Name
       await updateProfile(user, {
         displayName: formData.displayName
       });
@@ -152,9 +144,71 @@ export default function ProfilePage() {
           </div>
 
           <div className="flex flex-wrap justify-center gap-3 relative z-10">
+            <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="h-11 px-6 gap-2">
+                  <Pencil className="h-4 w-4" />
+                  تعديل المعلومات
+                </Button>
+              </DialogTrigger>
+              <DialogContent dir="rtl" className="rounded-2xl sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle className="font-headline">تعديل الملف الشخصي</DialogTitle>
+                  <DialogDescription className="font-tajawal">
+                    حدث معلوماتك المهنية التي تظهر في المذكرات.
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleUpdateProfile} className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="displayName">اسم المستخدم</Label>
+                    <Input 
+                      id="displayName" 
+                      value={formData.displayName} 
+                      onChange={(e) => setFormData({...formData, displayName: e.target.value})} 
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phoneNumber">رقم الهاتف</Label>
+                    <Input 
+                      id="phoneNumber" 
+                      value={formData.phoneNumber} 
+                      onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})} 
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="school">المؤسسة التعليمية</Label>
+                    <Input 
+                      id="school" 
+                      value={formData.school} 
+                      onChange={(e) => setFormData({...formData, school: e.target.value})} 
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="directorate">مديرية التربية</Label>
+                    <Input 
+                      id="directorate" 
+                      value={formData.directorate} 
+                      onChange={(e) => setFormData({...formData, directorate: e.target.value})} 
+                      required
+                    />
+                  </div>
+                  <DialogFooter className="gap-2">
+                    <Button type="button" variant="ghost" onClick={() => setIsEditOpen(false)}>إلغاء</Button>
+                    <Button type="submit" className="bg-primary hover:bg-primary/90" disabled={isUpdating}>
+                      {isUpdating ? <Loader2 className="h-4 w-4 animate-spin me-2" /> : null}
+                      حفظ التغييرات
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+
             <Link href="/pricing">
               <Button className="bg-accent hover:bg-accent/90 h-11 px-6 font-bold shadow-lg shadow-accent/20">
-                شحن الرصيد الآن
+                شحن الرصيد
               </Button>
             </Link>
             <Button variant="outline" className="h-11 px-6 border-destructive text-destructive hover:bg-destructive/5 gap-2" onClick={handleSignOut}>
@@ -208,99 +262,9 @@ export default function ProfilePage() {
                       <Check className="h-4 w-4 text-green-500 shrink-0" />
                       <span>تنزيل PDF فائق الجودة</span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs font-tajawal text-foreground/80">
-                      <Check className="h-4 w-4 text-green-500 shrink-0" />
-                      <span>دعم فني بيداغوجي متواصل</span>
-                    </div>
                   </div>
                 </div>
               </CardContent>
-              <CardFooter className="bg-muted/10 p-4 border-t">
-                <Link href="/pricing" className="w-full">
-                  <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary/5 font-bold">
-                    استكشف باقات الشحن
-                  </Button>
-                </Link>
-              </CardFooter>
-            </Card>
-          </div>
-
-          {/* Settings Column */}
-          <div className="md:col-span-2 space-y-6">
-            <Card className="border-none shadow-sm bg-white">
-              <CardHeader className="border-b">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="font-headline text-xl flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-primary" />
-                    المعلومات المهنية والشخصية
-                  </CardTitle>
-                  <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" size="sm" className="gap-2">
-                        <Pencil className="h-4 w-4" />
-                        تعديل
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent dir="rtl" className="rounded-2xl sm:max-w-md">
-                      <DialogHeader>
-                        <DialogTitle className="font-headline">تعديل الملف الشخصي</DialogTitle>
-                        <DialogDescription className="font-tajawal">
-                          حدث معلوماتك المهنية التي تظهر في المذكرات.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <form onSubmit={handleUpdateProfile} className="space-y-4 py-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="displayName">الاسم واللقب</Label>
-                          <Input 
-                            id="displayName" 
-                            value={formData.displayName} 
-                            onChange={(e) => setFormData({...formData, displayName: e.target.value})} 
-                            required
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="phoneNumber">رقم الهاتف</Label>
-                          <Input 
-                            id="phoneNumber" 
-                            value={formData.phoneNumber} 
-                            onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})} 
-                            required
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="school">المؤسسة التعليمية</Label>
-                          <Input 
-                            id="school" 
-                            value={formData.school} 
-                            onChange={(e) => setFormData({...formData, school: e.target.value})} 
-                            required
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="directorate">مديرية التربية</Label>
-                          <Input 
-                            id="directorate" 
-                            value={formData.directorate} 
-                            onChange={(e) => setFormData({...formData, directorate: e.target.value})} 
-                            required
-                          />
-                        </div>
-                        <DialogFooter className="gap-2">
-                          <Button type="button" variant="ghost" onClick={() => setIsEditOpen(false)}>إلغاء</Button>
-                          <Button type="submit" className="bg-primary hover:bg-primary/90" disabled={isUpdating}>
-                            {isUpdating ? <Loader2 className="h-4 w-4 animate-spin me-2" /> : null}
-                            حفظ التغييرات
-                          </Button>
-                        </DialogFooter>
-                      </form>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-                <CardDescription className="font-tajawal">هذه المعلومات تظهر تلقائياً في ترويسة مذكراتك البيداغوجية.</CardDescription>
-              </CardHeader>
-              <CardFooter className="border-t pt-6 flex justify-between items-center">
-                 <p className="text-xs text-muted-foreground font-tajawal">آخر تحديث: {formatDate(profile?.updatedAt)}</p>
-              </CardFooter>
             </Card>
           </div>
         </div>
@@ -308,22 +272,3 @@ export default function ProfilePage() {
     </AppLayout>
   );
 }
-
-const ChevronLeft = ({ className }: { className?: string }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    width="24" 
-    height="24" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    className={className}
-  >
-    <path d="m15 18-6-6 6-6"/>
-  </svg>
-);
-
-    
