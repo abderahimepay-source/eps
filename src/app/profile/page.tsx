@@ -298,71 +298,6 @@ export default function ProfilePage() {
                 </div>
                 <CardDescription className="font-tajawal">هذه المعلومات تظهر تلقائياً في ترويسة مذكراتك البيداغوجية.</CardDescription>
               </CardHeader>
-              <CardContent className="pt-8 space-y-8">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                  <div className="space-y-3">
-                    <Label className="text-sm font-bold flex items-center gap-2 text-muted-foreground">
-                      <User className="h-4 w-4" />
-                      الاسم واللقب
-                    </Label>
-                    <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 font-bold text-foreground">
-                      {profile?.displayName || '---'}
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <Label className="text-sm font-bold flex items-center gap-2 text-muted-foreground">
-                      <Mail className="h-4 w-4" />
-                      البريد الإلكتروني
-                    </Label>
-                    <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 font-bold text-foreground overflow-hidden text-ellipsis">
-                      {profile?.email || '---'}
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <Label className="text-sm font-bold flex items-center gap-2 text-muted-foreground">
-                      <Phone className="h-4 w-4" />
-                      رقم الهاتف
-                    </Label>
-                    <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 font-bold text-foreground">
-                      {profile?.phoneNumber || 'غير مسجل'}
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <Label className="text-sm font-bold flex items-center gap-2 text-muted-foreground">
-                      <MapPin className="h-4 w-4" />
-                      مديرية التربية
-                    </Label>
-                    <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 font-bold text-foreground">
-                      {profile?.directorate || 'غير مسجلة'}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3 pt-4">
-                  <Label className="text-sm font-bold flex items-center gap-2 text-muted-foreground">
-                    <School className="h-4 w-4" />
-                    المؤسسة التعليمية (الابتدائية)
-                  </Label>
-                  <div className="p-5 rounded-2xl bg-primary/5 border border-primary/10 font-bold text-primary text-lg">
-                    {profile?.school || 'غير مسجلة'}
-                  </div>
-                </div>
-
-                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-100 flex items-start gap-3">
-                  <div className="p-2 bg-amber-100 rounded-xl">
-                    <Shield className="h-5 w-5 text-amber-600" />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm font-bold text-amber-800 font-headline">ملاحظة هامة</p>
-                    <p className="text-xs text-amber-700 font-tajawal leading-relaxed">
-                      المعلومات أعلاه تُستخدم حصرياً لتوليد ترويسة مذكراتك بشكل احترافي. يمكنك تعديلها في أي وقت عبر زر التعديل.
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
               <CardFooter className="border-t pt-6 flex justify-between items-center">
                  <p className="text-xs text-muted-foreground font-tajawal">آخر تحديث: {formatDate(profile?.updatedAt)}</p>
               </CardFooter>
@@ -390,3 +325,5 @@ const ChevronLeft = ({ className }: { className?: string }) => (
     <path d="m15 18-6-6 6-6"/>
   </svg>
 );
+
+    
