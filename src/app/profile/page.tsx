@@ -3,7 +3,7 @@
 
 import AppLayout from '@/components/layout/AppLayout';
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +25,10 @@ import {
   FileText,
   LogOut,
   Pencil,
-  Loader2
+  Loader2,
+  TrendingUp,
+  ShieldCheck,
+  Star
 } from "lucide-react";
 import { useFirebase, useDoc, useMemoFirebase } from '@/firebase';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
@@ -43,7 +46,6 @@ export default function ProfilePage() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Form State
   const [formData, setFormData] = useState({
     displayName: '',
     school: '',
@@ -57,7 +59,6 @@ export default function ProfilePage() {
   }, [user, firestore]);
   const { data: profile } = useDoc(profileRef);
 
-  // Sync form data with profile data when it loads
   useEffect(() => {
     if (profile) {
       setFormData({
@@ -120,153 +121,173 @@ export default function ProfilePage() {
 
   return (
     <AppLayout>
-      <div className="max-w-5xl mx-auto space-y-8 pb-10">
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 bg-white p-8 rounded-3xl border shadow-sm relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-32 h-32 bg-primary/5 rounded-full -translate-x-10 -translate-y-10"></div>
+      <div className="max-w-5xl mx-auto space-y-6 pb-12">
+        {/* Profile Summary Header */}
+        <div className="bg-white rounded-3xl border shadow-sm overflow-hidden">
+          <div className="h-32 bg-gradient-to-r from-primary to-primary/60 relative">
+             <div className="absolute -bottom-12 right-8">
+                <div className="h-24 w-24 rounded-3xl bg-white p-1 shadow-xl">
+                   <div className="h-full w-full rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                      <User className="h-12 w-12" />
+                   </div>
+                </div>
+             </div>
+          </div>
           
-          <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
-            <div className="h-24 w-24 rounded-2xl bg-primary/10 flex items-center justify-center border-2 border-primary/20 text-primary">
-              <User className="h-12 w-12" />
-            </div>
-            <div className="text-center md:text-start space-y-2">
-              <div className="flex flex-col md:flex-row items-center gap-3">
-                <h1 className="text-3xl font-bold font-headline">{profile?.displayName || 'تحميل...'}</h1>
-                {profile?.isAdmin && (
-                  <Badge variant="destructive" className="px-3 py-1 text-xs font-bold font-tajawal">مسؤول النظام</Badge>
+          <div className="pt-16 pb-8 px-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+            <div className="space-y-1">
+              <div className="flex items-center gap-3">
+                <h1 className="text-3xl font-bold font-headline">{profile?.displayName || 'جاري التحميل...'}</h1>
+                {profile?.isPro && (
+                  <Badge className="bg-accent hover:bg-accent/90 gap-1 px-3 py-1">
+                    <Star className="h-3 w-3 fill-current" />
+                    محترف PRO
+                  </Badge>
                 )}
               </div>
-              <p className="text-muted-foreground font-tajawal flex items-center justify-center md:justify-start gap-2">
+              <p className="text-muted-foreground font-tajawal flex items-center gap-2">
                 <Mail className="h-4 w-4" />
                 {profile?.email}
               </p>
             </div>
-          </div>
 
-          <div className="flex flex-wrap justify-center gap-3 relative z-10">
-            <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="h-11 px-6 gap-2">
-                  <Pencil className="h-4 w-4" />
-                  تعديل المعلومات
-                </Button>
-              </DialogTrigger>
-              <DialogContent dir="rtl" className="rounded-2xl sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle className="font-headline">تعديل الملف الشخصي</DialogTitle>
-                  <DialogDescription className="font-tajawal">
-                    حدث معلوماتك المهنية التي تظهر في المذكرات.
-                  </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleUpdateProfile} className="space-y-4 py-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="displayName">اسم المستخدم</Label>
-                    <Input 
-                      id="displayName" 
-                      value={formData.displayName} 
-                      onChange={(e) => setFormData({...formData, displayName: e.target.value})} 
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="phoneNumber">رقم الهاتف</Label>
-                    <Input 
-                      id="phoneNumber" 
-                      value={formData.phoneNumber} 
-                      onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})} 
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="school">المؤسسة التعليمية</Label>
-                    <Input 
-                      id="school" 
-                      value={formData.school} 
-                      onChange={(e) => setFormData({...formData, school: e.target.value})} 
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="directorate">مديرية التربية</Label>
-                    <Input 
-                      id="directorate" 
-                      value={formData.directorate} 
-                      onChange={(e) => setFormData({...formData, directorate: e.target.value})} 
-                      required
-                    />
-                  </div>
-                  <DialogFooter className="gap-2">
-                    <Button type="button" variant="ghost" onClick={() => setIsEditOpen(false)}>إلغاء</Button>
-                    <Button type="submit" className="bg-primary hover:bg-primary/90" disabled={isUpdating}>
-                      {isUpdating ? <Loader2 className="h-4 w-4 animate-spin me-2" /> : null}
-                      حفظ التغييرات
-                    </Button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
-            </Dialog>
+            <div className="flex flex-wrap gap-3">
+              <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="rounded-xl h-11 px-6 gap-2">
+                    <Pencil className="h-4 w-4" />
+                    تعديل الملف
+                  </Button>
+                </DialogTrigger>
+                <DialogContent dir="rtl" className="rounded-3xl sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="font-headline text-xl">تعديل البيانات المهنية</DialogTitle>
+                    <DialogDescription className="font-tajawal">
+                      ستظهر هذه المعلومات في ترويسة مذكراتك المطبوعة.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleUpdateProfile} className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="displayName">اسم المستخدم</Label>
+                      <Input id="displayName" value={formData.displayName} onChange={(e) => setFormData({...formData, displayName: e.target.value})} required className="rounded-xl h-11" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="phoneNumber">رقم الهاتف</Label>
+                      <Input id="phoneNumber" value={formData.phoneNumber} onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})} className="rounded-xl h-11" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="school">المؤسسة التعليمية (الابتدائية)</Label>
+                      <Input id="school" value={formData.school} onChange={(e) => setFormData({...formData, school: e.target.value})} className="rounded-xl h-11" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="directorate">مديرية التربية</Label>
+                      <Input id="directorate" value={formData.directorate} onChange={(e) => setFormData({...formData, directorate: e.target.value})} className="rounded-xl h-11" />
+                    </div>
+                    <DialogFooter className="gap-2 mt-4">
+                      <Button type="button" variant="ghost" onClick={() => setIsEditOpen(false)}>إلغاء</Button>
+                      <Button type="submit" className="bg-primary hover:bg-primary/90 px-8 rounded-xl" disabled={isUpdating}>
+                        {isUpdating ? <Loader2 className="h-4 w-4 animate-spin me-2" /> : "حفظ التغييرات"}
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
 
-            <Link href="/pricing">
-              <Button className="bg-accent hover:bg-accent/90 h-11 px-6 font-bold shadow-lg shadow-accent/20">
-                شحن الرصيد
+              <Button variant="outline" className="rounded-xl h-11 px-6 border-destructive text-destructive hover:bg-destructive/5 gap-2" onClick={handleSignOut}>
+                <LogOut className="h-4 w-4" />
+                خروج
               </Button>
-            </Link>
-            <Button variant="outline" className="h-11 px-6 border-destructive text-destructive hover:bg-destructive/5 gap-2" onClick={handleSignOut}>
-              <LogOut className="h-4 w-4" />
-              خروج
-            </Button>
+            </div>
           </div>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-3">
-          {/* Stats & Subscription Column */}
-          <div className="md:col-span-1 space-y-6">
-            <Card className="border-none shadow-sm overflow-hidden bg-white">
-              <CardHeader className="bg-primary/5 border-b">
-                <CardTitle className="font-headline text-lg flex items-center gap-2 text-primary">
-                  <CreditCard className="h-5 w-5" />
-                  الرصيد وعمليات الشحن
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6 space-y-6">
-                <div className="text-center space-y-1">
-                  <p className="text-sm text-muted-foreground font-tajawal">الاعتمادات المتبقية</p>
-                  <p className="text-4xl font-bold font-rajdhani text-primary">{profile?.credit_balance || 0}</p>
-                </div>
-                
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-muted/30 text-sm">
-                    <span className="text-muted-foreground flex items-center gap-2">
-                      <FileText className="h-4 w-4" />
-                      إجمالي المذكرات
-                    </span>
-                    <span className="font-bold">{profile?.totalLessonPlansCreated || 0}</span>
+        {/* Stats Grid */}
+        <div className="grid gap-6 md:grid-cols-3">
+          {/* Main Balance Card */}
+          <Card className="border-none shadow-sm md:col-span-2 overflow-hidden bg-white">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 border-b">
+               <div className="space-y-1">
+                  <CardTitle className="font-headline text-lg flex items-center gap-2">
+                    <CreditCard className="h-5 w-5 text-primary" />
+                    رصيد الاعتمادات الحالي
+                  </CardTitle>
+               </div>
+               <Link href="/pricing">
+                  <Button className="bg-accent hover:bg-accent/90 shadow-lg shadow-accent/20 rounded-xl">شحن الآن</Button>
+               </Link>
+            </CardHeader>
+            <CardContent className="p-0">
+               <div className="flex flex-col sm:flex-row items-center justify-around p-10 gap-8">
+                  <div className="text-center space-y-1">
+                    <p className="text-5xl font-bold font-rajdhani text-primary">{profile?.credit_balance || 0}</p>
+                    <p className="text-sm text-muted-foreground font-tajawal">اعتماد متاح</p>
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-muted/30 text-sm">
-                    <span className="text-muted-foreground flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      تاريخ الانضمام
-                    </span>
-                    <span className="font-bold text-xs">{formatDate(profile?.createdAt)}</span>
+                  <div className="h-20 w-px bg-border hidden sm:block"></div>
+                  <div className="space-y-4 w-full sm:w-auto">
+                    <div className="flex items-center gap-4">
+                       <div className="bg-primary/10 p-2 rounded-lg">
+                          <TrendingUp className="h-5 w-5 text-primary" />
+                       </div>
+                       <div>
+                          <p className="text-xs text-muted-foreground font-tajawal">معدل الاستهلاك</p>
+                          <p className="font-bold font-rajdhani">25 / أسبوع</p>
+                       </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                       <div className="bg-purple-100 p-2 rounded-lg">
+                          <ShieldCheck className="h-5 w-5 text-purple-600" />
+                       </div>
+                       <div>
+                          <p className="text-xs text-muted-foreground font-tajawal">حالة الحساب</p>
+                          <p className="font-bold font-tajawal text-sm">{profile?.isPro ? 'مفعل (احترافي)' : 'نشط (أساسي)'}</p>
+                       </div>
+                    </div>
                   </div>
+               </div>
+            </CardContent>
+          </Card>
+
+          {/* Quick Info Card */}
+          <Card className="border-none shadow-sm bg-white overflow-hidden">
+             <CardHeader className="bg-muted/30 border-b">
+                <CardTitle className="font-headline text-lg">إحصائيات سريعة</CardTitle>
+             </CardHeader>
+             <CardContent className="p-6 space-y-6">
+                <div className="flex items-center justify-between">
+                   <div className="flex items-center gap-3">
+                      <div className="bg-primary/10 p-2 rounded-xl">
+                        <FileText className="h-5 w-5 text-primary" />
+                      </div>
+                      <span className="font-tajawal text-sm">إجمالي المذكرات</span>
+                   </div>
+                   <span className="font-bold font-rajdhani text-lg">{profile?.totalLessonPlansCreated || 0}</span>
                 </div>
 
-                <div className="space-y-3 pt-2">
-                  <p className="text-xs font-bold text-muted-foreground border-b pb-2">مميزات المنصة:</p>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-xs font-tajawal text-foreground/80">
-                      <Check className="h-4 w-4 text-green-500 shrink-0" />
-                      <span>مذكرات ذكية متوافقة مع المنهاج</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs font-tajawal text-foreground/80">
-                      <Check className="h-4 w-4 text-green-500 shrink-0" />
-                      <span>تنزيل PDF فائق الجودة</span>
-                    </div>
-                  </div>
+                <div className="flex items-center justify-between">
+                   <div className="flex items-center gap-3">
+                      <div className="bg-accent/10 p-2 rounded-xl">
+                        <Calendar className="h-5 w-5 text-accent" />
+                      </div>
+                      <span className="font-tajawal text-sm">تاريخ الانضمام</span>
+                   </div>
+                   <span className="font-bold text-xs">{formatDate(profile?.createdAt)}</span>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+
+                <div className="pt-4 space-y-3">
+                   <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">مميزات باقتك الحالية:</p>
+                   <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-xs font-tajawal text-foreground/80">
+                        <Check className="h-4 w-4 text-green-500 shrink-0" />
+                        <span>مذكرات ذكية متوافقة مع المنهاج</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs font-tajawal text-foreground/80">
+                        <Check className="h-4 w-4 text-green-500 shrink-0" />
+                        <span>تنزيل PDF فائق الجودة</span>
+                      </div>
+                   </div>
+                </div>
+             </CardContent>
+          </Card>
         </div>
       </div>
     </AppLayout>
