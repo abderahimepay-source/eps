@@ -17,11 +17,7 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [school, setSchool] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [directorate, setDirectorate] = useState('');
+  const [fullName, setFullName] = useState('');
   
   const { auth, firestore } = useFirebase();
   const router = useRouter();
@@ -35,22 +31,21 @@ export default function SignUpPage() {
       // 1. Create User in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      const displayName = `${firstName} ${lastName}`;
 
       // 2. Update Auth Profile
-      await updateProfile(user, { displayName });
+      await updateProfile(user, { displayName: fullName });
 
       // 3. Create UserProfile Document in Firestore
       const profileRef = doc(firestore, 'profiles', user.uid);
       await setDoc(profileRef, {
         uid: user.uid,
         email: user.email,
-        displayName: displayName,
-        school: school,
-        phoneNumber: phoneNumber,
-        directorate: directorate,
+        displayName: fullName,
+        school: 'لم يتم التحديد بعد', // Default value, can be edited in profile
+        phoneNumber: '',
+        directorate: '',
         isPro: false,
-        isAdmin: false, // Default to false for all new users
+        isAdmin: false,
         credit_balance: 10, // Starting credits for new users
         totalLessonPlansCreated: 0,
         createdAt: serverTimestamp(),
@@ -59,7 +54,7 @@ export default function SignUpPage() {
 
       toast({
         title: "تم إنشاء الحساب بنجاح",
-        description: "مرحباً بك في Modakira!",
+        description: "مرحباً بك في Modakira! يمكنك إكمال بياناتك المهنية من صفحة الملف الشخصي.",
       });
 
       router.push('/dashboard');
@@ -95,64 +90,15 @@ export default function SignUpPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName">الاسم</Label>
-                  <Input 
-                    id="firstName" 
-                    required 
-                    className="h-12" 
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lastName">اللقب</Label>
-                  <Input 
-                    id="lastName" 
-                    required 
-                    className="h-12" 
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                  />
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="phoneNumber">رقم الهاتف</Label>
-                  <Input 
-                    id="phoneNumber" 
-                    type="tel"
-                    placeholder="05 / 06 / 07"
-                    required 
-                    className="h-12" 
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="directorate">مديرية التربية</Label>
-                  <Input 
-                    id="directorate" 
-                    placeholder="مثلاً: الجزائر غرب"
-                    required 
-                    className="h-12" 
-                    value={directorate}
-                    onChange={(e) => setDirectorate(e.target.value)}
-                  />
-                </div>
-              </div>
-
               <div className="space-y-2">
-                <Label htmlFor="school">المؤسسة التعليمية</Label>
+                <Label htmlFor="fullName">الاسم واللقب</Label>
                 <Input 
-                  id="school" 
-                  placeholder="مثلاً: مدرسة العربي بن مهيدي" 
+                  id="fullName" 
+                  placeholder="أدخل اسمك الكامل"
                   required 
                   className="h-12" 
-                  value={school}
-                  onChange={(e) => setSchool(e.target.value)}
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                 />
               </div>
               
@@ -173,19 +119,20 @@ export default function SignUpPage() {
                 <Input 
                   id="password" 
                   type="password" 
+                  placeholder="••••••••"
                   required 
                   className="h-12" 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <Button type="submit" className="w-full h-12 text-lg bg-accent hover:bg-accent/90" disabled={loading}>
+              <Button type="submit" className="w-full h-12 text-lg bg-accent hover:bg-accent/90 shadow-lg shadow-accent/20" disabled={loading}>
                 {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "إنشاء حساب"}
               </Button>
             </form>
           </CardContent>
           <CardFooter>
-            <p className="text-center text-sm text-muted-foreground w-full">
+            <p className="text-center text-sm text-muted-foreground w-full font-tajawal">
               لديك حساب بالفعل؟{" "}
               <Link href="/auth/sign-in" className="text-primary font-bold hover:underline">
                 تسجيل الدخول
@@ -197,7 +144,7 @@ export default function SignUpPage() {
         <div className="mt-8">
           <Link href="/" className="flex items-center justify-center gap-2 text-muted-foreground hover:text-primary transition-colors">
             <ArrowRight className="h-4 w-4" />
-            <span>العودة للرئيسية</span>
+            <span className="font-tajawal">العودة للرئيسية</span>
           </Link>
         </div>
       </div>
