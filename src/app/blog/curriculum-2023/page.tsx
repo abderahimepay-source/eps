@@ -83,7 +83,7 @@ export default function CurriculumBlogPost() {
           <section className="bg-accent/5 p-8 rounded-3xl border border-accent/20 space-y-4">
             <h2 className="text-2xl font-bold font-headline text-accent">الخلاصة: كيف يساعدك Modakira؟</h2>
             <p>لقد قمنا ببرمجة ذكاء Modakira الاصطناعي بناءً على هذا المنهاج حصرياً. عندما تختار مستوى "السنة الرابعة" وميدان "الحركات القاعدية"، فإن النظام يقترح عليك أهدافاً SMART مستخرجة حرفياً من وثيقة المنهاج الرسمي 2023، مما يضمن لك مذكرات احترافية خالية من الأخطاء البيداغوجية.</p>
-            <Link href="/lesson-plans/create">
+            <Link href="/auth/sign-up">
               <Button className="bg-accent hover:bg-accent/90 gap-2">جرب إنشاء مذكرة الآن</Button>
             </Link>
           </section>
