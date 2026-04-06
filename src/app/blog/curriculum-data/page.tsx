@@ -96,7 +96,7 @@ export default function CurriculumDataPost() {
         <section className="bg-primary/5 p-8 rounded-3xl border border-primary/20 text-center space-y-4">
           <h2 className="text-2xl font-bold font-headline text-primary">هل تريد البدء في التحضير؟</h2>
           <p className="text-muted-foreground">كل هذه البيانات مدمجة في نظامنا الذكي لمساعدتك على صياغة مذكراتك في ثوانٍ.</p>
-          <Link href="/lesson-plans/create">
+          <Link href="/auth/sign-up">
             <Button className="bg-primary hover:bg-primary/90 h-12 px-8 text-lg font-bold">ابدأ الآن</Button>
           </Link>
         </section>
