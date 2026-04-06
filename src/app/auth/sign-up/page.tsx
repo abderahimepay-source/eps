@@ -91,10 +91,10 @@ export default function SignUpPage() {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="fullName">الاسم واللقب</Label>
+                <Label htmlFor="fullName">اسم المستخدم</Label>
                 <Input 
                   id="fullName" 
-                  placeholder="أدخل اسمك الكامل"
+                  placeholder="أدخل اسم المستخدم"
                   required 
                   className="h-12" 
                   value={fullName}
