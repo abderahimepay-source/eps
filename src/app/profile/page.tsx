@@ -47,10 +47,7 @@ export default function ProfilePage() {
   const [isUpdating, setIsUpdating] = useState(false);
 
   const [formData, setFormData] = useState({
-    displayName: '',
-    school: '',
-    phoneNumber: '',
-    directorate: ''
+    displayName: ''
   });
 
   const profileRef = useMemoFirebase(() => {
@@ -62,10 +59,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (profile) {
       setFormData({
-        displayName: profile.displayName || '',
-        school: profile.school || '',
-        phoneNumber: profile.phoneNumber || '',
-        directorate: profile.directorate || ''
+        displayName: profile.displayName || ''
       });
     }
   }, [profile]);
@@ -92,7 +86,7 @@ export default function ProfilePage() {
 
       toast({
         title: "تم التحديث",
-        description: "تمت تحديث بياناتك الشخصية بنجاح.",
+        description: "تمت تحديث بياناتك بنجاح.",
       });
       setIsEditOpen(false);
     } catch (error: any) {
@@ -122,7 +116,6 @@ export default function ProfilePage() {
   return (
     <AppLayout>
       <div className="max-w-5xl mx-auto space-y-6 pb-12">
-        {/* Profile Summary Header */}
         <div className="bg-white rounded-3xl border shadow-sm overflow-hidden">
           <div className="h-32 bg-gradient-to-r from-primary to-primary/60 relative">
              <div className="absolute -bottom-12 right-8">
@@ -156,32 +149,20 @@ export default function ProfilePage() {
                 <DialogTrigger asChild>
                   <Button variant="outline" className="rounded-xl h-11 px-6 gap-2">
                     <Pencil className="h-4 w-4" />
-                    تعديل الملف
+                    تعديل الاسم
                   </Button>
                 </DialogTrigger>
                 <DialogContent dir="rtl" className="rounded-3xl sm:max-w-md">
                   <DialogHeader>
-                    <DialogTitle className="font-headline text-xl">تعديل البيانات المهنية</DialogTitle>
+                    <DialogTitle className="font-headline text-xl">تعديل الملف الشخصي</DialogTitle>
                     <DialogDescription className="font-tajawal">
-                      ستظهر هذه المعلومات في ترويسة مذكراتك المطبوعة.
+                      قم بتحديث اسم المستخدم الخاص بك.
                     </DialogDescription>
                   </DialogHeader>
                   <form onSubmit={handleUpdateProfile} className="space-y-4 py-4">
                     <div className="space-y-2">
                       <Label htmlFor="displayName">اسم المستخدم</Label>
                       <Input id="displayName" value={formData.displayName} onChange={(e) => setFormData({...formData, displayName: e.target.value})} required className="rounded-xl h-11" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="phoneNumber">رقم الهاتف</Label>
-                      <Input id="phoneNumber" value={formData.phoneNumber} onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})} className="rounded-xl h-11" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="school">المؤسسة التعليمية (الابتدائية)</Label>
-                      <Input id="school" value={formData.school} onChange={(e) => setFormData({...formData, school: e.target.value})} className="rounded-xl h-11" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="directorate">مديرية التربية</Label>
-                      <Input id="directorate" value={formData.directorate} onChange={(e) => setFormData({...formData, directorate: e.target.value})} className="rounded-xl h-11" />
                     </div>
                     <DialogFooter className="gap-2 mt-4">
                       <Button type="button" variant="ghost" onClick={() => setIsEditOpen(false)}>إلغاء</Button>
@@ -201,9 +182,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Stats Grid */}
         <div className="grid gap-6 md:grid-cols-3">
-          {/* Main Balance Card */}
           <Card className="border-none shadow-sm md:col-span-2 overflow-hidden bg-white">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 border-b">
                <div className="space-y-1">
@@ -247,7 +226,6 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
 
-          {/* Quick Info Card */}
           <Card className="border-none shadow-sm bg-white overflow-hidden">
              <CardHeader className="bg-muted/30 border-b">
                 <CardTitle className="font-headline text-lg">إحصائيات سريعة</CardTitle>
@@ -271,20 +249,6 @@ export default function ProfilePage() {
                       <span className="font-tajawal text-sm">تاريخ الانضمام</span>
                    </div>
                    <span className="font-bold text-xs">{formatDate(profile?.createdAt)}</span>
-                </div>
-
-                <div className="pt-4 space-y-3">
-                   <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">مميزات باقتك الحالية:</p>
-                   <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-xs font-tajawal text-foreground/80">
-                        <Check className="h-4 w-4 text-green-500 shrink-0" />
-                        <span>مذكرات ذكية متوافقة مع المنهاج</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-xs font-tajawal text-foreground/80">
-                        <Check className="h-4 w-4 text-green-500 shrink-0" />
-                        <span>تنزيل PDF فائق الجودة</span>
-                      </div>
-                   </div>
                 </div>
              </CardContent>
           </Card>

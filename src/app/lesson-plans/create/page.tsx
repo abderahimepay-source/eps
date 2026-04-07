@@ -165,16 +165,15 @@ ${lessonPlan.finalStage}
     setIsExporting(true);
     setPdfMode(true);
     
-    // Wait for the state update to re-render in compact mode
     setTimeout(async () => {
       try {
         const element = printRef.current!;
         const canvas = await html2canvas(element, {
-          scale: 3, // High quality
+          scale: 3,
           useCORS: true,
           logging: false,
           backgroundColor: '#ffffff',
-          width: 794, // Force capture at A4 pixel width
+          width: 794,
         });
         
         const imgData = canvas.toDataURL('image/png');
@@ -187,7 +186,6 @@ ${lessonPlan.finalStage}
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
         
-        // Add the image to fill the A4 page exactly
         pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
         pdf.save(`${specificResource || 'lesson-plan'}.pdf`);
         
@@ -237,7 +235,6 @@ ${lessonPlan.finalStage}
           <h1 className="text-xl sm:text-2xl font-bold font-headline">إنشاء مذكرة بيداغوجية</h1>
         </div>
 
-        {/* Stepper */}
         <div className="flex items-center justify-between max-w-xs mx-auto mb-8 px-4">
           {[
             { id: 'curriculum', label: 'المورد' },
@@ -374,7 +371,6 @@ ${lessonPlan.finalStage}
         
         {step === 'review' && lessonPlan && (
           <div className="space-y-6 pb-20">
-            {/* Actions Bar */}
             <div className="flex flex-col sm:flex-row items-center justify-end gap-3 no-print">
               <Button 
                 variant="outline" 
@@ -394,7 +390,6 @@ ${lessonPlan.finalStage}
               </Button>
             </div>
 
-            {/* Document Preview */}
             <div 
               ref={printRef} 
               className={cn(
@@ -407,10 +402,8 @@ ${lessonPlan.finalStage}
                 <div className="grid grid-cols-3 gap-4 items-start">
                   <div className={cn("space-y-1 text-[10px] text-muted-foreground font-tajawal", pdfMode && "text-[9px]")}>
                     <div className="flex items-center gap-1 font-bold text-primary">
-                      <School className={cn("h-3 w-3", pdfMode && "hidden")} />
-                      <span>{profile?.school || "..."}</span>
+                      <span>أ/{profile?.displayName || "..."}</span>
                     </div>
-                    <div>أ/{profile?.displayName || "..."}</div>
                     <div>تاريخ: {new Date().toLocaleDateString('ar-DZ')}</div>
                   </div>
                   <div className="text-center space-y-0.5">
@@ -428,10 +421,8 @@ ${lessonPlan.finalStage}
               </header>
 
               <div className={cn("p-6 space-y-6 text-start", pdfMode && "p-4 space-y-2")}>
-                {/* Objectives */}
                 <section className={cn("space-y-2", pdfMode && "space-y-1")}>
                   <h3 className={cn("text-xs font-bold font-headline flex items-center gap-2 pb-1 border-b border-primary/20", pdfMode && "text-[10px] pb-0.5 border-none")}>
-                    <CheckCircle2 className={cn("h-3 w-3 text-primary", pdfMode && "hidden")} />
                     الأهداف الإجرائية (SMART)
                   </h3>
                   <div className={cn("space-y-1", pdfMode && "space-y-0.5")}>
@@ -444,7 +435,6 @@ ${lessonPlan.finalStage}
                   </div>
                 </section>
 
-                {/* Stages */}
                 <div className={cn("space-y-4", pdfMode && "space-y-1")}>
                   {[
                     { title: 'المرحلة التحضيرية', time: '10-15 د', content: lessonPlan.introductoryStage, icon: Clock, color: 'primary' },
@@ -454,11 +444,6 @@ ${lessonPlan.finalStage}
                     <section key={idx} className={cn("space-y-1.5", pdfMode && "space-y-0.5")}>
                       <div className={cn("flex items-center justify-between text-[10px] font-bold", pdfMode && "text-[9px]")}>
                         <div className="flex items-center gap-1.5">
-                          <span className={cn(
-                            "h-5 w-5 rounded flex items-center justify-center text-white",
-                            stage.color === 'primary' ? "bg-primary" : stage.color === 'accent' ? "bg-accent" : "bg-gray-400",
-                            pdfMode && "hidden"
-                          )}>{idx + 1}</span>
                           <h4 className="font-headline">{stage.title}</h4>
                         </div>
                         <span className="text-muted-foreground">{stage.time}</span>
@@ -474,7 +459,6 @@ ${lessonPlan.finalStage}
                   ))}
                 </div>
 
-                {/* Footer Signature */}
                 <footer className={cn("pt-6 grid grid-cols-2 gap-4 text-center border-t border-dashed border-gray-200", pdfMode && "pt-2 gap-2 border-none")}>
                   <div className="space-y-1">
                     <p className={cn("font-bold text-[10px]", pdfMode && "text-[9px]")}>إمضاء الأستاذ</p>
@@ -497,7 +481,6 @@ ${lessonPlan.finalStage}
         )}
       </div>
 
-      {/* Credits Dialog */}
       <AlertDialog open={showInsufficientCredits} onOpenChange={setShowInsufficientCredits}>
         <AlertDialogContent dir="rtl" className="max-w-[90vw] sm:max-w-lg rounded-2xl">
           <AlertDialogHeader>

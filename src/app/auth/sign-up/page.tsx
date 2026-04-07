@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -41,9 +42,6 @@ export default function SignUpPage() {
         uid: user.uid,
         email: user.email,
         displayName: fullName,
-        school: 'لم يتم التحديد بعد', // Default value, can be edited in profile
-        phoneNumber: '',
-        directorate: '',
         isPro: false,
         isAdmin: false,
         credit_balance: 10, // Starting credits for new users
@@ -54,7 +52,7 @@ export default function SignUpPage() {
 
       toast({
         title: "تم إنشاء الحساب بنجاح",
-        description: "مرحباً بك في Modakira! يمكنك إكمال بياناتك المهنية من صفحة الملف الشخصي.",
+        description: "مرحباً بك في Modakira!",
       });
 
       router.push('/dashboard');
@@ -140,13 +138,6 @@ export default function SignUpPage() {
             </p>
           </CardFooter>
         </Card>
-        
-        <div className="mt-8">
-          <Link href="/" className="flex items-center justify-center gap-2 text-muted-foreground hover:text-primary transition-colors">
-            <ArrowRight className="h-4 w-4" />
-            <span className="font-tajawal">العودة للرئيسية</span>
-          </Link>
-        </div>
       </div>
     </div>
   );

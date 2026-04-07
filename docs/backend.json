@@ -18,17 +18,6 @@
         "displayName": {
           "type": "string"
         },
-        "phoneNumber": {
-          "type": "string",
-          "description": "User's contact phone number."
-        },
-        "school": {
-          "type": "string"
-        },
-        "directorate": {
-          "type": "string",
-          "description": "The educational directorate the user belongs to."
-        },
         "isPro": {
           "type": "boolean"
         },
@@ -55,7 +44,6 @@
         "uid",
         "email",
         "displayName",
-        "school",
         "isPro",
         "isAdmin",
         "credit_balance",

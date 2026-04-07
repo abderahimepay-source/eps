@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -40,7 +41,7 @@ export default function PrivacyPolicyPage() {
               <h2 className="text-2xl font-bold font-headline m-0">1. المعلومات التي نجمعها</h2>
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-sm border space-y-4">
-              <p><strong>البيانات الشخصية:</strong> الاسم الكامل، البريد الإلكتروني، اسم المؤسسة التعليمية، رقم الهاتف، ومعلومات الفوترة عند الشراء.</p>
+              <p><strong>البيانات الشخصية:</strong> نجمع فقط البيانات الأساسية اللازمة لتشغيل حسابك، وهي: الاسم الكامل (أو اسم المستخدم) والبريد الإلكتروني فقط.</p>
               <p><strong>بيانات الاستخدام:</strong> عنوان IP، نوع المتصفح، الصفحات التي زرتها، ومدة البقاء، بالإضافة إلى ملفات تعريف الارتباط (Cookies) لتحسين تجربتك.</p>
             </div>
           </section>
@@ -50,8 +51,8 @@ export default function PrivacyPolicyPage() {
               <UserCheck className="h-6 w-6" />
               <h2 className="text-2xl font-bold font-headline m-0">2. كيف ولماذا نجمع المعلومات؟</h2>
             </div>
-            <p>يتم جمع البيانات عبر نماذج التسجيل وأدوات التحليل (مثل Google Analytics) لمعالجة المدفوعات عبر <strong>Chargily</strong> وتوفير خدمات الذكاء الاصطناعي عبر <strong>Google Gemini</strong>.</p>
-            <p><strong>الأساس القانوني:</strong> نجمع هذه البيانات لتقديم الخدمة، تحسين أداء الموقع، إرسال فواتير الشراء، وإشعارك بالتحديثات الهامة للمنهاج.</p>
+            <p>يتم جمع البيانات عبر نماذج التسجيل وأدوات التحليل لمعالجة المدفوعات عبر <strong>Chargily</strong> وتوفير خدمات الذكاء الاصطناعي عبر <strong>Google Gemini</strong>.</p>
+            <p>نحن لا نطلب ولا نخزن أرقام هواتفكم أو عناوين مؤسساتكم التعليمية لضمان أقصى درجات الخصوصية.</p>
           </section>
 
           <section className="space-y-4">
@@ -61,9 +62,9 @@ export default function PrivacyPolicyPage() {
             </div>
             <p>نحن لا نبيع بياناتك الشخصية أبداً. نشارك فقط البيانات الضرورية مع:</p>
             <ul className="list-disc list-inside space-y-3 ps-4 bg-muted/30 p-4 rounded-xl">
-              <li><strong>Firebase (Google):</strong> لتخزين البيانات وضمان أمن الحسابات (خوادم آمنة).</li>
+              <li><strong>Firebase (Google):</strong> لتخزين البيانات وضمان أمن الحسابات.</li>
               <li><strong>Chargily:</strong> لمعالجة عمليات الدفع عبر البطاقة الذهبية و CIB بشكل آمن.</li>
-              <li><strong>Google Gemini AI:</strong> لمعالجة طلبات توليد المذكرات (لا يتم إرسال بياناتك الشخصية للنموذج).</li>
+              <li><strong>Google Gemini AI:</strong> لمعالجة طلبات توليد المذكرات (لا يتم إرسال بيانات شخصية للنموذج).</li>
             </ul>
           </section>
 
@@ -80,7 +81,7 @@ export default function PrivacyPolicyPage() {
               <ShieldCheck className="h-6 w-6" />
               <h2 className="text-2xl font-bold font-headline m-0">5. حقوق المستخدم</h2>
             </div>
-            <p>بصفتك مستخدماً، لديك الحق في الوصول إلى بياناتك، تعديلها، أو طلب حذف حسابك نهائياً (الحق في النسيان). كما يمكنك الاعتراض على تلقي أي رسائل ترويجية.</p>
+            <p>بصفتك مستخدماً، لديك الحق في الوصول إلى بياناتك، تعديلها، أو طلب حذف حسابك نهائياً. يمكنك القيام بذلك عبر واجهة التطبيق أو التواصل معنا.</p>
           </section>
 
           <section className="bg-primary/5 p-8 rounded-3xl border border-primary/20 space-y-4">
@@ -88,10 +89,9 @@ export default function PrivacyPolicyPage() {
               <Mail className="h-6 w-6" />
               <h2 className="text-2xl font-bold font-headline m-0">اتصل بنا</h2>
             </div>
-            <p>لأي استفسارات تتعلق بالخصوصية أو لحذف بياناتك، يرجى التواصل معنا:</p>
+            <p>لأي استفسارات تتعلق بالخصوصية، يرجى التواصل معنا:</p>
             <div className="flex flex-col gap-2 font-bold">
               <a href="mailto:support@modakira.ai" className="hover:text-primary transition-colors">البريد الإلكتروني: support@modakira.ai</a>
-              <a href="https://wa.me/213555000000" className="hover:text-primary transition-colors">واتساب: 213555000000+</a>
             </div>
           </section>
         </div>
