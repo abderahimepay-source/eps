@@ -5,17 +5,10 @@ import { Button } from "@/components/ui/button";
 import { 
   ChevronLeft, 
   Sparkles, 
-  BookOpen, 
   ClipboardPenLine, 
   CheckCircle2, 
-  Target,
   Clock,
   Zap,
-  ShieldCheck,
-  HelpCircle,
-  MessageCircle,
-  ArrowRight,
-  FileText
 } from "lucide-react";
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import {
@@ -120,17 +113,15 @@ export default function LandingPage() {
                 <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-2xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>
                 <div className="relative bg-white border rounded-3xl overflow-hidden shadow-2xl">
                   {mockupImage?.imageUrl && (
-                    <a href="https://ibb.co/m5sGtNFp" target="_blank" rel="noopener noreferrer">
-                      <Image 
-                        src={mockupImage.imageUrl} 
-                        alt={mockupImage.description || "App Preview"}
-                        width={800}
-                        height={600}
-                        className="w-full h-auto object-cover"
-                        unoptimized={true}
-                        priority={true}
-                      />
-                    </a>
+                    <Image 
+                      src={mockupImage.imageUrl} 
+                      alt={mockupImage.description || "App Preview"}
+                      width={800}
+                      height={600}
+                      className="w-full h-auto object-cover"
+                      unoptimized={true}
+                      priority={true}
+                    />
                   )}
                 </div>
               </div>
