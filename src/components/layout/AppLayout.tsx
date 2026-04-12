@@ -14,13 +14,16 @@ import {
   ChevronLeft,
   CreditCard,
   ShieldAlert,
-  Sparkles
+  Sparkles,
+  AlertTriangle,
+  Loader2
 } from "lucide-react";
 import { useState } from 'react';
 import { useFirebase, useDoc, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
-import { signOut } from 'firebase/auth';
+import { signOut, sendEmailVerification } from 'firebase/auth';
 import { cn } from "@/lib/utils";
+import { useToast } from '@/hooks/use-toast';
 
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'الرئيسية', icon: LayoutDashboard },
@@ -32,7 +35,9 @@ const NAV_ITEMS = [
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { toast } = useToast();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isResending, setIsResending] = useState(false);
   const { user, firestore, auth } = useFirebase();
 
   const profileRef = useMemoFirebase(() => {
@@ -45,6 +50,29 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     await signOut(auth);
     router.push('/');
   };
+
+  const handleResendVerification = async () => {
+    if (!user) return;
+    setIsResending(true);
+    try {
+      await sendEmailVerification(user);
+      toast({
+        title: "تم إرسال الرابط",
+        description: "يرجى التحقق من بريدك الإلكتروني.",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "خطأ",
+        description: "تعذر إرسال الرابط حالياً.",
+      });
+    } finally {
+      setIsResending(false);
+    }
+  };
+
+  // Check if user email is verified
+  const isEmailUnverified = user && !user.emailVerified;
 
   return (
     <div className="min-h-screen flex bg-background font-body" dir="rtl">
@@ -176,6 +204,27 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </header>
 
         <main className="flex-1 p-4 lg:p-8 pb-24 lg:pb-8 overflow-y-auto">
+          {isEmailUnverified && (
+            <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col sm:flex-row items-center gap-4 animate-in slide-in-from-top-4 duration-500">
+              <div className="bg-amber-100 p-2 rounded-full">
+                <AlertTriangle className="h-6 w-6 text-amber-600" />
+              </div>
+              <div className="flex-1 text-center sm:text-start">
+                <h4 className="font-bold text-amber-900 font-headline">بريدك الإلكتروني غير موثق</h4>
+                <p className="text-sm text-amber-700 font-tajawal">يرجى التحقق من بريدك الإلكتروني وتفعيل الحساب للاستفادة من كافة المميزات.</p>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-amber-600 text-amber-600 hover:bg-amber-100 font-tajawal shrink-0"
+                onClick={handleResendVerification}
+                disabled={isResending}
+              >
+                {isResending ? <Loader2 className="h-3 w-3 animate-spin me-2" /> : null}
+                إعادة إرسال الرابط
+              </Button>
+            </div>
+          )}
           {children}
         </main>
 

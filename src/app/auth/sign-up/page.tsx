@@ -10,7 +10,7 @@ import { ClipboardPenLine, ArrowRight, Loader2 } from "lucide-react";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useFirebase } from '@/firebase';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 
@@ -36,7 +36,10 @@ export default function SignUpPage() {
       // 2. Update Auth Profile
       await updateProfile(user, { displayName: fullName });
 
-      // 3. Create UserProfile Document in Firestore
+      // 3. Send Verification Email
+      await sendEmailVerification(user);
+
+      // 4. Create UserProfile Document in Firestore
       const profileRef = doc(firestore, 'profiles', user.uid);
       await setDoc(profileRef, {
         uid: user.uid,
@@ -52,10 +55,10 @@ export default function SignUpPage() {
 
       toast({
         title: "تم إنشاء الحساب بنجاح",
-        description: "مرحباً بك في Modakira!",
+        description: "يرجى التحقق من بريدك الإلكتروني لتفعيل الحساب.",
       });
 
-      router.push('/dashboard');
+      router.push('/auth/verify-email');
     } catch (error: any) {
       toast({
         variant: "destructive",
