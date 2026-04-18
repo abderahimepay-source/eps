@@ -6,6 +6,9 @@ import { FirebaseClientProvider } from '@/firebase';
 export const metadata: Metadata = {
   title: 'Modakira - مولد مذكرات التربية البدنية',
   description: 'أداة ذكية مدعومة بالذكاء الاصطناعي لإنشاء مذكرات دروس التربية البدنية والرياضية وفق المنهاج الجزائري.',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({
