@@ -7,6 +7,14 @@ import { ClipboardPenLine, ArrowRight, Calendar, Clock, ChevronLeft, BookOpen } 
 export default function BlogPage() {
   const posts = [
     {
+      id: 'competencies-guide',
+      title: "دليل الكفاءات الختامية ومركباتها في التربية البدنية (2023)",
+      excerpt: "تحليل بيداغوجي شامل لجميع الكفاءات الختامية ومركباتها لكل المستويات الابتدائية وفق المقاربة بالكفاءات.",
+      date: "20 مارس 2024",
+      readTime: "15 دقيقة",
+      category: "تحليل بيداغوجي"
+    },
+    {
       id: 'curriculum-2023',
       title: "دليل شامل لمنهاج التربية البدنية والرياضية 2023 في الجزائر",
       excerpt: "تعرف على أهم التغييرات في المنهاج الجديد وكيفية بناء الكفاءات الإجرائية للمرحلة الابتدائية وفق المقاربة الجديدة.",
@@ -65,10 +73,10 @@ export default function BlogPage() {
                 </div>
                 <h2 className="text-2xl font-bold font-headline group-hover:text-primary transition-colors">{post.title}</h2>
                 <p className="text-muted-foreground leading-relaxed">{post.excerpt}</p>
-                <Button variant="link" className="p-0 h-auto text-primary font-bold self-start gap-2">
-                  اقرأ المقال كاملاً
+                <div className="flex items-center text-primary font-bold gap-2 text-sm">
+                  <span>اقرأ المقال كاملاً</span>
                   <ChevronLeft className="h-4 w-4" />
-                </Button>
+                </div>
               </article>
             </Link>
           ))}
