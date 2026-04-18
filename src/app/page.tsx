@@ -1,4 +1,5 @@
 
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
@@ -261,6 +262,7 @@ export default function LandingPage() {
                 <h4 className="font-bold text-sm">روابط هامة</h4>
                 <ul className="text-sm space-y-2 text-muted-foreground font-tajawal">
                   <li><Link href="/blog" className="hover:text-primary transition-colors">المدونة</Link></li>
+                  <li><Link href="/pricing-guide" className="hover:text-primary transition-colors">دليل التسعير والاعتمادات</Link></li>
                   <li><Link href="/privacy-policy" className="hover:text-primary transition-colors">الخصوصية</Link></li>
                   <li><Link href="/terms-of-service" className="hover:text-primary transition-colors">الشروط</Link></li>
                 </ul>
