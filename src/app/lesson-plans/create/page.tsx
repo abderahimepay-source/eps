@@ -12,7 +12,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { CURRICULUM_DATA } from '@/lib/curriculum';
 import { generateObjectives } from '@/ai/flows/generate-lesson-objectives';
 import { draftLessonPlan } from '@/ai/flows/draft-lesson-plan';
-import { Sparkles, CheckCircle2, Loader2, BookOpen, CreditCard, ChevronRight, Download, Copy, ClipboardCheck, School, User, Calendar, Clock, Info } from 'lucide-react';
+import { Sparkles, CheckCircle2, Loader2, BookOpen, CreditCard, ChevronRight, Download, Copy, ClipboardCheck, School, User, Calendar, Clock, Info, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useFirebase, useDoc, useMemoFirebase } from '@/firebase';
 import { trackAiUsage, incrementLessonPlanCount } from '@/firebase/usage';
@@ -233,6 +233,17 @@ ${lessonPlan.finalStage}
             <Sparkles className="h-5 w-5 text-primary-foreground" />
           </div>
           <h1 className="text-xl sm:text-2xl font-bold font-headline">إنشاء مذكرة بيداغوجية</h1>
+        </div>
+
+        {/* Disclaimer Note */}
+        <div className="bg-amber-50 border border-amber-200 p-4 rounded-2xl flex gap-3 items-start animate-in fade-in slide-in-from-top-2 duration-500 shadow-sm">
+          <AlertCircle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <h4 className="text-sm font-bold text-amber-900 font-headline">تنبيه بيداغوجي هام</h4>
+            <p className="text-xs sm:text-sm text-amber-800 leading-relaxed font-tajawal">
+              تساعدك هذه الأداة على صياغة الأهداف وتصميم المذكرات بطريقة سليمة وفق المنهاج الرسمي، ولكن تبقى <strong>مراجعة المخرجات وتكييفها</strong> مع مستوى تلاميذك وظروف مؤسستك مسؤولية بيداغوجية ضرورية لضمان جودة الحصة.
+            </p>
+          </div>
         </div>
 
         <div className="flex items-center justify-between max-w-xs mx-auto mb-8 px-4">
