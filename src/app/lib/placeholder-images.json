@@ -1,3 +1,4 @@
+
 {
   "placeholderImages": [
     {
@@ -7,16 +8,22 @@
       "imageHint": "app mockup"
     },
     {
-      "id": "teacher-testimonial",
-      "description": "أستاذ تربية بدنية جزائري يبتسم في ساحة المدرسة",
-      "imageUrl": "https://picsum.photos/seed/teacher/200/200",
-      "imageHint": "teacher smiling"
+      "id": "feature-smart",
+      "description": "توضيح لأهداف SMART الرياضية",
+      "imageUrl": "https://picsum.photos/seed/smart/600/400",
+      "imageHint": "sports objectives"
     },
     {
-      "id": "blog-curriculum",
-      "description": "صورة تعبيرية للمنهاج الدراسي الجزائري الجديد",
-      "imageUrl": "https://picsum.photos/seed/curriculum/800/400",
-      "imageHint": "curriculum books"
+      "id": "feature-pdf",
+      "description": "معاينة لتنسيق ملف PDF المخرج",
+      "imageUrl": "https://picsum.photos/seed/pdf/600/400",
+      "imageHint": "document export"
+    },
+    {
+      "id": "teacher-avatar",
+      "description": "أستاذ تربية بدنية جزائري",
+      "imageUrl": "https://picsum.photos/seed/teacher1/100/100",
+      "imageHint": "teacher avatar"
     }
   ]
 }

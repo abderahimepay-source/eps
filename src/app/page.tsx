@@ -1,5 +1,4 @@
 
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,8 @@ import {
   CheckCircle2, 
   Clock,
   Zap,
+  Star,
+  Quote
 } from "lucide-react";
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import {
@@ -21,6 +22,9 @@ import {
 
 export default function LandingPage() {
   const mockupImage = PlaceHolderImages.find(img => img.id === 'app-mockup');
+  const featureSmartImg = PlaceHolderImages.find(img => img.id === 'feature-smart');
+  const featurePdfImg = PlaceHolderImages.find(img => img.id === 'feature-pdf');
+  const teacherAvatar = PlaceHolderImages.find(img => img.id === 'teacher-avatar');
 
   const faqs = [
     {
@@ -36,19 +40,6 @@ export default function LandingPage() {
         { q: "هل أحتاج لتحميل أي برنامج على حاسوبي؟", a: "لا، Modakira يعمل 100% عبر المتصفح. يمكنك استخدامه من الهاتف، اللوحة الإلكترونية، أو الحاسوب دون تثبيت أي شيء." },
         { q: "هل بياناتي ومذكراتي آمنة؟", a: "بالتأكيد، نستخدم تشفير SSL المتطور وخوادم Google Cloud لضمان خصوصية وأمان كافة ملفاتك." }
       ]
-    },
-    {
-      category: "الدفع والاشتراكات",
-      questions: [
-        { q: "ما هي طرق الدفع المتاحة؟", a: "ندعم الدفع المحلي عبر البطاقة الذهبية وبطاقة CIB من خلال بوابة Chargily الآمنة." },
-        { q: "ما هي سياسة الاسترجاع؟", a: "نظراً لأننا نقدم خدمة رقمية فورية، لا نوفر استرجاعاً للأموال بعد استخدام الاعتمادات، ولكن يمكنك دائماً تجربة الخدمة مجاناً قبل الشراء." }
-      ]
-    },
-    {
-      category: "الدعم والتدريب",
-      questions: [
-        { q: "هل توفرون دعماً فنياً في حال واجهت مشكلة؟", a: "نعم، فريقنا متواجد عبر واتساب والبريد الإلكتروني للرد على استفساراتكم في أقل من 24 ساعة." }
-      ]
     }
   ];
 
@@ -63,10 +54,9 @@ export default function LandingPage() {
           <span className="font-headline text-2xl font-bold tracking-tight text-primary">Modakira</span>
         </Link>
         <nav className="hidden md:flex gap-6 items-center">
-          <Link className="text-sm font-medium hover:text-primary transition-colors" href="#process">كيف يعمل؟</Link>
+          <Link className="text-sm font-medium hover:text-primary transition-colors" href="#features">المميزات</Link>
           <Link className="text-sm font-medium hover:text-primary transition-colors" href="/blog">المدونة</Link>
           <Link className="text-sm font-medium hover:text-primary transition-colors" href="#pricing">الأسعار</Link>
-          <Link className="text-sm font-medium hover:text-primary transition-colors" href="#faq">الأسئلة الشائعة</Link>
         </nav>
         <div className="flex gap-3 items-center">
           <Link href="/auth/sign-in" className="hidden sm:block">
@@ -102,7 +92,7 @@ export default function LandingPage() {
                       <ChevronLeft className="ms-2 h-6 w-6" />
                     </Button>
                   </Link>
-                  <Link href="#process">
+                  <Link href="#features">
                     <Button size="lg" variant="outline" className="h-14 px-10 text-xl">
                       اكتشف المميزات
                     </Button>
@@ -110,8 +100,8 @@ export default function LandingPage() {
                 </div>
               </div>
               
-              <div className="relative group animate-in fade-in slide-in-from-bottom-10 duration-1000">
-                <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-2xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>
+              <div className="relative animate-in fade-in slide-in-from-bottom-10 duration-1000">
+                <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-2xl opacity-50"></div>
                 <div className="relative bg-white border rounded-3xl overflow-hidden shadow-2xl">
                   {mockupImage?.imageUrl && (
                     <Image 
@@ -119,9 +109,10 @@ export default function LandingPage() {
                       alt={mockupImage.description || "App Preview"}
                       width={800}
                       height={600}
-                      className="w-full h-auto object-cover"
+                      className="w-full h-auto object-cover pointer-events-none"
                       unoptimized={true}
                       priority={true}
+                      data-ai-hint="app mockup"
                     />
                   )}
                 </div>
@@ -130,26 +121,125 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Process Section */}
-        <section id="process" className="w-full py-20 bg-white">
-          <div className="container px-4 md:px-6 mx-auto">
+        {/* Detailed Features Section with Images */}
+        <section id="features" className="py-24 bg-white overflow-hidden">
+          <div className="container px-4 mx-auto">
+            <div className="space-y-24">
+              {/* Feature 1 */}
+              <div className="grid lg:grid-cols-2 gap-16 items-center">
+                <div className="space-y-6 text-start">
+                  <div className="bg-primary/10 w-12 h-12 rounded-2xl flex items-center justify-center text-primary">
+                    <Zap className="h-6 w-6" />
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-bold font-headline">أهداف SMART دقيقة بلمسة واحدة</h2>
+                  <p className="text-lg text-muted-foreground font-tajawal leading-relaxed">
+                    لا داعي للتفكير طويلاً في صياغة الأهداف. نظامنا المبرمج على منهاج 2023 يقترح عليك أهدافاً إجرائية (قابلة للقياس) تتماشى تماماً مع المورد المعرفي المختار.
+                  </p>
+                  <ul className="space-y-3 font-tajawal">
+                    <li className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-primary" /> صياغة تربوية سليمة</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-primary" /> تركيز على الأفعال الحركية</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-primary" /> مطابقة للمعايير الوزارية</li>
+                  </ul>
+                </div>
+                <div className="relative">
+                  <div className="absolute -inset-4 bg-primary/5 rounded-[2rem] -rotate-2"></div>
+                  <Image 
+                    src={featureSmartImg?.imageUrl || ""} 
+                    alt="Smart Objectives Feature" 
+                    width={600} 
+                    height={400} 
+                    className="relative rounded-3xl shadow-xl border object-cover"
+                    data-ai-hint="sports objectives"
+                  />
+                </div>
+              </div>
+
+              {/* Feature 2 */}
+              <div className="grid lg:grid-cols-2 gap-16 items-center lg:flex-row-reverse">
+                <div className="order-last lg:order-first">
+                   <div className="relative">
+                    <div className="absolute -inset-4 bg-accent/5 rounded-[2rem] rotate-2"></div>
+                    <Image 
+                      src={featurePdfImg?.imageUrl || ""} 
+                      alt="PDF Export Feature" 
+                      width={600} 
+                      height={400} 
+                      className="relative rounded-3xl shadow-xl border object-cover"
+                      data-ai-hint="document export"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-6 text-start">
+                  <div className="bg-accent/10 w-12 h-12 rounded-2xl flex items-center justify-center text-accent">
+                    <ClipboardPenLine className="h-6 w-6" />
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-bold font-headline">تنسيق احترافي جاهز للطباعة</h2>
+                  <p className="text-lg text-muted-foreground font-tajawal leading-relaxed">
+                    وداعاً لبرامج Word المعقدة ومشاكل التنسيق. احصل على مذكرتك في قالب رسمي منظم يشمل كافة المراحل (التحضيرية، التعلمية، والختامية) مع إمكانية التصدير بصيغة PDF فوراً.
+                  </p>
+                   <div className="flex gap-4">
+                    <div className="p-4 bg-gray-50 rounded-2xl border flex-1">
+                      <h4 className="font-bold text-sm mb-1">توفير الوقت</h4>
+                      <p className="text-xs text-muted-foreground">أقل من 3 دقائق للمذكرة الواحدة.</p>
+                    </div>
+                    <div className="p-4 bg-gray-50 rounded-2xl border flex-1">
+                      <h4 className="font-bold text-sm mb-1">دقة عالية</h4>
+                      <p className="text-xs text-muted-foreground">خالية من الأخطاء اللغوية والتنسيقية.</p>
+                    </div>
+                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Testimonials Section with Avatars */}
+        <section className="py-24 bg-muted/30">
+          <div className="container px-4 mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-              <h2 className="text-3xl md:text-4xl font-bold font-headline text-primary">تحضير مذكرتك لم يكن أسهل</h2>
-              <p className="text-lg text-muted-foreground font-tajawal">ثلاث خطوات بسيطة تفصلك عن مذكرتك القادمة</p>
+              <h2 className="text-3xl md:text-4xl font-bold font-headline">ماذا يقول زملاؤنا؟</h2>
+              <p className="text-lg text-muted-foreground font-tajawal">انطباعات أساتذة التربية البدنية الذين جربوا المنصة</p>
             </div>
             
-            <div className="grid md:grid-cols-3 gap-12 relative">
+            <div className="grid md:grid-cols-3 gap-8">
               {[
-                { step: "1", title: "حدد المورد", desc: "اختر المستوى الدراسي والميدان." },
-                { step: "2", title: "اختر الأهداف", desc: "اختر من بين أهداف SMART المولدة آلياً." },
-                { step: "3", title: "حمل مذكرتك", desc: "راجع المذكرة وحملها بصيغة PDF فوراً." }
-              ].map((s, i) => (
-                <div key={i} className="flex flex-col items-center text-center space-y-4 relative z-10 group">
-                  <div className="h-20 w-20 rounded-full bg-white text-primary flex items-center justify-center text-3xl font-bold shadow-xl border-4 border-primary group-hover:bg-primary group-hover:text-white transition-all">
-                    {s.step}
+                { 
+                  name: "أ. محمد بن علي", 
+                  role: "أستاذ تعليم ابتدائي - وهران", 
+                  text: "لم أكن أتخيل أن الذكاء الاصطناعي سيصل لمجالنا. Modakira وفرت علي ساعات من البحث في المنهج الورقي." 
+                },
+                { 
+                  name: "أ. سارة قرشي", 
+                  role: "أستاذة تربية بدنية - العاصمة", 
+                  text: "أكثر ما أعجبني هو دقة الأفعال الإجرائية المقترحة. المذكرات تخرج بشكل احترافي جداً وتبيض الوجه أمام المفتش." 
+                },
+                { 
+                  name: "أ. كمال عباسي", 
+                  role: "أستاذ تعليم ابتدائي - سطيف", 
+                  text: "نظام الشحن سهل والاعتمادات تكفي لفصل دراسي كامل. استثمار رائع لكل أستاذ يبحث عن الرقمنة." 
+                }
+              ].map((t, i) => (
+                <div key={i} className="bg-white p-8 rounded-3xl shadow-sm border hover:shadow-md transition-shadow relative">
+                  <Quote className="absolute top-6 left-6 h-8 w-8 text-primary/10" />
+                  <div className="space-y-6">
+                    <p className="text-muted-foreground italic font-tajawal leading-relaxed">"{t.text}"</p>
+                    <div className="flex items-center gap-4 pt-4 border-t">
+                      <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-primary/20 shrink-0">
+                        <Image 
+                          src={teacherAvatar?.imageUrl || ""} 
+                          alt="Teacher" 
+                          width={48} 
+                          height={48} 
+                          className="object-cover"
+                          data-ai-hint="teacher avatar"
+                        />
+                      </div>
+                      <div className="text-start">
+                        <h4 className="font-bold text-sm">{t.name}</h4>
+                        <p className="text-xs text-muted-foreground">{t.role}</p>
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold font-headline">{s.title}</h3>
-                  <p className="text-sm text-muted-foreground font-tajawal max-w-[200px]">{s.desc}</p>
                 </div>
               ))}
             </div>
@@ -157,7 +247,7 @@ export default function LandingPage() {
         </section>
 
         {/* Pricing Section */}
-        <section id="pricing" className="w-full py-20 bg-muted/30">
+        <section id="pricing" className="w-full py-20 bg-white">
           <div className="container px-4 md:px-6 mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
               <h2 className="text-3xl md:text-4xl font-bold font-headline text-primary">باقات تناسب مسيرتك</h2>
@@ -206,26 +296,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* FAQ Section */}
-        <section id="faq" className="w-full py-20 bg-white">
-          <div className="container px-4 md:px-6 mx-auto">
-            <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-              <h2 className="text-3xl md:text-4xl font-bold font-headline">الأسئلة الشائعة</h2>
-              <p className="text-lg text-muted-foreground font-tajawal">كل ما تحتاج معرفته عن Modakira</p>
-            </div>
-            <div className="max-w-3xl mx-auto">
-              <Accordion type="single" collapsible className="w-full">
-                {faqs.map((cat, i) => cat.questions.map((q, j) => (
-                  <AccordionItem key={`${i}-${j}`} value={`item-${i}-${j}`}>
-                    <AccordionTrigger className="text-start font-bold">{q.q}</AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground leading-relaxed">{q.a}</AccordionContent>
-                  </AccordionItem>
-                )))}
-              </Accordion>
-            </div>
-          </div>
-        </section>
-
         {/* Final CTA */}
         <section className="w-full py-24 bg-primary text-white text-center space-y-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
@@ -264,7 +334,6 @@ export default function LandingPage() {
                   <li><Link href="/blog" className="hover:text-primary transition-colors">المدونة</Link></li>
                   <li><Link href="/pricing-guide" className="hover:text-primary transition-colors">دليل التسعير والاعتمادات</Link></li>
                   <li><Link href="/privacy-policy" className="hover:text-primary transition-colors">الخصوصية</Link></li>
-                  <li><Link href="/terms-of-service" className="hover:text-primary transition-colors">الشروط</Link></li>
                 </ul>
               </div>
               <div className="space-y-3">
