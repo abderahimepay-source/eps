@@ -8,16 +8,22 @@
       "imageHint": "app mockup"
     },
     {
-      "id": "feature-smart",
-      "description": "توضيح لأهداف SMART الرياضية",
-      "imageUrl": "https://picsum.photos/seed/smart/600/400",
-      "imageHint": "sports objectives"
+      "id": "guide-step-1",
+      "description": "اختيار السنة الدراسية والمورد المعرفي",
+      "imageUrl": "https://raw.githubusercontent.com/abderahimepay-source/SAAS-IMG/95846ced1a64d42a73fce323d5727bbf666d0f6f/JHK.png",
+      "imageHint": "resource selection"
     },
     {
-      "id": "feature-pdf",
-      "description": "معاينة لتنسيق ملف PDF المخرج",
-      "imageUrl": "https://picsum.photos/seed/pdf/600/400",
-      "imageHint": "document export"
+      "id": "guide-step-2",
+      "description": "توليد واختيار الأهداف الإجرائية SMART",
+      "imageUrl": "https://raw.githubusercontent.com/abderahimepay-source/SAAS-IMG/95846ced1a64d42a73fce323d5727bbf666d0f6f/KLJK.png",
+      "imageHint": "objectives generation"
+    },
+    {
+      "id": "guide-step-3",
+      "description": "معاينة المذكرة البيداغوجية الجاهزة",
+      "imageUrl": "https://raw.githubusercontent.com/abderahimepay-source/SAAS-IMG/95846ced1a64d42a73fce323d5727bbf666d0f6f/www.modakira.pro_lesson-plans_create%20(2).png",
+      "imageHint": "final lesson plan"
     },
     {
       "id": "teacher-avatar",

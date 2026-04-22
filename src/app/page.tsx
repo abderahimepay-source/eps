@@ -10,7 +10,10 @@ import {
   Clock,
   Zap,
   Star,
-  Quote
+  Quote,
+  LayoutGrid,
+  FileSearch,
+  FileCheck
 } from "lucide-react";
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import {
@@ -22,8 +25,9 @@ import {
 
 export default function LandingPage() {
   const mockupImage = PlaceHolderImages.find(img => img.id === 'app-mockup');
-  const featureSmartImg = PlaceHolderImages.find(img => img.id === 'feature-smart');
-  const featurePdfImg = PlaceHolderImages.find(img => img.id === 'feature-pdf');
+  const guideStep1 = PlaceHolderImages.find(img => img.id === 'guide-step-1');
+  const guideStep2 = PlaceHolderImages.find(img => img.id === 'guide-step-2');
+  const guideStep3 = PlaceHolderImages.find(img => img.id === 'guide-step-3');
   const teacherAvatar = PlaceHolderImages.find(img => img.id === 'teacher-avatar');
 
   const faqs = [
@@ -121,79 +125,108 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Detailed Features Section with Images */}
+        {/* How it Works Section with Guide Images */}
         <section id="features" className="py-24 bg-white overflow-hidden">
           <div className="container px-4 mx-auto">
-            <div className="space-y-24">
-              {/* Feature 1 */}
+            <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
+              <h2 className="text-3xl md:text-5xl font-bold font-headline">كيف يعمل Modakira؟</h2>
+              <p className="text-lg text-muted-foreground font-tajawal">ثلاث خطوات بسيطة تفصلك عن مذكرتك البيداغوجية الاحترافية</p>
+            </div>
+
+            <div className="space-y-32">
+              {/* Step 1 */}
               <div className="grid lg:grid-cols-2 gap-16 items-center">
-                <div className="space-y-6 text-start">
-                  <div className="bg-primary/10 w-12 h-12 rounded-2xl flex items-center justify-center text-primary">
-                    <Zap className="h-6 w-6" />
-                  </div>
-                  <h2 className="text-3xl md:text-4xl font-bold font-headline">أهداف SMART دقيقة بلمسة واحدة</h2>
+                <div className="space-y-6 text-start order-2 lg:order-1">
+                  <div className="bg-primary/10 w-16 h-16 rounded-2xl flex items-center justify-center text-primary text-2xl font-bold font-headline">01</div>
+                  <h2 className="text-3xl md:text-4xl font-bold font-headline">تحديد المورد المعرفي بدقة</h2>
                   <p className="text-lg text-muted-foreground font-tajawal leading-relaxed">
-                    لا داعي للتفكير طويلاً في صياغة الأهداف. نظامنا المبرمج على منهاج 2023 يقترح عليك أهدافاً إجرائية (قابلة للقياس) تتماشى تماماً مع المورد المعرفي المختار.
+                    اختر السنة الدراسية، ميدان التعلم، والمورد المعرفي من القوائم المنسدلة المبرمجة حرفياً وفق المنهاج الوزاري 2023.
                   </p>
-                  <ul className="space-y-3 font-tajawal">
-                    <li className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-primary" /> صياغة تربوية سليمة</li>
-                    <li className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-primary" /> تركيز على الأفعال الحركية</li>
-                    <li className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-primary" /> مطابقة للمعايير الوزارية</li>
+                  <ul className="space-y-3 font-tajawal text-muted-foreground">
+                    <li className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-primary" /> قاعدة بيانات شاملة لكل المستويات</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-primary" /> توافق تام مع المقاربة بالكفاءات</li>
                   </ul>
                 </div>
-                <div className="relative">
-                  <div className="absolute -inset-4 bg-primary/5 rounded-[2rem] -rotate-2"></div>
+                <div className="relative order-1 lg:order-2">
+                  <div className="absolute -inset-4 bg-primary/5 rounded-[2.5rem] -rotate-2"></div>
                   <Image 
-                    src={featureSmartImg?.imageUrl || ""} 
-                    alt="Smart Objectives Feature" 
-                    width={600} 
-                    height={400} 
-                    className="relative rounded-3xl shadow-xl border object-cover"
-                    data-ai-hint="sports objectives"
+                    src={guideStep1?.imageUrl || ""} 
+                    alt="Step 1: Selection" 
+                    width={800} 
+                    height={600} 
+                    className="relative rounded-3xl shadow-2xl border-4 border-white object-cover"
+                    data-ai-hint="resource selection"
                   />
                 </div>
               </div>
 
-              {/* Feature 2 */}
-              <div className="grid lg:grid-cols-2 gap-16 items-center lg:flex-row-reverse">
-                <div className="order-last lg:order-first">
-                   <div className="relative">
-                    <div className="absolute -inset-4 bg-accent/5 rounded-[2rem] rotate-2"></div>
-                    <Image 
-                      src={featurePdfImg?.imageUrl || ""} 
-                      alt="PDF Export Feature" 
-                      width={600} 
-                      height={400} 
-                      className="relative rounded-3xl shadow-xl border object-cover"
-                      data-ai-hint="document export"
-                    />
-                  </div>
+              {/* Step 2 */}
+              <div className="grid lg:grid-cols-2 gap-16 items-center">
+                <div className="relative">
+                  <div className="absolute -inset-4 bg-accent/5 rounded-[2.5rem] rotate-2"></div>
+                  <Image 
+                    src={guideStep2?.imageUrl || ""} 
+                    alt="Step 2: Objectives" 
+                    width={800} 
+                    height={600} 
+                    className="relative rounded-3xl shadow-2xl border-4 border-white object-cover"
+                    data-ai-hint="objectives generation"
+                  />
                 </div>
                 <div className="space-y-6 text-start">
-                  <div className="bg-accent/10 w-12 h-12 rounded-2xl flex items-center justify-center text-accent">
-                    <ClipboardPenLine className="h-6 w-6" />
-                  </div>
-                  <h2 className="text-3xl md:text-4xl font-bold font-headline">تنسيق احترافي جاهز للطباعة</h2>
+                  <div className="bg-accent/10 w-16 h-16 rounded-2xl flex items-center justify-center text-accent text-2xl font-bold font-headline">02</div>
+                  <h2 className="text-3xl md:text-4xl font-bold font-headline">أهداف SMART بلمسة ذكاء</h2>
                   <p className="text-lg text-muted-foreground font-tajawal leading-relaxed">
-                    وداعاً لبرامج Word المعقدة ومشاكل التنسيق. احصل على مذكرتك في قالب رسمي منظم يشمل كافة المراحل (التحضيرية، التعلمية، والختامية) مع إمكانية التصدير بصيغة PDF فوراً.
+                    يقوم الذكاء الاصطناعي بتوليد 5 أهداف إجرائية دقيقة (أن + فعل إجرائي + المتعلم...). اختر الأهداف التي تناسب ظروف حصتك وتلاميذك.
                   </p>
-                   <div className="flex gap-4">
-                    <div className="p-4 bg-gray-50 rounded-2xl border flex-1">
-                      <h4 className="font-bold text-sm mb-1">توفير الوقت</h4>
-                      <p className="text-xs text-muted-foreground">أقل من 3 دقائق للمذكرة الواحدة.</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-4 bg-gray-50 rounded-2xl border text-center">
+                      <h4 className="font-bold text-sm mb-1 text-primary">أفعال حركية</h4>
+                      <p className="text-xs text-muted-foreground font-tajawal">قابلة للقياس والملاحظة</p>
                     </div>
-                    <div className="p-4 bg-gray-50 rounded-2xl border flex-1">
-                      <h4 className="font-bold text-sm mb-1">دقة عالية</h4>
-                      <p className="text-xs text-muted-foreground">خالية من الأخطاء اللغوية والتنسيقية.</p>
+                    <div className="p-4 bg-gray-50 rounded-2xl border text-center">
+                      <h4 className="font-bold text-sm mb-1 text-primary">توفير وقت</h4>
+                      <p className="text-xs text-muted-foreground font-tajawal">صياغة تربوية في ثوانٍ</p>
                     </div>
-                   </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="grid lg:grid-cols-2 gap-16 items-center">
+                <div className="space-y-6 text-start order-2 lg:order-1">
+                  <div className="bg-primary/10 w-16 h-16 rounded-2xl flex items-center justify-center text-primary text-2xl font-bold font-headline">03</div>
+                  <h2 className="text-3xl md:text-4xl font-bold font-headline">مذكرة كاملة جاهزة للطباعة</h2>
+                  <p className="text-lg text-muted-foreground font-tajawal leading-relaxed">
+                    احصل فوراً على المذكرة بتنسيق رسمي يشمل المراحل الثلاث (التحضيرية، التعلمية، والختامية) مع تفصيل دقيق لكل وضعية، وقم بتحميلها بصيغة PDF.
+                  </p>
+                  <ul className="space-y-3 font-tajawal">
+                    <li className="flex items-center gap-2 font-bold"><CheckCircle2 className="h-5 w-5 text-green-500" /> تنسيق A4 احترافي</li>
+                    <li className="flex items-center gap-2 font-bold"><CheckCircle2 className="h-5 w-5 text-green-500" /> جاهزة لختم المدير والمفتش</li>
+                  </ul>
+                  <Link href="/auth/sign-up">
+                    <Button className="h-12 px-8 bg-primary hover:bg-primary/90 text-lg font-bold rounded-xl mt-4">
+                      جرب الخطوات بنفسك الآن
+                    </Button>
+                  </Link>
+                </div>
+                <div className="relative order-1 lg:order-2">
+                  <div className="absolute -inset-4 bg-primary/5 rounded-[2.5rem] -rotate-1"></div>
+                  <Image 
+                    src={guideStep3?.imageUrl || ""} 
+                    alt="Step 3: Final Plan" 
+                    width={800} 
+                    height={600} 
+                    className="relative rounded-3xl shadow-2xl border-4 border-white object-cover"
+                    data-ai-hint="final lesson plan"
+                  />
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Testimonials Section with Avatars */}
+        {/* Testimonials Section */}
         <section className="py-24 bg-muted/30">
           <div className="container px-4 mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
