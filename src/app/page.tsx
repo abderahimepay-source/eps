@@ -136,7 +136,7 @@ export default function LandingPage() {
             <div className="space-y-32">
               {/* Step 1 */}
               <div className="grid lg:grid-cols-2 gap-16 items-center">
-                <div className="space-y-6 text-start order-2 lg:order-1">
+                <div className="space-y-6 text-start">
                   <div className="bg-primary/10 w-16 h-16 rounded-2xl flex items-center justify-center text-primary text-2xl font-bold font-headline">01</div>
                   <h2 className="text-3xl md:text-4xl font-bold font-headline">تحديد المورد المعرفي بدقة</h2>
                   <p className="text-lg text-muted-foreground font-tajawal leading-relaxed">
@@ -147,7 +147,7 @@ export default function LandingPage() {
                     <li className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-primary" /> توافق تام مع المقاربة بالكفاءات</li>
                   </ul>
                 </div>
-                <div className="relative order-1 lg:order-2">
+                <div className="relative">
                   <div className="absolute -inset-4 bg-primary/5 rounded-[2.5rem] -rotate-2"></div>
                   <Image 
                     src={guideStep1?.imageUrl || ""} 
@@ -162,17 +162,6 @@ export default function LandingPage() {
 
               {/* Step 2 */}
               <div className="grid lg:grid-cols-2 gap-16 items-center">
-                <div className="relative">
-                  <div className="absolute -inset-4 bg-accent/5 rounded-[2.5rem] rotate-2"></div>
-                  <Image 
-                    src={guideStep2?.imageUrl || ""} 
-                    alt="Step 2: Objectives" 
-                    width={800} 
-                    height={600} 
-                    className="relative rounded-3xl shadow-2xl border-4 border-white object-cover"
-                    data-ai-hint="objectives generation"
-                  />
-                </div>
                 <div className="space-y-6 text-start">
                   <div className="bg-accent/10 w-16 h-16 rounded-2xl flex items-center justify-center text-accent text-2xl font-bold font-headline">02</div>
                   <h2 className="text-3xl md:text-4xl font-bold font-headline">أهداف SMART بلمسة ذكاء</h2>
@@ -190,11 +179,22 @@ export default function LandingPage() {
                     </div>
                   </div>
                 </div>
+                <div className="relative">
+                  <div className="absolute -inset-4 bg-accent/5 rounded-[2.5rem] rotate-2"></div>
+                  <Image 
+                    src={guideStep2?.imageUrl || ""} 
+                    alt="Step 2: Objectives" 
+                    width={800} 
+                    height={600} 
+                    className="relative rounded-3xl shadow-2xl border-4 border-white object-cover"
+                    data-ai-hint="objectives generation"
+                  />
+                </div>
               </div>
 
               {/* Step 3 */}
               <div className="grid lg:grid-cols-2 gap-16 items-center">
-                <div className="space-y-6 text-start order-2 lg:order-1">
+                <div className="space-y-6 text-start">
                   <div className="bg-primary/10 w-16 h-16 rounded-2xl flex items-center justify-center text-primary text-2xl font-bold font-headline">03</div>
                   <h2 className="text-3xl md:text-4xl font-bold font-headline">مذكرة كاملة جاهزة للطباعة</h2>
                   <p className="text-lg text-muted-foreground font-tajawal leading-relaxed">
@@ -210,7 +210,7 @@ export default function LandingPage() {
                     </Button>
                   </Link>
                 </div>
-                <div className="relative order-1 lg:order-2">
+                <div className="relative">
                   <div className="absolute -inset-4 bg-primary/5 rounded-[2.5rem] -rotate-1"></div>
                   <Image 
                     src={guideStep3?.imageUrl || ""} 
