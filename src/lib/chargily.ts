@@ -2,7 +2,7 @@
  * @fileOverview Utility for interacting with Chargily Pay V2 API.
  */
 
-const CHARGILY_URL = "https://pay.chargily.net/test/api/v2"; // Change to 'https://pay.chargily.net/api/v2' for production
+const CHARGILY_URL = process.env.NEXT_PUBLIC_CHARGILY_URL || "https://pay.chargily.net/test/api/v2";
 
 export interface CreateCheckoutParams {
   amount: number;
