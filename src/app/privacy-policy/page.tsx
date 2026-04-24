@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -91,7 +90,7 @@ export default function PrivacyPolicyPage() {
             </div>
             <p>لأي استفسارات تتعلق بالخصوصية، يرجى التواصل معنا:</p>
             <div className="flex flex-col gap-2 font-bold">
-              <a href="mailto:support@modakira.ai" className="hover:text-primary transition-colors">البريد الإلكتروني: support@modakira.ai</a>
+              <a href="mailto:support@modakira.pro" className="hover:text-primary transition-colors">البريد الإلكتروني: support@modakira.pro</a>
             </div>
           </section>
         </div>

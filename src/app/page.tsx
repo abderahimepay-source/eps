@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
@@ -373,7 +372,7 @@ export default function LandingPage() {
                 <h4 className="font-bold text-sm">الدعم</h4>
                 <ul className="text-sm space-y-2 text-muted-foreground font-tajawal">
                   <li><Link href="https://wa.me/213555000000" className="text-primary font-bold">واتساب</Link></li>
-                  <li><Link href="mailto:support@modakira.ai" className="hover:text-primary transition-colors">إيميل</Link></li>
+                  <li><Link href="mailto:support@modakira.pro" className="hover:text-primary transition-colors">إيميل</Link></li>
                 </ul>
               </div>
             </div>
